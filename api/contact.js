@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        access_key: process.env.WEB3FORMS_KEY,
+        access_key: 'ac90c044-c369-4c9e-b779-52b1ee37c0da',
         subject: `📩 New Contact Form — ${name} (${company || 'No company'})`,
         from_name: 'G0GA Website',
         name,
