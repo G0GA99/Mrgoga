@@ -1,7 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk'
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-
 const SYSTEM_PROMPT = `You are G0GA's AI Sales Assistant — a smart, professional, and friendly assistant for G0GA Agency.
 
 ABOUT G0GA:
@@ -38,7 +34,7 @@ YOUR RULES:
 - For pricing questions, give ranges and suggest using the price calculator on the website
 - Keep responses under 120 words
 - Use emojis sparingly but effectively
-- If asked something outside G0GA's services, politely redirect to what G0GA can help with
+- If asked something outside G0GA services, politely redirect to what G0GA can help with
 - Never make up services or prices not listed above`
 
 export default async function handler(req, res) {
@@ -52,6 +48,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Message required' })
   }
 
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
+    return res.status(500).json({ reply: "Configuration error. Please contact us on WhatsApp! 💬" })
+  }
+
   try {
     const messages = [
       ...history.slice(-6).map(m => ({
@@ -61,16 +62,31 @@ export default async function handler(req, res) {
       { role: 'user', content: message },
     ]
 
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 200,
-      system: SYSTEM_PROMPT,
-      messages,
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 200,
+        system: SYSTEM_PROMPT,
+        messages,
+      }),
     })
 
-    res.status(200).json({ reply: response.content[0].text })
+    const data = await response.json()
+
+    if (!response.ok) {
+      console.error('Anthropic error:', data)
+      return res.status(500).json({ reply: "I'm having a moment — please WhatsApp us directly! 💬" })
+    }
+
+    res.status(200).json({ reply: data.content[0].text })
   } catch (err) {
-    console.error('Claude API error:', err)
-    res.status(500).json({ reply: "I'm having a moment — please WhatsApp us directly for instant help! 💬" })
+    console.error('Chat error:', err)
+    res.status(500).json({ reply: "I'm having a moment — please WhatsApp us directly! 💬" })
   }
 }
