@@ -1,20 +1,27 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, Bot } from 'lucide-react'
-import { chatResponses } from '../data/content'
 
-function getReply(text) {
-  const m = text.toLowerCase()
-  for (const k of Object.keys(chatResponses)) {
-    if (k !== 'default' && m.includes(k)) return chatResponses[k]
-  }
-  return chatResponses.default
-}
 function ts() {
   const d = new Date()
   return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`
 }
-const QUICK = ['Services','Pricing','Book a Call','AI Demo','AI Agents','Portfolio']
+
+const QUICK = ['Services', 'Pricing', 'Book a Call', 'AI Demo', 'AI Agents', 'Portfolio']
+
+async function askClaude(message, history) {
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history }),
+    })
+    const data = await res.json()
+    return data.reply || "Sorry, something went wrong. Please WhatsApp us directly! 💬"
+  } catch {
+    return "I'm having a moment — please WhatsApp us directly for instant help! 💬"
+  }
+}
 
 export default function ChatWidget() {
   const [open,   setOpen]   = useState(false)
@@ -28,20 +35,25 @@ export default function ChatWidget() {
     if (open) { setUnread(0); setTimeout(() => endRef.current?.scrollIntoView({ behavior:'smooth' }), 80) }
   }, [open, msgs])
 
-  const send = (txt) => {
+  const send = async (txt) => {
     const t = (txt || input).trim()
-    if (!t) return
+    if (!t || typing) return
     setInput('')
-    setMsgs(p => [...p, { id: Date.now(), role:'user', text:t, time:ts() }])
+
+    const userMsg = { id: Date.now(), role:'user', text:t, time:ts() }
+    setMsgs(p => [...p, userMsg])
     setTyping(true)
+
     const logs = JSON.parse(localStorage.getItem('g0ga_chat') || '[]')
     logs.push({ msg:t, ts: new Date().toISOString() })
     localStorage.setItem('g0ga_chat', JSON.stringify(logs))
-    setTimeout(() => {
-      setMsgs(p => [...p, { id: Date.now()+1, role:'bot', text: getReply(t), time:ts() }])
-      setTyping(false)
-      if (!open) setUnread(n => n+1)
-    }, 650 + Math.random()*500)
+
+    const currentHistory = [...msgs, userMsg]
+    const reply = await askClaude(t, currentHistory)
+
+    setMsgs(p => [...p, { id: Date.now()+1, role:'bot', text: reply, time:ts() }])
+    setTyping(false)
+    if (!open) setUnread(n => n+1)
   }
 
   return (
@@ -63,7 +75,7 @@ export default function ChatWidget() {
                 <div className="font-semibold text-sm">G0GA AI Assistant</div>
                 <div className="flex items-center gap-1.5 text-[11px] text-emerald-400">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-blink" />
-                  Online · Instant replies
+                  Powered by Claude AI · 24/7
                 </div>
               </div>
               <button onClick={() => setOpen(false)} className="text-gray-600 hover:text-white transition-colors"><X size={17}/></button>
@@ -91,20 +103,21 @@ export default function ChatWidget() {
             {/* Quick replies */}
             <div className="px-4 pb-3 flex gap-1.5 overflow-x-auto" style={{ scrollbarWidth:'none' }}>
               {QUICK.map(q => (
-                <button key={q} onClick={() => send(q)}
-                  className="flex-shrink-0 text-[11px] px-3 py-1.5 rounded-full border border-teal/20 text-teal hover:bg-teal/8 transition-colors whitespace-nowrap">
+                <button key={q} onClick={() => send(q)} disabled={typing}
+                  className="flex-shrink-0 text-[11px] px-3 py-1.5 rounded-full border border-teal/20 text-teal hover:bg-teal/8 transition-colors whitespace-nowrap disabled:opacity-40">
                   {q}
                 </button>
               ))}
             </div>
             {/* Input */}
             <div className="px-4 pb-4 flex gap-2 border-t border-white/5 pt-3">
-              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key==='Enter' && send()}
-                placeholder="Type a message…"
-                className="flex-1 text-white text-[.82rem] rounded-xl px-4 py-2.5 outline-none transition-colors placeholder-gray-700"
+              <input value={input} onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key==='Enter' && !e.shiftKey && send()}
+                placeholder="Type a message…" disabled={typing}
+                className="flex-1 text-white text-[.82rem] rounded-xl px-4 py-2.5 outline-none transition-colors placeholder-gray-700 disabled:opacity-50"
                 style={{ background:'#1a1a1a', border:'1px solid rgba(255,255,255,.08)' }} />
-              <button onClick={() => send()}
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-black hover:opacity-90 hover:scale-105 transition-all"
+              <button onClick={() => send()} disabled={typing || !input.trim()}
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-black hover:opacity-90 hover:scale-105 transition-all disabled:opacity-40"
                 style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
                 <Send size={15}/>
               </button>

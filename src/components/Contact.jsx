@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, CheckCircle, Clock, Globe, MessageSquare } from 'lucide-react'
+import { Send, CheckCircle, Clock, Globe, MessageSquare, Mail } from 'lucide-react'
 
 const SERVICES = ['Branding & Animation','Web Experience','Product Visualization','AI Integration','Data Visualization','Full Package']
 const BUDGETS  = ['Under $500','$500–$2,000','$2,000–$5,000','$5,000–$10,000','$10,000+']
@@ -47,6 +47,7 @@ export default function Contact() {
               { icon: <Clock size={18} />,        t: 'Response Time',     b: 'Under 2 hours — AI agents run 24/7' },
               { icon: <Globe size={18} />,         t: 'Clients Worldwide', b: 'USA · UK · Canada · Europe · Middle East' },
               { icon: <MessageSquare size={18} />, t: 'WhatsApp Direct',   b: 'For instant replies, WhatsApp us anytime' },
+              { icon: <Mail size={18} />,          t: 'Email Us',          b: 'gogamr0.01@gmail.com', href: 'mailto:gogamr0.01@gmail.com' },
             ].map((item, i) => (
               <div key={i} className="flex gap-4 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-teal"
@@ -55,7 +56,10 @@ export default function Contact() {
                 </div>
                 <div>
                   <h5 className="font-semibold text-sm mb-0.5">{item.t}</h5>
-                  <p className="text-gray-500 text-sm">{item.b}</p>
+                  {item.href
+                    ? <a href={item.href} className="text-teal text-sm hover:underline">{item.b}</a>
+                    : <p className="text-gray-500 text-sm">{item.b}</p>
+                  }
                 </div>
               </div>
             ))}
