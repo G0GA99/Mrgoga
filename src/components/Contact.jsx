@@ -15,13 +15,38 @@ const SOCIALS  = [
 export default function Contact() {
   const [form, setForm] = useState({ name:'', email:'', company:'', service:'', budget:'', message:'' })
   const [done, setDone] = useState(false)
+  const [sending, setSending] = useState(false)
   const upd = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
 
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault()
+    setSending(true)
+
     const leads = JSON.parse(localStorage.getItem('g0ga_leads') || '[]')
     leads.push({ ...form, date: new Date().toISOString() })
     localStorage.setItem('g0ga_leads', JSON.stringify(leads))
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'ac90c044-c369-4c9e-b779-52b1ee37c0da',
+        subject: `📩 New Contact Form — ${form.name} (${form.company || 'No company'})`,
+        from_name: 'G0GA Website',
+        name: form.name,
+        email: form.email,
+        message:
+          `New inquiry from G0GA website!\n\n` +
+          `👤 Name: ${form.name}\n` +
+          `📧 Email: ${form.email}\n` +
+          `🏢 Company: ${form.company || '—'}\n` +
+          `🛠 Service: ${form.service || '—'}\n` +
+          `💰 Budget: ${form.budget || '—'}\n\n` +
+          `📝 Project Details:\n${form.message}`,
+      }),
+    }).catch(() => {})
+
+    setSending(false)
     setDone(true)
   }
 
@@ -97,7 +122,7 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={submit} className="card p-8 rounded-2xl space-y-4">
+              <form onSubmit={submit} className="card p-8 rounded-2xl space-y-4" aria-busy={sending}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Name *</label>
@@ -133,10 +158,10 @@ export default function Contact() {
                   <textarea required value={form.message} onChange={upd('message')} rows={4}
                     placeholder="Describe your goals and what you need…" className="field resize-none" />
                 </div>
-                <button type="submit"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 text-black font-bold rounded-xl text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow"
+                <button type="submit" disabled={sending}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 text-black font-bold rounded-xl text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow disabled:opacity-60"
                   style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
-                  <Send size={16} /> Send Message
+                  <Send size={16} /> {sending ? 'Sending…' : 'Send Message'}
                 </button>
               </form>
             )}
