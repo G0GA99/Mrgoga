@@ -77,11 +77,18 @@ export default function ChatWidget() {
     const raw = await askAI(t, currentHistory)
     const { text, booking } = parseReply(raw)
 
-    // Save lead if booking detected
+    // Save lead + send email if booking detected
     if (booking) {
       const leads = JSON.parse(localStorage.getItem('g0ga_leads') || '[]')
       leads.push({ ...booking, date: new Date().toISOString() })
       localStorage.setItem('g0ga_leads', JSON.stringify(leads))
+
+      // Send email notification to Mrgoga
+      fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(booking),
+      }).catch(() => {})
     }
 
     setMsgs(p => [...p, { id: Date.now()+1, role:'bot', text, time:ts(), booking }])
