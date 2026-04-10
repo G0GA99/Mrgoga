@@ -31,46 +31,43 @@ export default async function handler(req, res) {
   const { message, history = [] } = req.body
   if (!message) return res.status(400).json({ error: 'Message required' })
 
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
     return res.status(500).json({ reply: "Configuration error. Please contact us on WhatsApp! 💬" })
   }
 
   try {
-    const contents = []
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...history.slice(-6).map(m => ({
+        role: m.role === 'bot' ? 'assistant' : 'user',
+        content: m.text,
+      })),
+      { role: 'user', content: message },
+    ]
 
-    // Add history (last 6 messages)
-    history.slice(-6).forEach(m => {
-      contents.push({
-        role: m.role === 'bot' ? 'model' : 'user',
-        parts: [{ text: m.text }]
-      })
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        max_tokens: 200,
+        temperature: 0.7,
+        messages,
+      }),
     })
-
-    // Add current message
-    contents.push({ role: 'user', parts: [{ text: message }] })
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents,
-          generationConfig: { maxOutputTokens: 200, temperature: 0.7 }
-        }),
-      }
-    )
 
     const data = await response.json()
 
-    if (!response.ok || !data.candidates?.[0]?.content?.parts?.[0]?.text) {
-      console.error('Gemini error:', JSON.stringify(data))
+    if (!response.ok || !data.choices?.[0]?.message?.content) {
+      console.error('Groq error:', JSON.stringify(data))
       return res.status(500).json({ reply: "I'm having a moment — please WhatsApp us! 💬" })
     }
 
-    res.status(200).json({ reply: data.candidates[0].content.parts[0].text })
+    res.status(200).json({ reply: data.choices[0].message.content })
   } catch (err) {
     console.error('Chat error:', err)
     res.status(500).json({ reply: "I'm having a moment — please WhatsApp us! 💬" })
