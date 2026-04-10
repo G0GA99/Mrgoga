@@ -56,7 +56,7 @@ export default async function handler(req, res) {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 200,
         temperature: 0.7,
         messages,
@@ -70,7 +70,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ reply: "I'm having a moment — please WhatsApp us! 💬" })
     }
 
-    res.status(200).json({ reply: data.choices[0].message.content })
+    // Strip any markdown formatting the model might still produce
+    const raw = data.choices[0].message.content
+    const clean = raw
+      .replace(/\*\*(.*?)\*\*/g, '$1')   // bold
+      .replace(/\*(.*?)\*/g, '$1')        // italic
+      .replace(/^#{1,6}\s+/gm, '')        // headings
+      .replace(/^[-*•]\s+/gm, '')         // bullet points
+      .replace(/^\d+\.\s+/gm, '')         // numbered lists
+      .trim()
+
+    res.status(200).json({ reply: clean })
   } catch (err) {
     console.error('Chat error:', err)
     res.status(500).json({ reply: "I'm having a moment — please WhatsApp us! 💬" })
