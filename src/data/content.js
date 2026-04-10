@@ -9,7 +9,7 @@ export const services = [
     priceTo: 8000,
     delivery: '2–4 weeks',
     features: ['AI chatbot', 'Workflow automation', 'Analytics dashboard', 'Data display', 'API integrations'],
-    color: '#0d9488',
+    color: '#10b981',
     shape: 'icosahedron',
   },
   {
@@ -22,7 +22,7 @@ export const services = [
     priceTo: 5000,
     delivery: '3–4 weeks',
     features: ['5–7 page website', 'Interactive scenes', 'Scroll animations', 'Product visualizer', 'SEO optimized'],
-    color: '#14b8a6',
+    color: '#34d399',
     shape: 'torus',
   },
   {
@@ -35,7 +35,7 @@ export const services = [
     priceTo: 500,
     delivery: '2 weeks',
     features: ['Animated logo', 'Brand intro video', 'Brand guidelines', 'Static landing page', '3 revision rounds'],
-    color: '#0d9488',
+    color: '#10b981',
     shape: 'cube',
   },
   {
@@ -61,7 +61,7 @@ export const services = [
     priceTo: 12000,
     delivery: '4–6 weeks',
     features: ['Real-time interactive charts', 'Custom dashboards', 'Data storytelling', 'WebGL performance', 'Export capabilities'],
-    color: '#14b8a6',
+    color: '#34d399',
     shape: 'octahedron',
   },
 ]
@@ -79,7 +79,7 @@ export const portfolio = [
     result3: { val: '3×', lbl: 'Lead Conversion' },
     tech: ['AI Visualization', 'AI Automation', 'WebGL'],
     gradient: 'from-teal-500/20 to-teal-500/20',
-    accentColor: '#0d9488',
+    accentColor: '#10b981',
   },
   {
     id: 2,
@@ -93,7 +93,7 @@ export const portfolio = [
     result3: { val: '60%', lbl: 'Returns Reduced' },
     tech: ['Interactive Product Viewer', 'AR Integration', 'AI Chatbot'],
     gradient: 'from-teal-500/20 to-emerald-500/20',
-    accentColor: '#14b8a6',
+    accentColor: '#34d399',
   },
   {
     id: 3,
@@ -121,7 +121,7 @@ export const portfolio = [
     result3: { val: '$120K', lbl: 'Post-Launch Raise' },
     tech: ['Full AI Ecosystem', 'Real-time Sync', 'WebGL'],
     gradient: 'from-teal-500/20 to-teal-500/20',
-    accentColor: '#0d9488',
+    accentColor: '#10b981',
   },
 ]
 
@@ -136,7 +136,7 @@ export const pricing = [
     featured: false,
     features: ['Animated logo', 'Simple landing page', '2–3 rotating objects', 'Basic animations', '2-week delivery', '14-day support'],
     cta: 'Start Small',
-    color: '#0d9488',
+    color: '#10b981',
   },
   {
     id: 'growth',
@@ -148,7 +148,7 @@ export const pricing = [
     featured: false,
     features: ['Full website (5–7 pages)', 'Interactive models', 'Scroll-triggered animations', 'Product visualizer', 'AI integration ready', '3–4 week delivery', '30-day support'],
     cta: 'Scale Up',
-    color: '#14b8a6',
+    color: '#34d399',
   },
   {
     id: 'professional',
@@ -160,7 +160,7 @@ export const pricing = [
     featured: true,
     features: ['Advanced AI platform', 'Custom custom assets', 'AR integration ready', 'Data visualizations', 'WebGL optimization', '4–6 week delivery', '60-day support'],
     cta: 'Go Pro',
-    color: '#0d9488',
+    color: '#10b981',
   },
   {
     id: 'enterprise',
@@ -172,7 +172,7 @@ export const pricing = [
     featured: false,
     features: ['Full AI ecosystem', 'VR-ready features', 'Custom animations', 'Real-time sync', 'Multiplayer', '24/7 support', '6–8 week delivery'],
     cta: 'Go Enterprise',
-    color: '#14b8a6',
+    color: '#34d399',
   },
 ]
 

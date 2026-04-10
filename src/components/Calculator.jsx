@@ -36,11 +36,11 @@ export default function Calculator() {
       <div className="max-w-xl mx-auto px-6">
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }}
-          className="card rounded-2xl p-8 border" style={{ borderColor:'rgba(13,148,136,.15)' }}>
+          className="card rounded-2xl p-8 border" style={{ borderColor:'rgba(16,185,129,.15)' }}>
 
           <div className="flex items-center gap-3 mb-8">
             <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-              style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+              style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
               <Calc size={19} className="text-black" />
             </div>
             <div>
@@ -80,14 +80,14 @@ export default function Calculator() {
               </div>
               <div className="w-full h-2.5 bg-card2 rounded-full overflow-hidden">
                 <motion.div animate={{ width:`${pct}%` }} transition={{ type:'spring', stiffness:90 }}
-                  className="h-full rounded-full" style={{ background:'linear-gradient(90deg,#0d9488,#14b8a6)' }} />
+                  className="h-full rounded-full" style={{ background:'linear-gradient(90deg,#10b981,#34d399)' }} />
               </div>
             </div>
 
             {/* Result */}
             <motion.div key={est} initial={{ scale:.97 }} animate={{ scale:1 }}
               className="rounded-xl p-6 text-center"
-              style={{ background:'radial-gradient(ellipse at center,rgba(13,148,136,.1) 0%,#050505 70%)', border:'1px solid rgba(13,148,136,.2)' }}>
+              style={{ background:'radial-gradient(ellipse at center,rgba(16,185,129,.1) 0%,#050505 70%)', border:'1px solid rgba(16,185,129,.2)' }}>
               <p className="text-gray-600 text-[11px] uppercase tracking-widest mb-2">Estimated Investment</p>
               <div className="font-poppins text-5xl font-black text-grad text-glow">${est.toLocaleString()}</div>
               <p className="text-gray-700 text-xs mt-2">Exact quote after free 30-min consultation</p>
@@ -95,7 +95,7 @@ export default function Calculator() {
 
             <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior:'smooth' })}
               className="w-full flex items-center justify-center gap-2 py-3.5 text-black font-bold rounded-xl text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow"
-              style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+              style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
               <Send size={16} /> Get Exact Quote
             </button>
           </div>

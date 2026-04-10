@@ -7,8 +7,8 @@ export default {
         black:   '#000000',
         card:    '#0f0f0f',
         card2:   '#1a1a1a',
-        teal:    '#0d9488',
-        teal2:   '#14b8a6',
+        teal:    '#10b981',
+        teal2:   '#34d399',
         emerald: '#10b981',
       },
       fontFamily: {

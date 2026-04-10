@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**G0GA 3D** is a premium React + Vite AI agency website with Three.js 3D visuals, Framer Motion animations, and Tailwind CSS. It targets clients in USA, UK, Canada, and Europe. Single-page app, no backend, all data in localStorage.
+**G0GA 3D** is a premium React + Vite AI agency website with Three.js 3D visuals, Framer Motion animations, and Tailwind CSS. Targets clients in USA, UK, Canada, and Europe. Single-page app, no backend, all data in localStorage.
 
 ## Commands
 
@@ -15,39 +15,8 @@ npm run build        # Production build → dist/
 npm run preview      # Preview production build
 ```
 
-## File Structure
+## Tech Stack
 
-```
-g0ga-3d/
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-├── postcss.config.js
-└── src/
-    ├── main.jsx            ← ReactDOM root
-    ├── App.jsx             ← Section order / layout
-    ├── index.css           ← Global styles, Tailwind, utilities
-    ├── data/
-    │   └── content.js      ← ALL editable content (services, portfolio, pricing, team, chat)
-    └── components/
-        ├── HeroScene.jsx   ← Three.js canvas (TorusKnot + particles + grid + stars)
-        ├── Navbar.jsx      ← Fixed nav, mobile menu
-        ├── Hero.jsx        ← Full-screen hero with lazy 3D canvas
-        ├── Services.jsx    ← CSS 3D flip cards (5 services)
-        ├── Portfolio.jsx   ← 4 project cards + modal
-        ├── Pricing.jsx     ← 4 pricing tiers with 3D visuals
-        ├── Calculator.jsx  ← Interactive price calculator
-        ├── Team.jsx        ← CEO + 4 AI agents with animated avatars
-        ├── Testimonials.jsx← Grid (desktop) + carousel (mobile)
-        ├── Contact.jsx     ← Booking form + social links
-        ├── ChatWidget.jsx  ← Floating AI chat (bottom-right)
-        └── Footer.jsx      ← CTA banner + links + socials
-```
-
-## Architecture
-
-### Tech Stack
 | Tool | Version | Purpose |
 |------|---------|---------|
 | React | 18 | UI framework |
@@ -55,45 +24,40 @@ g0ga-3d/
 | Three.js | 0.160 | 3D engine |
 | @react-three/fiber | 8 | React renderer for Three.js |
 | @react-three/drei | 9 | Three.js helpers (Stars, Float, MeshDistortMaterial) |
-| Framer Motion | 11 | Page animations, `whileInView` scroll triggers |
+| Framer Motion | 11 | Scroll animations (`whileInView`) |
 | Tailwind CSS | 3 | Utility styling |
 | Lucide React | latest | Icons |
 
-### 3D Strategy
-- **HeroScene** — Only section using WebGL (`@react-three/fiber` Canvas). Contains rotating TorusKnot, particle cloud, grid helper, and Stars. Lazy-loaded via `React.lazy` + `Suspense`.
-- **All other sections** — CSS `perspective` / `transform-style: preserve-3d` / `backface-visibility` for 3D effects. More performant than WebGL for multiple cards.
-- The hero Canvas has `alpha: true` and `pointer-events: none` so HTML content overlays it.
+## Architecture
 
-### Color Palette (custom Tailwind tokens)
+### 3D Strategy
+- **HeroScene.jsx** — Only component using WebGL (`@react-three/fiber` Canvas). Lazy-loaded via `React.lazy` + `Suspense`. Canvas has `alpha: true` and `pointer-events: none` so HTML overlays it.
+- **All other sections** — CSS `perspective` / `transform-style: preserve-3d` / `backface-visibility` for 3D card effects. No WebGL outside the hero.
+
+### Color Palette (actual Tailwind tokens in `tailwind.config.js`)
 | Token | Value | Usage |
 |-------|-------|-------|
-| `navy` | `#0F172A` | Primary background |
-| `charcoal` | `#1F2937` | Cards, inputs |
-| `cyan` | `#06B6D4` | Primary accent, CTAs |
-| `violet` | `#8B5CF6` | Secondary accent |
-| `chrome` | `#E5E7EB` | Chrome elements |
+| `black` | `#000000` | Page background |
+| `card` | `#0f0f0f` | Card backgrounds |
+| `card2` | `#1a1a1a` | Secondary cards, inputs |
+| `teal` | `#0d9488` | Primary accent, CTAs |
+| `teal2` | `#14b8a6` | Secondary accent |
+| `emerald` | `#10b981` | Tertiary accent |
 
-Gradient `bg-grad-cv` = `linear-gradient(135deg, #06B6D4, #8B5CF6)`.
+CSS gradient classes: `text-grad` and `glow` / `glow2` defined in `src/index.css`.
 
-### Content Updates
-**All content lives in `src/data/content.js`**. Edit there first, then verify any hardcoded values in components match.
+### Content & Data
+**`src/data/content.js`** is the single source of truth for: `services[]`, `portfolio[]`, `pricing[]`, `team[]`, `testimonials[]`, `chatResponses{}`.
 
-Key exports from `content.js`:
-- `services[]` — 5 services with prices, features, delivery, color, shape
-- `portfolio[]` — 4 case studies with results and accent colors
-- `pricing[]` — 4 tiers with features and CTAs
-- `team[]` — CEO + 4 AI agents with skills
-- `testimonials[]` — 4 client quotes
-- `chatResponses{}` — keyword → response string map for the chat widget
+**Exception:** `Calculator.jsx` has its own hardcoded `svcs[]` and `addons[]` arrays — when updating service prices, update **both** `content.js` and `Calculator.jsx`.
 
 ### Chat Widget
-Keyword matching in `ChatWidget.jsx` → `getBotReply()`. Iterates `chatResponses` keys, returns first match, falls back to `default`. All conversations saved to `localStorage` key `g0ga_chat`.
+`ChatWidget.jsx` → `getBotReply()` does substring matching against `chatResponses` keys (lowercased input). Conversations saved to `localStorage` key `g0ga_chat`.
 
 ### Lead Storage
-Contact form submissions → `localStorage` key `g0ga_leads` (JSON array). To inspect: open DevTools → Application → Local Storage.
+Contact form → `localStorage` key `g0ga_leads` (JSON array). Inspect via DevTools → Application → Local Storage.
 
-### Animations Pattern
-All scroll-triggered animations use Framer Motion's `whileInView`:
+### Animation Pattern
 ```jsx
 <motion.div
   initial={{ opacity: 0, y: 40 }}
@@ -105,42 +69,35 @@ All scroll-triggered animations use Framer Motion's `whileInView`:
 
 ## Common Edits
 
-**Add a new service:**
-1. Add to `content.js` → `services[]`
-2. The grid in `Services.jsx` auto-renders from the array
+**Add a service:** Add to `content.js → services[]`. `Services.jsx` auto-renders from the array.
 
-**Change pricing:**
-1. Edit `content.js` → `pricing[]` and/or `services[n].priceFrom / priceTo`
-2. Update `Calculator.jsx` → `serviceBase[]` to match
+**Change pricing:** Edit `content.js → pricing[]` AND `Calculator.jsx → svcs[]` (both must match).
 
-**Change WhatsApp number:**
-Search `wa.me/923001234567` in all files — 3 occurrences (`Contact.jsx`, `Footer.jsx`). Update `content.js` → `company.whatsapp` too.
+**Change WhatsApp number:** Search `wa.me/923001234567` — appears in `Contact.jsx`, `Footer.jsx`, and `content.js → company.whatsapp`.
 
-**Update social media links:**
-Edit `Contact.jsx` socials array and `Footer.jsx` socials array. Both need updating.
+**Update socials:** Edit the socials arrays in both `Contact.jsx` and `Footer.jsx` independently.
 
-**Modify chat responses:**
-Edit `content.js` → `chatResponses{}`. Keys are substring matches on lowercased user input.
+**Change Hero 3D shape:** In `HeroScene.jsx → <MainShape>`, swap `<torusKnotGeometry>` for any Three.js geometry.
 
-**Change 3D shape in Hero:**
-In `HeroScene.jsx` → `<MainShape>`, swap `<torusKnotGeometry>` for any Three.js geometry (`icosahedronGeometry`, `octahedronGeometry`, etc.)
+**Add chat response:** Add key → string to `content.js → chatResponses{}`. Keys match as substrings on lowercased user input.
 
 ## Deployment
 
+Static SPA — no server needed. Build output is `dist/`.
+
 ```bash
-npm run build    # Creates dist/ folder
+npm run build
+# Deploy dist/ to Vercel or Netlify
 ```
-Deploy `dist/` folder to:
-- **Vercel**: `vercel --prod` or drag `dist/` to vercel.com/new
-- **Netlify**: Drag `dist/` to app.netlify.com/drop
 
-The build is a fully static SPA. No server needed.
+## Agent Rules
 
-## Performance Notes
-- Three.js Canvas is lazy-loaded — doesn't block initial paint
-- `whileInView` with `once: true` — animations fire once, no re-renders
-- CSS 3D used for cards (not WebGL) — handles 20+ animated elements without lag
-- `useMemo` used for particle buffer geometry — recalculates only once
+- **Never hardcode content in components** — always use `src/data/content.js`. The only exception is `Calculator.jsx` which has its own price arrays that must be kept in sync manually.
+- **Never install new npm packages** without confirming with the user first.
+- **When updating WhatsApp or socials**, always update all occurrences — `content.js`, `Contact.jsx`, and `Footer.jsx`.
+- **Do not modify `HeroScene.jsx`** (Three.js canvas) unless specifically asked — it is performance-sensitive.
+- **CSS class names** come from Tailwind tokens or custom classes in `index.css`. Do not use raw hex colors inline when a token exists.
+- **No new components** unless the feature clearly cannot fit in an existing one.
 
 ## Owner
 CEO: **Mrgoga** · WhatsApp: `wa.me/923001234567`

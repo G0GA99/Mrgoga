@@ -30,7 +30,7 @@ function G0GAText() {
             roughness={0.12}
             distort={0.06}
             speed={1.5}
-            emissive="#0d9488"
+            emissive="#10b981"
             emissiveIntensity={0.08}
           />
         </Text3D>
@@ -49,7 +49,7 @@ function OrbitRing() {
   return (
     <mesh ref={mesh} position={[2.0, 0, 0]}>
       <torusGeometry args={[3.0, 0.018, 16, 100]} />
-      <meshBasicMaterial color="#14b8a6" transparent opacity={0.28} />
+      <meshBasicMaterial color="#34d399" transparent opacity={0.28} />
     </mesh>
   )
 }
@@ -64,7 +64,7 @@ function OrbitRing2() {
   return (
     <mesh ref={mesh} position={[2.0, 0, 0]}>
       <torusGeometry args={[3.8, 0.012, 16, 100]} />
-      <meshBasicMaterial color="#0d9488" transparent opacity={0.14} />
+      <meshBasicMaterial color="#10b981" transparent opacity={0.14} />
     </mesh>
   )
 }
@@ -90,7 +90,7 @@ function Particles() {
   })
   return (
     <points ref={ref} geometry={geo}>
-      <pointsMaterial size={0.035} color="#0d9488" transparent opacity={0.5} sizeAttenuation />
+      <pointsMaterial size={0.035} color="#10b981" transparent opacity={0.5} sizeAttenuation />
     </points>
   )
 }
@@ -100,7 +100,7 @@ function Grid() {
   useFrame(({ clock }) => {
     if (ref.current) ref.current.position.z = (clock.elapsedTime * 0.4) % 2
   })
-  return <gridHelper ref={ref} args={[40, 40, '#0d9488', '#0f0f0f']} position={[0, -4.5, 0]} />
+  return <gridHelper ref={ref} args={[40, 40, '#10b981', '#0f0f0f']} position={[0, -4.5, 0]} />
 }
 
 export default function HeroScene() {
@@ -108,8 +108,8 @@ export default function HeroScene() {
     <Canvas camera={{ position: [0, 0, 8], fov: 58 }} gl={{ antialias: true, alpha: true }} style={{ width: '100%', height: '100%' }}>
       <Suspense fallback={null}>
         <ambientLight intensity={0.25} />
-        <pointLight position={[8, 8, 5]}   color="#0d9488" intensity={5} />
-        <pointLight position={[-8, -4, -8]} color="#14b8a6" intensity={2.5} />
+        <pointLight position={[8, 8, 5]}   color="#10b981" intensity={5} />
+        <pointLight position={[-8, -4, -8]} color="#34d399" intensity={2.5} />
         <Particles />
         <Stars radius={55} depth={45} count={1800} factor={2.5} saturation={0} fade speed={0.4} />
       </Suspense>

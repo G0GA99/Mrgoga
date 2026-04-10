@@ -44,7 +44,7 @@ export default function Navbar() {
             </button>
             <button onClick={() => go('Contact')}
               className="px-5 py-2 text-sm font-semibold text-black rounded-lg hover:opacity-90 transition-all glow-sm"
-              style={{ background: 'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+              style={{ background: 'linear-gradient(135deg,#10b981,#34d399)' }}>
               Start Project →
             </button>
           </div>
@@ -71,7 +71,7 @@ export default function Navbar() {
             <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
               onClick={() => go('Contact')}
               className="mt-4 px-8 py-3 text-black font-bold text-lg rounded-xl"
-              style={{ background: 'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+              style={{ background: 'linear-gradient(135deg,#10b981,#34d399)' }}>
               Start Project
             </motion.button>
           </motion.div>

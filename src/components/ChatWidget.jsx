@@ -51,12 +51,12 @@ export default function ChatWidget() {
           <motion.div initial={{ opacity:0, y:20, scale:.96 }} animate={{ opacity:1, y:0, scale:1 }}
             exit={{ opacity:0, y:20, scale:.96 }} transition={{ duration:.22 }}
             className="w-[340px] rounded-2xl overflow-hidden flex flex-col"
-            style={{ maxHeight:'510px', background:'#0a0a0a', border:'1px solid rgba(13,148,136,.22)', boxShadow:'0 24px 60px rgba(0,0,0,.8)' }}>
+            style={{ maxHeight:'510px', background:'#0a0a0a', border:'1px solid rgba(16,185,129,.22)', boxShadow:'0 24px 60px rgba(0,0,0,.8)' }}>
             {/* Header */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-white/6"
-              style={{ background:'linear-gradient(135deg,rgba(13,148,136,.12),rgba(10,10,10,.95))' }}>
+              style={{ background:'linear-gradient(135deg,rgba(16,185,129,.12),rgba(10,10,10,.95))' }}>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+                style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
                 <Bot size={17} className="text-black" />
               </div>
               <div className="flex-1">
@@ -73,7 +73,7 @@ export default function ChatWidget() {
               {msgs.map(m => (
                 <div key={m.id} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}>
                   <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-[.82rem] leading-relaxed whitespace-pre-line ${m.role==='user' ? 'text-black font-medium rounded-br-sm' : 'text-gray-300 rounded-bl-sm'}`}
-                    style={{ background: m.role==='user' ? 'linear-gradient(135deg,#0d9488,#14b8a6)' : '#1a1a1a' }}>
+                    style={{ background: m.role==='user' ? 'linear-gradient(135deg,#10b981,#34d399)' : '#1a1a1a' }}>
                     {m.text}
                     <div className={`text-[10px] mt-1 ${m.role==='user'?'text-black/50':'text-gray-700'}`}>{m.time}</div>
                   </div>
@@ -105,7 +105,7 @@ export default function ChatWidget() {
                 style={{ background:'#1a1a1a', border:'1px solid rgba(255,255,255,.08)' }} />
               <button onClick={() => send()}
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-black hover:opacity-90 hover:scale-105 transition-all"
-                style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+                style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
                 <Send size={15}/>
               </button>
             </div>
@@ -116,7 +116,7 @@ export default function ChatWidget() {
       <motion.button whileHover={{ scale:1.08 }} whileTap={{ scale:.94 }}
         onClick={() => setOpen(o => !o)}
         className="w-14 h-14 rounded-full flex items-center justify-center text-black relative"
-        style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)', boxShadow:'0 6px 28px rgba(13,148,136,.55)' }}>
+        style={{ background:'linear-gradient(135deg,#10b981,#34d399)', boxShadow:'0 6px 28px rgba(16,185,129,.55)' }}>
         <AnimatePresence mode="wait">
           {open
             ? <motion.div key="x"    initial={{ rotate:-90,opacity:0 }} animate={{ rotate:0,opacity:1 }} exit={{ rotate:90,opacity:0  }}><X size={22}/></motion.div>

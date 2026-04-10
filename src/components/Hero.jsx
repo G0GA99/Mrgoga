@@ -53,7 +53,7 @@ export default function Hero() {
             className="flex flex-wrap gap-3 mb-14">
             <button onClick={() => go('contact')}
               className="flex items-center gap-2 px-7 py-3.5 text-black font-bold rounded-lg text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow"
-              style={{ background: 'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+              style={{ background: 'linear-gradient(135deg,#10b981,#34d399)' }}>
               Start Project <ArrowRight size={16} />
             </button>
             <button onClick={() => go('contact')}
@@ -67,7 +67,7 @@ export default function Hero() {
             className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {stats.map((s, i) => (
               <div key={i} className="p-4 rounded-xl text-center"
-                style={{ background: 'rgba(13,148,136,.07)', border: '1px solid rgba(13,148,136,.18)' }}>
+                style={{ background: 'rgba(16,185,129,.07)', border: '1px solid rgba(16,185,129,.18)' }}>
                 <div className="font-poppins text-2xl font-black text-grad text-glow">{s.val}</div>
                 <div className="text-gray-500 text-xs mt-1 uppercase tracking-wider font-medium">{s.lbl}</div>
               </div>

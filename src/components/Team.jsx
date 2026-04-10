@@ -5,9 +5,9 @@ function Avatar({ m }) {
   return (
     <div className="relative w-20 h-20 mx-auto mb-5">
       <div className="absolute inset-0 rounded-full animate-spin-slow opacity-35"
-        style={{ border:`2px dashed ${m.isCeo ? '#0d9488' : '#14b8a6'}` }} />
+        style={{ border:`2px dashed ${m.isCeo ? '#10b981' : '#34d399'}` }} />
       <div className="absolute inset-1.5 rounded-full flex items-center justify-center text-3xl"
-        style={{ background:`radial-gradient(circle, ${m.isCeo?'rgba(13,148,136,.15)':'rgba(20,184,166,.1)'} 0%, transparent 70%)`, border:`1px solid ${m.isCeo?'rgba(13,148,136,.35)':'rgba(20,184,166,.25)'}` }}>
+        style={{ background:`radial-gradient(circle, ${m.isCeo?'rgba(16,185,129,.15)':'rgba(52,211,153,.1)'} 0%, transparent 70%)`, border:`1px solid ${m.isCeo?'rgba(16,185,129,.35)':'rgba(52,211,153,.25)'}` }}>
         {m.icon}
       </div>
       <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-black bg-emerald-400" style={{ animation:'blink 2.5s ease-in-out infinite' }} />
@@ -31,7 +31,7 @@ export default function Team() {
           viewport={{ once:true }} transition={{ duration:.6 }}
           className="max-w-xs mx-auto mb-8">
           <div className="card lift p-8 text-center rounded-2xl relative"
-            style={{ borderColor:'rgba(13,148,136,.3)', boxShadow:'0 0 40px rgba(13,148,136,.07)' }}>
+            style={{ borderColor:'rgba(16,185,129,.3)', boxShadow:'0 0 40px rgba(16,185,129,.07)' }}>
             <span className="absolute top-3 right-3 text-[10px] font-bold text-teal bg-teal/10 px-2 py-0.5 rounded">CEO</span>
             <Avatar m={team[0]} />
             <h4 className="font-poppins font-black text-lg mb-1">{team[0].name}</h4>

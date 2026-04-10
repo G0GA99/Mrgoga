@@ -50,7 +50,7 @@ export default function Contact() {
             ].map((item, i) => (
               <div key={i} className="flex gap-4 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-teal"
-                  style={{ background:'rgba(13,148,136,.08)', border:'1px solid rgba(13,148,136,.18)' }}>
+                  style={{ background:'rgba(16,185,129,.08)', border:'1px solid rgba(16,185,129,.18)' }}>
                   {item.icon}
                 </div>
                 <div>
@@ -131,7 +131,7 @@ export default function Contact() {
                 </div>
                 <button type="submit"
                   className="w-full flex items-center justify-center gap-2 py-3.5 text-black font-bold rounded-xl text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow"
-                  style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+                  style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
                   <Send size={16} /> Send Message
                 </button>
               </form>

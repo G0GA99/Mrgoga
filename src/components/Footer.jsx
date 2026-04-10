@@ -18,7 +18,7 @@ export default function Footer() {
 
       {/* CTA Banner */}
       <div className="py-16 text-center relative overflow-hidden"
-        style={{ background:'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(13,148,136,.06) 0%, transparent 70%)' }}>
+        style={{ background:'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(16,185,129,.06) 0%, transparent 70%)' }}>
         <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }}>
           <h2 className="font-poppins text-3xl md:text-4xl font-black mb-4" style={{ letterSpacing:'-0.5px' }}>
@@ -30,7 +30,7 @@ export default function Footer() {
           <div className="flex flex-wrap gap-3 justify-center">
             <button onClick={() => go('contact')}
               className="px-7 py-3.5 text-black font-bold rounded-xl text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow"
-              style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>
+              style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
               Start Project — From $100
             </button>
             <a href="https://wa.me/923091989556" target="_blank" rel="noopener noreferrer"

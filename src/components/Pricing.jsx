@@ -28,7 +28,7 @@ export default function Pricing() {
 
               {t.featured && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-bold text-black"
-                  style={{ background:`linear-gradient(135deg,${t.color},#14b8a6)` }}>
+                  style={{ background:`linear-gradient(135deg,${t.color},#34d399)` }}>
                   <Zap size={11} /> Most Popular
                 </div>
               )}
@@ -62,7 +62,7 @@ export default function Pricing() {
 
               <button onClick={go}
                 className={`w-full py-3 rounded-xl text-[.85rem] font-bold transition-all hover:-translate-y-0.5 ${t.featured ? 'text-black' : 'border text-white hover:border-teal/50 hover:text-teal'}`}
-                style={t.featured ? { background:`linear-gradient(135deg,${t.color},#14b8a6)`, boxShadow:`0 4px 18px ${t.color}35` } : { borderColor:`${t.color}30` }}>
+                style={t.featured ? { background:`linear-gradient(135deg,${t.color},#34d399)`, boxShadow:`0 4px 18px ${t.color}35` } : { borderColor:`${t.color}30` }}>
                 {t.cta}
               </button>
             </motion.div>

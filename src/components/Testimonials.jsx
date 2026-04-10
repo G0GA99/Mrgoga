@@ -24,7 +24,7 @@ export default function Testimonials() {
               viewport={{ once:true, amount:.1 }} transition={{ duration:.55, delay: i*.1 }}
               className="card lift p-8 rounded-2xl relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-3xl opacity-[.07]"
-                style={{ background: i%2===0?'#0d9488':'#14b8a6' }} />
+                style={{ background: i%2===0?'#10b981':'#34d399' }} />
               <Quote size={26} className="text-teal/20 mb-4" />
               <div className="flex gap-0.5 mb-4">
                 {Array(t.rating).fill(0).map((_, j) => <span key={j} className="text-amber-400 text-sm">★</span>)}
@@ -32,7 +32,7 @@ export default function Testimonials() {
               <p className="text-gray-300 text-sm leading-relaxed italic mb-6">"{t.quote}"</p>
               <div className="flex items-center gap-3 pt-4 border-t border-white/6">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-black"
-                  style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>{t.author[0]}</div>
+                  style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>{t.author[0]}</div>
                 <div>
                   <div className="font-semibold text-sm">{t.author}</div>
                   <div className="text-gray-600 text-xs">{t.company} · {t.location}</div>
@@ -56,7 +56,7 @@ export default function Testimonials() {
                 <p className="text-gray-300 text-sm leading-relaxed italic mb-5">"{testimonials[idx].quote}"</p>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-black"
-                    style={{ background:'linear-gradient(135deg,#0d9488,#14b8a6)' }}>{testimonials[idx].author[0]}</div>
+                    style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>{testimonials[idx].author[0]}</div>
                   <div>
                     <div className="font-semibold text-sm">{testimonials[idx].author}</div>
                     <div className="text-gray-600 text-xs">{testimonials[idx].company} · {testimonials[idx].location}</div>
