@@ -39,7 +39,7 @@ export default function Navbar() {
           </ul>
           <div className="hidden md:flex items-center gap-3">
             <button onClick={() => go('Contact')}
-              className="px-4 py-2 text-sm font-medium rounded-lg border border-teal/30 text-teal hover:border-teal hover:text-teal transition-all">
+              className="px-4 py-2 text-sm font-medium rounded-lg border border-white/15 text-white hover:border-teal/40 hover:text-teal transition-all">
               Free Call
             </button>
             <button onClick={() => go('Contact')}
