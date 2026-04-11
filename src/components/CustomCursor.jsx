@@ -32,10 +32,10 @@ export default function CustomCursor() {
   return (
     <div ref={dot} style={{
       position: 'fixed', pointerEvents: 'none', zIndex: 9999,
-      width: 14, height: 14, borderRadius: '50%',
+      width: 10, height: 10, borderRadius: '50%',
       background: '#10b981',
       transform: 'translate(-50%,-50%)',
-      boxShadow: '0 0 10px rgba(16,185,129,.7)',
+      boxShadow: '0 0 4px rgba(16,185,129,.4)',
     }} />
   )
 }

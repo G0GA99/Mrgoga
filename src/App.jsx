@@ -13,7 +13,7 @@ import CustomCursor from './components/CustomCursor'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-black text-white font-inter" style={{ cursor: 'none' }}>
+    <div className="min-h-screen bg-black text-white font-inter">
       <Navbar />
       <main>
         <Hero />
