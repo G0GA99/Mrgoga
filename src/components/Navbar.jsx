@@ -39,7 +39,10 @@ export default function Navbar() {
           </ul>
           <div className="hidden md:flex items-center gap-3">
             <button onClick={() => go('Contact')}
-              className="px-4 py-2 text-sm font-medium text-teal border border-teal/30 rounded-lg hover:border-teal hover:bg-teal/5 transition-all">
+              className="px-4 py-2 text-sm font-medium rounded-lg"
+              style={{ color:'#10b981', border:'1px solid rgba(16,185,129,.3)', background:'transparent', transition:'background .3s ease, color .3s ease, border-color .3s ease' }}
+              onMouseEnter={e => { e.currentTarget.style.background='linear-gradient(135deg,#10b981,#34d399)'; e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='transparent' }}
+              onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#10b981'; e.currentTarget.style.borderColor='rgba(16,185,129,.3)' }}>
               Free Call
             </button>
             <button onClick={() => go('Contact')}

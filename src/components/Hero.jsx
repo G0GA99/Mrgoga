@@ -57,10 +57,7 @@ export default function Hero() {
               Start Project <ArrowRight size={16} />
             </button>
             <button onClick={() => go('contact')}
-              className="flex items-center gap-2 px-7 py-3.5 font-semibold rounded-lg text-sm hover:-translate-y-0.5"
-              style={{ color:'#fff', border:'1px solid rgba(255,255,255,.15)', background:'transparent', transition:'background .3s ease, color .3s ease, border-color .3s ease, transform .2s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.background='linear-gradient(135deg,#10b981,#34d399)'; e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='transparent' }}
-              onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='rgba(255,255,255,.15)' }}>
+              className="flex items-center gap-2 px-7 py-3.5 text-white font-semibold rounded-lg text-sm border border-white/15 hover:border-teal/40 hover:text-teal hover:-translate-y-0.5 transition-all">
               <CalendarDays size={16} /> Book Free Call
             </button>
           </motion.div>
