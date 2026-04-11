@@ -1,14 +1,8 @@
 import { motion } from 'framer-motion'
+import SocialIcon, { SOCIALS_CONTACT } from './SocialIcons'
 
 const SERVICES = ['Branding & Animation','Web Experience','Product Visualization','AI Integration','Data Visualization']
 const NAV      = ['Services','Portfolio','Pricing','Calculator','Team','Contact']
-const SOCIALS  = [
-  { label:'YT', href:'https://youtube.com/@g0ga',        bg:'#FF0000', title:'YouTube'   },
-  { label:'TT', href:'https://tiktok.com/@g0ga',          bg:'#111',    title:'TikTok'    },
-  { label:'IG', href:'https://instagram.com/g0ga.agency', bg:'#E1306C', title:'Instagram' },
-  { label:'FB', href:'https://facebook.com/g0gaagency',   bg:'#1877F2', title:'Facebook'  },
-  { label:'in', href:'https://linkedin.com/company/g0ga', bg:'#0A66C2', title:'LinkedIn'  },
-]
 
 export default function Footer() {
   const go = (id) => document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior:'smooth' })
@@ -52,13 +46,7 @@ export default function Footer() {
               Premium AI agency delivering intelligent automation, immersive AI experiences, and digital transformation for global brands.
             </p>
             <div className="flex gap-2.5 flex-wrap">
-              {SOCIALS.map(s => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" title={s.title}
-                  className="social-3d w-9 h-9 rounded-lg flex items-center justify-center text-[11px] font-bold text-white"
-                  style={{ background:s.bg }}>
-                  {s.label}
-                </a>
-              ))}
+              {SOCIALS_CONTACT.map(s => <SocialIcon key={s.name} {...s} size={36} />)}
             </div>
           </div>
 

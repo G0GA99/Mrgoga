@@ -1,16 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, CheckCircle, Clock, Globe, MessageSquare, Mail } from 'lucide-react'
+import SocialIcon, { SOCIALS_CONTACT } from './SocialIcons'
 
 const SERVICES = ['Branding & Animation','Web Experience','Product Visualization','AI Integration','Data Visualization','Full Package']
 const BUDGETS  = ['Under $500','$500–$2,000','$2,000–$5,000','$5,000–$10,000','$10,000+']
-const SOCIALS  = [
-  { label:'YT', href:'https://youtube.com/@g0ga',        bg:'#FF0000' },
-  { label:'TT', href:'https://tiktok.com/@g0ga',          bg:'#111111' },
-  { label:'IG', href:'https://instagram.com/g0ga.agency', bg:'#E1306C' },
-  { label:'FB', href:'https://facebook.com/g0gaagency',   bg:'#1877F2' },
-  { label:'in', href:'https://linkedin.com/company/g0ga', bg:'#0A66C2' },
-]
 
 export default function Contact() {
   const [form, setForm] = useState({ name:'', email:'', company:'', service:'', budget:'', message:'' })
@@ -88,13 +82,7 @@ export default function Contact() {
             </a>
 
             <div className="flex gap-2.5 flex-wrap">
-              {SOCIALS.map(s => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                  className="social-3d w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-                  style={{ background: s.bg }}>
-                  {s.label}
-                </a>
-              ))}
+              {SOCIALS_CONTACT.map(s => <SocialIcon key={s.name} {...s} />)}
             </div>
           </motion.div>
 
