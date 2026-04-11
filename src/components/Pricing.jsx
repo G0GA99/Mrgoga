@@ -57,8 +57,10 @@ export default function Pricing() {
               </ul>
 
               <button onClick={go}
-                className="w-full py-3 rounded-xl text-[.85rem] font-bold transition-all hover:-translate-y-0.5"
-                style={{ color: t.color, background: 'transparent', border: `1px solid ${t.color}40` }}>
+                className="w-full py-3 rounded-xl text-[.85rem] font-bold group transition-all duration-300 hover:-translate-y-0.5"
+                style={{ color: t.color, background: 'transparent', border: `1px solid ${t.color}40`, transition: 'background .3s ease, color .3s ease, border-color .3s ease, transform .2s ease' }}
+                onMouseEnter={e => { e.currentTarget.style.background = `linear-gradient(135deg,${t.color},#34d399)`; e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'transparent' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.color; e.currentTarget.style.borderColor = `${t.color}40` }}>
                 {t.cta}
               </button>
             </motion.div>
