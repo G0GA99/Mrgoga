@@ -19,13 +19,12 @@ export default function Pricing() {
             <motion.div key={t.id} initial={{ opacity:0, y:44 }} whileInView={{ opacity:1, y:0 }}
               whileHover={{ y: -6, scale: t.featured ? 1.05 : 1.03, boxShadow: `0 20px 50px ${t.color}35` }}
               viewport={{ once:true, amount:.08 }} transition={{ duration:.55, delay: i*.1 }}
-              className={`relative rounded-2xl p-6 flex flex-col cursor-pointer ${t.featured ? 'border-2' : 'card'}`}
+              className="relative rounded-2xl p-6 flex flex-col cursor-pointer card"
               style={t.featured ? {
-                borderColor: t.color,
                 background: `linear-gradient(160deg,${t.color}08,#000)`,
                 boxShadow: `0 0 50px ${t.color}20`,
                 transform: 'scale(1.03)'
-              } : { borderColor:`${t.color}15` }}>
+              } : {}}>
 
               {t.featured && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-bold text-white"
