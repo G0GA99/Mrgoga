@@ -9,10 +9,11 @@ import Testimonials from './components/Testimonials'
 import Contact      from './components/Contact'
 import Footer       from './components/Footer'
 import ChatWidget   from './components/ChatWidget'
+import CustomCursor from './components/CustomCursor'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-black text-white font-inter">
+    <div className="min-h-screen bg-black text-white font-inter" style={{ cursor: 'none' }}>
       <Navbar />
       <main>
         <Hero />
@@ -26,6 +27,7 @@ export default function App() {
       </main>
       <Footer />
       <ChatWidget />
+      <CustomCursor />
     </div>
   )
 }
