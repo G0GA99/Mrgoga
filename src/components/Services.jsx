@@ -45,7 +45,7 @@ function ServiceCard({ s, i }) {
           <div className="flex items-center justify-between pt-4 border-t border-white/8 mt-2">
             <span className="text-[11px] text-gray-600">⏱ {s.delivery}</span>
             <button onClick={go}
-              className="flex items-center gap-1 px-4 py-2 rounded-lg text-[.8rem] font-bold text-black hover:opacity-90 transition-all"
+              className="flex items-center gap-1 px-4 py-2 rounded-lg text-[.8rem] font-bold text-white hover:opacity-90 transition-all"
               style={{ background:`linear-gradient(135deg,${s.color},#34d399)` }}>
               Get Quote <ArrowUpRight size={13} />
             </button>
