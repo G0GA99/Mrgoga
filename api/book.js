@@ -1,8 +1,26 @@
+import { supabaseAdmin } from './lib/supabase.js'
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
   const { name, company, email, budget, time } = req.body
 
+  // 1 — Save booking to Supabase
+  try {
+    await supabaseAdmin.from('leads').insert({
+      name,
+      email,
+      company: company || null,
+      budget: budget || null,
+      message: `Call booking — preferred time: ${time}`,
+      source: 'call_booking',
+      status: 'call_scheduled',
+    })
+  } catch (dbErr) {
+    console.error('Supabase insert error:', dbErr)
+  }
+
+  // 2 — Send email via Resend
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -13,7 +31,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'G0GA AI Assistant <onboarding@resend.dev>',
         to: 'gogamr0.01@gmail.com',
-        subject: `🔔 New Call Booking — ${name} (${company})`,
+        subject: `🔔 Call Booking — ${name} (${company})`,
         text:
           `New call booking from G0GA website!\n\n` +
           `👤 Name: ${name}\n` +
@@ -21,7 +39,9 @@ export default async function handler(req, res) {
           `📧 Email: ${email}\n` +
           `💰 Budget: ${budget}\n` +
           `🕐 Preferred Time: ${time}\n\n` +
-          `Reply to confirm the 30-min strategy call.`,
+          `Reply to confirm the 30-min strategy call.\n\n` +
+          `─────────────────────\n` +
+          `View all leads: https://g0ga.vercel.app/admin`,
       }),
     })
 
