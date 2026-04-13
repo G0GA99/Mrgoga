@@ -68,7 +68,7 @@ export default function Hero() {
           <motion.h1 initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .1 }}
             className="font-poppins text-5xl md:text-6xl lg:text-[4.2rem] font-black leading-[1.04] mb-5" style={{ letterSpacing: '-1.5px' }}>
             AI-Powered<br />
-            <span className="text-grad">AI Solutions</span><br />
+            <span className="text-grad">Digital Agency</span><br />
             for Global Brands
           </motion.h1>
 
