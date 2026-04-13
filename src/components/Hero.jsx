@@ -1,15 +1,43 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, CalendarDays, ChevronDown } from 'lucide-react'
 
 const HeroScene = lazy(() => import('./HeroScene'))
 
 const stats = [
-  { val: '50+',  lbl: 'Projects' },
-  { val: '95%',  lbl: 'Satisfaction' },
-  { val: '24/7', lbl: 'AI Support' },
-  { val: '$2M+', lbl: 'Revenue Built' },
+  { end: 50,  suffix: '+',  lbl: 'Projects' },
+  { end: 95,  suffix: '%',  lbl: 'Satisfaction' },
+  { end: 24,  suffix: '/7', lbl: 'AI Support' },
+  { prefix: '$', end: 2, suffix: 'M+', lbl: 'Revenue Built' },
 ]
+
+function CountUp({ end, suffix = '', prefix = '', duration = 1600 }) {
+  const [count, setCount] = useState(0)
+  const started = useRef(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true
+          let start = 0
+          const step = end / (duration / 16)
+          const timer = setInterval(() => {
+            start += step
+            if (start >= end) { setCount(end); clearInterval(timer) }
+            else setCount(Math.floor(start))
+          }, 16)
+        }
+      },
+      { threshold: 0.5 }
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [end, duration])
+
+  return <span ref={ref}>{prefix}{count}{suffix}</span>
+}
 
 export default function Hero() {
   const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -66,9 +94,10 @@ export default function Hero() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, delay: .42 }}
             className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {stats.map((s, i) => (
-              <div key={i} className="p-4 rounded-xl text-center"
-                style={{ background: 'rgba(16,185,129,.07)', border: '1px solid rgba(16,185,129,.18)' }}>
-                <div className="font-poppins text-2xl font-black text-grad text-glow">{s.val}</div>
+              <div key={i} className="stat-box">
+                <div className="font-poppins text-2xl font-black text-grad text-glow">
+                  <CountUp end={s.end} suffix={s.suffix} prefix={s.prefix || ''} />
+                </div>
                 <div className="text-gray-500 text-xs mt-1 uppercase tracking-wider font-medium">{s.lbl}</div>
               </div>
             ))}

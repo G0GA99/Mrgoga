@@ -7,11 +7,21 @@ const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [active, setActive] = useState('')
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', fn)
-    return () => window.removeEventListener('scroll', fn)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50)
+      // Active section detection
+      const sections = links.map(l => document.getElementById(l.toLowerCase()))
+      let current = ''
+      sections.forEach(el => {
+        if (el && window.scrollY >= el.offsetTop - 120) current = el.id
+      })
+      setActive(current)
+    }
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   const go = (id) => {
@@ -31,8 +41,11 @@ export default function Navbar() {
             {links.map(l => (
               <li key={l}>
                 <button onClick={() => go(l)}
-                  className="nav-link text-gray-400 hover:text-white text-sm font-medium transition-colors duration-200">
-                  {l}
+                  className="nav-link text-sm font-medium transition-colors duration-200"
+                  style={{ color: active === l.toLowerCase() ? '#10b981' : '' }}>
+                  <span className={active === l.toLowerCase() ? 'text-teal' : 'text-gray-400 hover:text-white'}>
+                    {l}
+                  </span>
                 </button>
               </li>
             ))}

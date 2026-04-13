@@ -59,45 +59,77 @@ function Modal({ p, onClose }) {
   )
 }
 
+const FILTERS = ['All', 'Web', 'AI', 'Design', 'Automation']
+
 export default function Portfolio() {
   const [sel, setSel] = useState(null)
+  const [filter, setFilter] = useState('All')
+
+  const filtered = filter === 'All'
+    ? portfolio
+    : portfolio.filter(p => p.type?.toLowerCase().includes(filter.toLowerCase()))
+
   return (
     <section id="portfolio" className="section bg-black">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
-          viewport={{ once:true }} transition={{ duration:.6 }} className="text-center mb-14">
+          viewport={{ once:true }} transition={{ duration:.6 }} className="text-center mb-10">
           <span className="badge mb-5 inline-flex"><span className="badge-dot"/>Case Studies</span>
           <h2 className="sec-title">Work That <span className="text-grad">Speaks</span> for Itself</h2>
           <p className="text-gray-500 text-base max-w-lg mx-auto">50+ projects delivered. Click any card to expand.</p>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {portfolio.map((p, i) => (
-            <motion.button key={p.id} initial={{ opacity:0, y:36 }} whileInView={{ opacity:1, y:0 }}
-              viewport={{ once:true, amount:.1 }} transition={{ duration:.55, delay: i*.1 }}
-              onClick={() => setSel(p)}
-              className="card lift p-6 text-left group" style={{ borderColor:`${p.accentColor}15` }}>
-              <Preview color={p.accentColor} type={p.type} />
-              <div className="mt-4">
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded" style={{ background:`${p.accentColor}12`, color:p.accentColor }}>{p.location}</span>
-                  <span className="text-gray-600 text-xs">{p.client}</span>
-                </div>
-                <h3 className="font-poppins font-bold text-base mb-3">{p.title}</h3>
-                <div className="flex gap-6">
-                  {[p.result1, p.result2, p.result3].map((r, j) => (
-                    <div key={j}>
-                      <div className="font-poppins font-black text-base" style={{ color:p.accentColor }}>{r.val}</div>
-                      <div className="text-gray-600 text-[11px]">{r.lbl}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-3 text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity" style={{ color:p.accentColor }}>
-                <ExternalLink size={11} /> Click to expand
-              </div>
-            </motion.button>
+
+        {/* Filter buttons */}
+        <motion.div initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }}
+          viewport={{ once:true }} transition={{ duration:.5 }}
+          className="flex flex-wrap justify-center gap-2 mb-10">
+          {FILTERS.map(f => (
+            <button key={f} onClick={() => setFilter(f)}
+              className="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-250"
+              style={filter === f
+                ? { background:'linear-gradient(135deg,#10b981,#34d399)', color:'#000' }
+                : { background:'rgba(16,185,129,.06)', border:'1px solid rgba(16,185,129,.18)', color:'#6b7280' }
+              }>
+              {f}
+            </button>
           ))}
-        </div>
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          <motion.div key={filter} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            transition={{ duration:.3 }} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {filtered.map((p, i) => (
+              <motion.button key={p.id} initial={{ opacity:0, y:36 }} animate={{ opacity:1, y:0 }}
+                transition={{ duration:.45, delay: i*.08 }}
+                onClick={() => setSel(p)}
+                className="glass-card p-6 text-left group relative overflow-hidden"
+                style={{ borderColor:`${p.accentColor}20` }}>
+                <Preview color={p.accentColor} type={p.type} />
+                {/* hover overlay */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{ background:`radial-gradient(ellipse at 50% 0%, ${p.accentColor}08, transparent 65%)` }} />
+                <div className="mt-4 relative z-10">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded" style={{ background:`${p.accentColor}12`, color:p.accentColor }}>{p.location}</span>
+                    <span className="text-gray-600 text-xs">{p.client}</span>
+                  </div>
+                  <h3 className="font-poppins font-bold text-base mb-3">{p.title}</h3>
+                  <div className="flex gap-6">
+                    {[p.result1, p.result2, p.result3].map((r, j) => (
+                      <div key={j}>
+                        <div className="font-poppins font-black text-base" style={{ color:p.accentColor }}>{r.val}</div>
+                        <div className="text-gray-600 text-[11px]">{r.lbl}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 mt-3 text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity relative z-10" style={{ color:p.accentColor }}>
+                  <ExternalLink size={11} /> Click to expand
+                </div>
+              </motion.button>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
       <AnimatePresence>{sel && <Modal p={sel} onClose={() => setSel(null)} />}</AnimatePresence>
     </section>

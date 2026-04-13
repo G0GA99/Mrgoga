@@ -11,8 +11,8 @@ function ServiceCard({ s, i }) {
       <div className="flip-inner">
 
         {/* Front */}
-        <div className="flip-front shimmer card flex flex-col p-7 cursor-pointer"
-          style={{ borderColor:`${s.color}20` }}>
+        <div className="flip-front shimmer service-glow flex flex-col p-7 cursor-pointer"
+          style={{ background:'rgba(10,10,10,.85)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', border:`1px solid ${s.color}22`, borderRadius:'14px' }}>
           <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-5 relative z-[1]"
             style={{ background:`${s.color}12`, border:`1px solid ${s.color}30` }}>
             {s.icon}

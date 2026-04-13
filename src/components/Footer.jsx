@@ -3,12 +3,35 @@ import SocialIcon, { SOCIALS_CONTACT } from './SocialIcons'
 
 const SERVICES = ['Branding & Animation','Web Experience','Product Visualization','AI Integration','Data Visualization']
 const NAV      = ['Services','Portfolio','Pricing','Calculator','Team','Contact']
+const TICKER   = ['React','Next.js','Node.js','Python','LangChain','Groq AI','Three.js','Framer Motion','Tailwind CSS','Vercel','Supabase','Stripe','Docker','TypeScript','OpenAI','AWS']
+
+function Marquee() {
+  const doubled = [...TICKER, ...TICKER]
+  return (
+    <div className="py-5 border-y border-white/5 overflow-hidden relative">
+      <div className="absolute left-0 top-0 bottom-0 w-20 z-10" style={{ background:'linear-gradient(90deg,#000,transparent)' }} />
+      <div className="absolute right-0 top-0 bottom-0 w-20 z-10" style={{ background:'linear-gradient(-90deg,#000,transparent)' }} />
+      <div className="flex gap-8 marquee-track whitespace-nowrap" style={{ width:'max-content' }}>
+        {doubled.map((t, i) => (
+          <span key={i} className="text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5"
+            style={{ background:'rgba(16,185,129,.06)', border:'1px solid rgba(16,185,129,.14)', color:'rgba(16,185,129,.6)' }}>
+            <span className="w-1 h-1 rounded-full bg-teal inline-block" style={{ background:'#10b981' }} />
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function Footer() {
   const go = (id) => document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior:'smooth' })
 
   return (
     <footer style={{ background:'#000', borderTop:'1px solid rgba(255,255,255,.07)' }}>
+
+      {/* Tech Stack Marquee */}
+      <Marquee />
 
       {/* CTA Banner */}
       <div className="py-16 text-center relative overflow-hidden"

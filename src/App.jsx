@@ -10,10 +10,12 @@ import Contact      from './components/Contact'
 import Footer       from './components/Footer'
 import ChatWidget   from './components/ChatWidget'
 import CustomCursor from './components/CustomCursor'
+import PageIntro    from './components/PageIntro'
 
 export default function App() {
   return (
     <div className="min-h-screen bg-black text-white font-inter">
+      <PageIntro />
       <Navbar />
       <main>
         <Hero />
