@@ -1,3 +1,4 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar       from './components/Navbar'
 import Hero         from './components/Hero'
 import Services     from './components/Services'
@@ -11,8 +12,9 @@ import Footer       from './components/Footer'
 import ChatWidget   from './components/ChatWidget'
 import CustomCursor from './components/CustomCursor'
 import PageIntro    from './components/PageIntro'
+import Admin        from './components/Admin'
 
-export default function App() {
+function MainSite() {
   return (
     <div className="min-h-screen bg-black text-white font-inter">
       <PageIntro />
@@ -31,5 +33,16 @@ export default function App() {
       <ChatWidget />
       <CustomCursor />
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/"      element={<MainSite />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
