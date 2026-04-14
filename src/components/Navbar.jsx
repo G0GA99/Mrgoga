@@ -4,27 +4,25 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA Wordmark — text only, no icon. Like GROQ / ANTHROPIC.
-function Wordmark({ large = false }) {
+// G0GA brand mark — solid filled G letterform (like Google's G icon)
+// A proper filled shape: outer arc + inner arc + crossbar = clean G
+function LogoMark({ size = 32 }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, gap: '3px' }}>
-      <span style={{
-        fontFamily: "'Poppins', sans-serif",
-        fontWeight: 900,
-        fontSize: large ? '1.5rem' : '1.25rem',
-        letterSpacing: '0.04em',
-        color: '#ffffff',
-        lineHeight: 1,
-      }}>G0GA</span>
-      <span style={{
-        fontFamily: "'Inter', sans-serif",
-        fontWeight: 500,
-        fontSize: large ? '0.52rem' : '0.44rem',
-        letterSpacing: '0.25em',
-        color: '#6b7280',
-        textTransform: 'uppercase',
-      }}>Agency</span>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
+      <defs>
+        <linearGradient id="gMark" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#10b981" />
+          <stop offset="100%" stopColor="#34d399" />
+        </linearGradient>
+      </defs>
+      {/* Filled G — outer arc (long CCW) → line inward → inner arc back → close */}
+      <path
+        d="M28 6 A16 16 0 1 0 36 20 L29 20 A9 9 0 0 1 25 12 Z"
+        fill="url(#gMark)"
+      />
+      {/* Crossbar extending inward — the signature of a G vs C */}
+      <rect x="20" y="17" width="10" height="6" rx="3" fill="url(#gMark)" />
+    </svg>
   )
 }
 
@@ -65,11 +63,20 @@ export default function Navbar() {
 
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-          {/* Wordmark only — no icon */}
+          {/* Logo: G mark + G0GA text */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="hover:opacity-75 transition-opacity duration-300">
-            <Wordmark />
+            className="flex items-center gap-2.5 group hover:opacity-80 transition-opacity duration-300">
+            <motion.div
+              className="transition-transform duration-300 group-hover:scale-110"
+              whileHover={{ rotate: 5 }}>
+              <LogoMark size={30} />
+            </motion.div>
+            <span
+              className="font-poppins font-black text-white"
+              style={{ fontSize: '1.25rem', letterSpacing: '0.03em', lineHeight: 1 }}>
+              G0GA
+            </span>
           </button>
 
           {/* Desktop nav */}
@@ -103,14 +110,12 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile menu btn */}
           <button className="md:hidden text-gray-400 hover:text-white transition-colors" onClick={() => setOpen(true)}>
             <Menu size={22} />
           </button>
         </div>
       </motion.nav>
 
-      {/* Mobile overlay */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -126,8 +131,9 @@ export default function Navbar() {
               <X size={24} />
             </button>
 
-            <div className="absolute top-4 left-6">
-              <Wordmark />
+            <div className="absolute top-4 left-6 flex items-center gap-2.5">
+              <LogoMark size={26} />
+              <span className="font-poppins font-black text-white" style={{ fontSize: '1.1rem', letterSpacing: '0.03em' }}>G0GA</span>
             </div>
 
             {links.map((l, i) => (
