@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/zion",
-      "schedule": "0 9 * * 1-5"
+      "schedule": "0 */6 * * *"
     },
     {
       "path": "/api/nova",
