@@ -4,46 +4,30 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA wordmark — white bold + single teal dot accent
-// Style: GROQ / ANTHROPIC / LINEAR — confident, minimal, no gradient text
-function Wordmark({ size = 'md' }) {
-  const sizes = {
-    sm: { dot: 6,  main: '1.1rem',  sub: '0.42rem', gap: 6 },
-    md: { dot: 7,  main: '1.22rem', sub: '0.48rem', gap: 7 },
-    lg: { dot: 9,  main: '1.55rem', sub: '0.52rem', gap: 8 },
-  }
-  const s = sizes[size]
+// G0GA Logo Mark — teal badge with "G0" (app-icon style, like Slack/Notion/Linear)
+// Works as: social media avatar, shirt patch, favicon, navbar icon
+function LogoBadge({ size = 36 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: s.gap }}>
-      {/* Teal dot — the only color, the brand accent */}
-      <span style={{
-        display: 'inline-block',
-        width: s.dot,
-        height: s.dot,
-        borderRadius: '50%',
-        background: 'linear-gradient(135deg, #10b981, #34d399)',
-        flexShrink: 0,
-        boxShadow: '0 0 8px rgba(16,185,129,0.5)',
-      }} />
-      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, gap: '2px' }}>
-        <span style={{
-          fontFamily: "'Poppins', sans-serif",
-          fontWeight: 900,
-          fontSize: s.main,
-          letterSpacing: '0.02em',
-          color: '#ffffff',
-          lineHeight: 1,
-        }}>G0GA</span>
-        <span style={{
-          fontFamily: "'Inter', sans-serif",
-          fontWeight: 500,
-          fontSize: s.sub,
-          letterSpacing: '0.18em',
-          color: '#4b5563',
-          textTransform: 'uppercase',
-        }}>AI Agency</span>
-      </div>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="badgeGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#10b981" />
+          <stop offset="100%" stopColor="#059669" />
+        </linearGradient>
+      </defs>
+      {/* Rounded square — clean app-icon shape */}
+      <rect width="36" height="36" rx="9" fill="url(#badgeGrad)" />
+      {/* G0 in white — bold, tight, confident */}
+      <text
+        x="18" y="24.5"
+        textAnchor="middle"
+        fontFamily="'Poppins', -apple-system, sans-serif"
+        fontWeight="900"
+        fontSize="17"
+        letterSpacing="-0.5"
+        fill="white"
+      >G0</text>
+    </svg>
   )
 }
 
@@ -84,10 +68,23 @@ export default function Navbar() {
 
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-          {/* Wordmark only — no icon */}
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="group hover:opacity-85 transition-opacity duration-300">
-            <Wordmark size="md" />
+          {/* Logo lockup: badge + wordmark */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-3 group hover:opacity-80 transition-opacity duration-300">
+            <div className="transition-transform duration-300 group-hover:scale-105">
+              <LogoBadge size={34} />
+            </div>
+            <div className="flex flex-col leading-none" style={{ gap: '3px' }}>
+              <span className="font-poppins font-black text-white"
+                style={{ fontSize: '1.18rem', letterSpacing: '0.01em', lineHeight: 1 }}>
+                G0GA
+              </span>
+              <span className="font-inter font-medium text-gray-500 uppercase"
+                style={{ fontSize: '0.45rem', letterSpacing: '0.2em' }}>
+                AI Agency
+              </span>
+            </div>
           </button>
 
           {/* Desktop nav */}
@@ -95,7 +92,7 @@ export default function Navbar() {
             {links.map(l => (
               <li key={l}>
                 <button onClick={() => go(l)}
-                  className="relative text-sm font-medium transition-colors duration-300 group"
+                  className="relative text-sm font-medium transition-colors duration-300"
                   style={{ color: active === l.toLowerCase() ? '#10b981' : '#9ca3af' }}>
                   {l}
                   <span className="absolute -bottom-1 left-0 h-px rounded-full transition-all duration-300"
@@ -144,9 +141,12 @@ export default function Navbar() {
               <X size={24} />
             </button>
 
-            {/* Mobile wordmark */}
-            <div className="absolute top-4 left-6">
-              <Wordmark size="sm" />
+            <div className="absolute top-4 left-6 flex items-center gap-2.5">
+              <LogoBadge size={30} />
+              <div className="flex flex-col leading-none" style={{ gap: '2px' }}>
+                <span className="font-poppins font-black text-white" style={{ fontSize: '1rem', lineHeight: 1 }}>G0GA</span>
+                <span className="font-inter font-medium text-gray-500 uppercase" style={{ fontSize: '0.42rem', letterSpacing: '0.2em' }}>AI Agency</span>
+              </div>
             </div>
 
             {links.map((l, i) => (
