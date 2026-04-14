@@ -15,13 +15,13 @@ function LogoMark({ size = 32 }) {
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* Filled G — outer arc (long CCW) → line inward → inner arc back → close */}
+      {/* Filled G letterform — corrected sweep flags */}
       <path
-        d="M28 6 A16 16 0 1 0 36 20 L29 20 A9 9 0 0 1 25 12 Z"
+        d="M28 6 A16 16 0 1 0 36 20 L29 20 A9 9 0 0 0 25 12 Z"
         fill="url(#gMark)"
       />
-      {/* Crossbar extending inward — the signature of a G vs C */}
-      <rect x="20" y="17" width="10" height="6" rx="3" fill="url(#gMark)" />
+      {/* Crossbar — extends inward from inner circle toward center */}
+      <rect x="19" y="17" width="12" height="6" rx="3" fill="url(#gMark)" />
     </svg>
   )
 }
