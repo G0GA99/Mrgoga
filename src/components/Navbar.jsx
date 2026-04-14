@@ -4,26 +4,26 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// Minimal G0GA logo mark — hexagon with circuit node
+// G0GA logo mark — minimal G arc with terminal node
 function LogoMark() {
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon
-        points="14,1 25.5,7.5 25.5,20.5 14,27 2.5,20.5 2.5,7.5"
-        fill="none"
-        stroke="url(#logoGrad)"
-        strokeWidth="1.5"
-      />
-      <circle cx="14" cy="14" r="3.5" fill="url(#logoGrad)" />
-      <line x1="14" y1="10.5" x2="14" y2="5"   stroke="url(#logoGrad)" strokeWidth="1" strokeLinecap="round" />
-      <line x1="17.5" y1="16"  x2="22" y2="18.5" stroke="url(#logoGrad)" strokeWidth="1" strokeLinecap="round" />
-      <line x1="10.5" y1="16"  x2="6"  y2="18.5" stroke="url(#logoGrad)" strokeWidth="1" strokeLinecap="round" />
       <defs>
         <linearGradient id="logoGrad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
+      {/* G arc — large arc from upper-right, around, to mid-right, then bar left */}
+      <path
+        d="M21 7A10 10 0 1 1 24 14L16 14"
+        stroke="url(#logoGrad)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Terminal node — AI circuit dot */}
+      <circle cx="16" cy="14" r="1.8" fill="url(#logoGrad)" />
     </svg>
   )
 }
