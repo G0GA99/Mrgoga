@@ -14,16 +14,16 @@ function LogoMark() {
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* G arc — large arc from upper-right, around, to mid-right, then bar left */}
+      {/* G arc — large arc clockwise, opens at right, bar toward center */}
       <path
-        d="M21 7A10 10 0 1 1 24 14L16 14"
+        d="M20.5 6.5A10 10 0 1 1 24 14L15 14"
         stroke="url(#logoGrad)"
-        strokeWidth="2.5"
+        strokeWidth="2.8"
         strokeLinecap="round"
         fill="none"
       />
-      {/* Terminal node — AI circuit dot */}
-      <circle cx="16" cy="14" r="1.8" fill="url(#logoGrad)" />
+      {/* Terminal node — AI dot */}
+      <circle cx="15" cy="14" r="2" fill="url(#logoGrad)" />
     </svg>
   )
 }
@@ -70,13 +70,18 @@ export default function Navbar() {
           {/* Logo */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-2.5 group">
-            <div className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110">
+            <div className="transition-transform duration-300 group-hover:scale-110">
               <LogoMark />
             </div>
-            <span className="font-poppins font-black text-xl text-grad tracking-tight"
-              style={{ letterSpacing: '-0.5px' }}>
-              G0GA
-            </span>
+            <div className="flex flex-col leading-none gap-0.5">
+              <span className="font-poppins font-black text-xl text-grad"
+                style={{ letterSpacing: '-0.5px', lineHeight: 1 }}>
+                G0GA
+              </span>
+              <span className="font-poppins text-[8px] font-semibold tracking-[0.22em] text-gray-500 uppercase">
+                AI AGENCY
+              </span>
+            </div>
           </button>
 
           {/* Desktop nav */}
@@ -134,9 +139,12 @@ export default function Navbar() {
             </button>
 
             {/* Mobile logo */}
-            <div className="absolute top-5 left-6 flex items-center gap-2">
+            <div className="absolute top-5 left-6 flex items-center gap-2.5">
               <LogoMark />
-              <span className="font-poppins font-black text-lg text-grad">G0GA</span>
+              <div className="flex flex-col leading-none gap-0.5">
+                <span className="font-poppins font-black text-lg text-grad" style={{ letterSpacing: '-0.5px', lineHeight: 1 }}>G0GA</span>
+                <span className="font-poppins text-[7px] font-semibold tracking-[0.22em] text-gray-500 uppercase">AI AGENCY</span>
+              </div>
             </div>
 
             {links.map((l, i) => (

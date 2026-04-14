@@ -40,13 +40,13 @@ export default function PageIntro() {
                 </linearGradient>
               </defs>
               <path
-                d="M21 7A10 10 0 1 1 24 14L16 14"
+                d="M20.5 6.5A10 10 0 1 1 24 14L15 14"
                 stroke="url(#ig)"
-                strokeWidth="2.5"
+                strokeWidth="2.8"
                 strokeLinecap="round"
                 fill="none"
               />
-              <circle cx="16" cy="14" r="1.8" fill="url(#ig)" />
+              <circle cx="15" cy="14" r="2" fill="url(#ig)" />
             </motion.svg>
 
             <span
