@@ -4,19 +4,25 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA text wordmark logo
-function LogoIcon() {
+// G0GA rounded square logo with G0GA inside
+function LogoIcon({ size = 52 }) {
   return (
-    <span style={{
-      fontFamily: 'Arial Black, Arial, sans-serif',
-      fontWeight: 900,
-      fontSize: '1.35rem',
-      letterSpacing: '4px',
-      background: 'linear-gradient(135deg, #10b981, #34d399)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
-    }}>G0GA</span>
+    <svg width={size} height={size} viewBox="0 0 52 52" fill="none">
+      <defs>
+        <linearGradient id="iconGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#10b981" />
+          <stop offset="100%" stopColor="#059669" />
+        </linearGradient>
+      </defs>
+      {/* Rounded square — more square than pill */}
+      <rect width="52" height="52" rx="14" fill="url(#iconGrad)" />
+      {/* G0GA inside */}
+      <text x="26" y="32" textAnchor="middle"
+        fontFamily="Arial Black, Arial, sans-serif"
+        fontWeight="900" fontSize="14" fill="white" letterSpacing="0.5">
+        G0GA
+      </text>
+    </svg>
   )
 }
 
@@ -60,7 +66,7 @@ export default function Navbar() {
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="group hover:opacity-80 transition-opacity duration-300">
-            <LogoIcon />
+            <LogoIcon size={42} />
           </button>
 
           <ul className="hidden md:flex items-center gap-7">
@@ -114,7 +120,7 @@ export default function Navbar() {
             </button>
 
             <div className="absolute top-4 left-6">
-              <LogoIcon />
+              <LogoIcon size={36} />
             </div>
 
             {links.map((l, i) => (
