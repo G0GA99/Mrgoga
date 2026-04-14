@@ -5,7 +5,7 @@ export default function PageIntro() {
   const [show, setShow] = useState(true)
 
   useEffect(() => {
-    const t = setTimeout(() => setShow(false), 2200)
+    const t = setTimeout(() => setShow(false), 1800)
     return () => clearTimeout(t)
   }, [])
 
@@ -16,57 +16,58 @@ export default function PageIntro() {
           key="intro"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.65, ease: 'easeInOut' }}
+          transition={{ duration: 0.55, ease: 'easeInOut' }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black"
           style={{ pointerEvents: 'none' }}
         >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.12 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center gap-5"
           >
-            {/* Rounded square icon with G0GA inside — the whole brand mark */}
+            {/* Logo mark */}
             <motion.svg
-              width="120" height="120" viewBox="0 0 52 52" fill="none"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.05, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}>
+              width="56" height="56" viewBox="0 0 28 28" fill="none"
+              initial={{ rotate: -30, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.6, ease: [0.22,1,0.36,1] }}>
+              <polygon points="14,1 25.5,7.5 25.5,20.5 14,27 2.5,20.5 2.5,7.5"
+                fill="none" stroke="url(#ig)" strokeWidth="1.5" />
+              <circle cx="14" cy="14" r="3.5" fill="url(#ig)" />
+              <line x1="14" y1="10.5" x2="14" y2="5"   stroke="url(#ig)" strokeWidth="1" strokeLinecap="round" />
+              <line x1="17.5" y1="16"  x2="22" y2="18.5" stroke="url(#ig)" strokeWidth="1" strokeLinecap="round" />
+              <line x1="10.5" y1="16"  x2="6"  y2="18.5" stroke="url(#ig)" strokeWidth="1" strokeLinecap="round" />
               <defs>
-                <linearGradient id="igMark" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+                <linearGradient id="ig" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#059669" />
+                  <stop offset="100%" stopColor="#34d399" />
                 </linearGradient>
               </defs>
-              <rect width="52" height="52" rx="14" fill="url(#igMark)" />
-              <text x="26" y="32" textAnchor="middle"
-                fontFamily="Arial Black, Arial, sans-serif"
-                fontWeight="900" fontSize="14" fill="white" letterSpacing="0.5">
-                G0GA
-              </text>
             </motion.svg>
 
-            {/* Gradient line */}
+            <span
+              className="font-poppins font-black text-6xl md:text-8xl text-grad"
+              style={{ letterSpacing: '-3px' }}
+            >
+              G0GA
+            </span>
             <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
-              style={{
-                width: '100%', height: '1px',
-                background: 'linear-gradient(90deg, transparent, #10b981, #34d399, transparent)',
-                transformOrigin: 'center',
-              }}
+              initial={{ width: 0 }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 1, delay: 0.3, ease: 'easeInOut' }}
+              className="h-[2px] rounded-full"
+              style={{ background: 'linear-gradient(90deg, #10b981, #34d399)' }}
             />
-
-            {/* AI AGENCY */}
-            <motion.span
+            <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.45 }}
-              transition={{ delay: 0.55 }}
-              className="font-inter font-medium uppercase"
-              style={{ fontSize: '0.62rem', letterSpacing: '0.35em', color: '#9ca3af' }}
-            >AI Agency</motion.span>
+              animate={{ opacity: 0.5 }}
+              transition={{ delay: 0.6 }}
+              className="text-gray-500 text-xs tracking-[0.3em] uppercase font-medium"
+            >
+              AI Agency
+            </motion.p>
           </motion.div>
         </motion.div>
       )}

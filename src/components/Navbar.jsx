@@ -4,24 +4,26 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA rounded square logo with G0GA inside
-function LogoIcon({ size = 52 }) {
+// Minimal G0GA logo mark — hexagon with circuit node
+function LogoMark() {
   return (
-    <svg width={size} height={size} viewBox="0 0 52 52" fill="none">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon
+        points="14,1 25.5,7.5 25.5,20.5 14,27 2.5,20.5 2.5,7.5"
+        fill="none"
+        stroke="url(#logoGrad)"
+        strokeWidth="1.5"
+      />
+      <circle cx="14" cy="14" r="3.5" fill="url(#logoGrad)" />
+      <line x1="14" y1="10.5" x2="14" y2="5"   stroke="url(#logoGrad)" strokeWidth="1" strokeLinecap="round" />
+      <line x1="17.5" y1="16"  x2="22" y2="18.5" stroke="url(#logoGrad)" strokeWidth="1" strokeLinecap="round" />
+      <line x1="10.5" y1="16"  x2="6"  y2="18.5" stroke="url(#logoGrad)" strokeWidth="1" strokeLinecap="round" />
       <defs>
-        <linearGradient id="iconGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
-          <stop offset="100%" stopColor="#059669" />
+          <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* Rounded square — more square than pill */}
-      <rect width="52" height="52" rx="14" fill="url(#iconGrad)" />
-      {/* G0GA inside */}
-      <text x="26" y="32" textAnchor="middle"
-        fontFamily="Arial Black, Arial, sans-serif"
-        fontWeight="900" fontSize="14" fill="white" letterSpacing="0.5">
-        G0GA
-      </text>
     </svg>
   )
 }
@@ -57,23 +59,32 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'py-3 border-b border-white/6' : 'py-5'
+          scrolled
+            ? 'py-3 border-b border-white/6'
+            : 'py-5'
         }`}
         style={scrolled ? { background: 'rgba(0,0,0,.88)', backdropFilter: 'blur(24px)' } : {}}>
 
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="group hover:opacity-80 transition-opacity duration-300">
-            <LogoIcon size={42} />
+          {/* Logo */}
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-2.5 group">
+            <div className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110">
+              <LogoMark />
+            </div>
+            <span className="font-poppins font-black text-xl text-grad tracking-tight"
+              style={{ letterSpacing: '-0.5px' }}>
+              G0GA
+            </span>
           </button>
 
+          {/* Desktop nav */}
           <ul className="hidden md:flex items-center gap-7">
             {links.map(l => (
               <li key={l}>
                 <button onClick={() => go(l)}
-                  className="relative text-sm font-medium transition-colors duration-300"
+                  className="relative text-sm font-medium transition-colors duration-300 group"
                   style={{ color: active === l.toLowerCase() ? '#10b981' : '#9ca3af' }}>
                   {l}
                   <span className="absolute -bottom-1 left-0 h-px rounded-full transition-all duration-300"
@@ -86,6 +97,7 @@ export default function Navbar() {
             ))}
           </ul>
 
+          {/* CTA buttons */}
           <div className="hidden md:flex items-center gap-2.5">
             <button onClick={() => go('Contact')}
               className="px-4 py-2 text-sm font-medium rounded-xl border border-white/12 text-gray-400 hover:text-white hover:border-white/25 transition-all duration-300">
@@ -98,12 +110,14 @@ export default function Navbar() {
             </button>
           </div>
 
+          {/* Mobile menu btn */}
           <button className="md:hidden text-gray-400 hover:text-white transition-colors" onClick={() => setOpen(true)}>
             <Menu size={22} />
           </button>
         </div>
       </motion.nav>
 
+      {/* Mobile overlay */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -119,8 +133,10 @@ export default function Navbar() {
               <X size={24} />
             </button>
 
-            <div className="absolute top-4 left-6">
-              <LogoIcon size={36} />
+            {/* Mobile logo */}
+            <div className="absolute top-5 left-6 flex items-center gap-2">
+              <LogoMark />
+              <span className="font-poppins font-black text-lg text-grad">G0GA</span>
             </div>
 
             {links.map((l, i) => (
