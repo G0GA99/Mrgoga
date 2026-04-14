@@ -95,6 +95,7 @@ export default function Contact() {
                 <CheckCircle size={44} className="text-emerald-400 mx-auto mb-4" />
                 <h3 className="font-poppins text-xl font-bold mb-2">Message Received!</h3>
                 <p className="text-gray-500 text-sm">Our AI agents are on it. You will hear back within 2 hours.</p>
+                <p className="text-gray-600 text-xs mt-3">Ready to start? View our <button onClick={() => { document.getElementById('payment')?.scrollIntoView({behavior:'smooth'}) }} className="text-teal hover:underline">payment options →</button></p>
                 <button
                   onClick={() => { setDone(false); setForm({ name:'',email:'',company:'',service:'',budget:'',message:'' }) }}
                   className="mt-5 text-teal text-sm hover:underline">

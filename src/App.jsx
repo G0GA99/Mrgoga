@@ -13,6 +13,7 @@ import ChatWidget   from './components/ChatWidget'
 import CustomCursor from './components/CustomCursor'
 import PageIntro    from './components/PageIntro'
 import Admin        from './components/Admin'
+import Payment      from './components/Payment'
 
 function MainSite() {
   return (
@@ -27,6 +28,7 @@ function MainSite() {
         <Calculator />
         <Team />
         <Testimonials />
+        <Payment />
         <Contact />
       </main>
       <Footer />
