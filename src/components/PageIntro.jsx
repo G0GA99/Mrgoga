@@ -34,19 +34,17 @@ export default function PageIntro() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.6, ease: [0.22,1,0.36,1] }}>
               <defs>
-                <linearGradient id="ig" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <linearGradient id="ig" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#10b981" />
                   <stop offset="100%" stopColor="#34d399" />
                 </linearGradient>
               </defs>
-              <path
-                d="M23 8A11 11 0 1 1 27 16L19 16"
-                stroke="url(#ig)"
-                strokeWidth="8.5"
-                strokeLinecap="round"
-                fill="none"
-              />
-              <circle cx="16" cy="16" r="3" fill="url(#ig)" />
+              <line x1="16" y1="5"  x2="5"  y2="25" stroke="url(#ig)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+              <line x1="16" y1="5"  x2="27" y2="25" stroke="url(#ig)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+              <line x1="5"  y1="25" x2="27" y2="25" stroke="url(#ig)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+              <circle cx="16" cy="5"  r="4"  fill="url(#ig)" />
+              <circle cx="5"  cy="25" r="3"  fill="url(#ig)" />
+              <circle cx="27" cy="25" r="3"  fill="url(#ig)" />
             </motion.svg>
 
             <span

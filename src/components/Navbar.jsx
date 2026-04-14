@@ -4,27 +4,27 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA brand mark — solid G letterform + center dot
-// Inspired by: Google G (solid arc), Fiverr f (letter + dot), OpenAI (circular geometry)
+// G0GA brand mark — neural triangle (3 nodes = AI network, minimal, iconic)
+// Research basis: OpenAI asterisk (geometry), Vercel triangle (single shape),
+// Nike swoosh (one element), Fiverr f (letter+dot). Result: 3-node AI mark.
 function LogoMark({ size = 32 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+        <linearGradient id="logoGrad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* Ultra-thick G — at strokeWidth 8.5 it reads as a solid filled letterform */}
-      <path
-        d="M23 8A11 11 0 1 1 27 16L19 16"
-        stroke="url(#logoGrad)"
-        strokeWidth="8.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Center dot — the "0" in G0GA and the AI neural core */}
-      <circle cx="16" cy="16" r="3" fill="url(#logoGrad)" />
+      {/* Connecting lines — neural paths */}
+      <line x1="16" y1="5"  x2="5"  y2="25" stroke="url(#logoGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+      <line x1="16" y1="5"  x2="27" y2="25" stroke="url(#logoGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+      <line x1="5"  y1="25" x2="27" y2="25" stroke="url(#logoGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+      {/* Top node — primary (largest) */}
+      <circle cx="16" cy="5"  r="4"   fill="url(#logoGrad)" />
+      {/* Bottom nodes */}
+      <circle cx="5"  cy="25" r="3"   fill="url(#logoGrad)" />
+      <circle cx="27" cy="25" r="3"   fill="url(#logoGrad)" />
     </svg>
   )
 }
