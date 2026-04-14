@@ -4,27 +4,20 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA brand mark — neural triangle (3 nodes = AI network, minimal, iconic)
-// Research basis: OpenAI asterisk (geometry), Vercel triangle (single shape),
-// Nike swoosh (one element), Fiverr f (letter+dot). Result: 3-node AI mark.
-function LogoMark({ size = 32 }) {
+// G0GA brand mark — solid filled play/go triangle
+// One shape, solid filled, gradient. Like Nike swoosh = one element, max impact.
+// Meaning: "GO" (G0GA), AI in action, automation running, forward motion.
+function LogoMark({ size = 30 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 30 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="logoGrad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="30" y2="32" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* Connecting lines — neural paths */}
-      <line x1="16" y1="5"  x2="5"  y2="25" stroke="url(#logoGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
-      <line x1="16" y1="5"  x2="27" y2="25" stroke="url(#logoGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
-      <line x1="5"  y1="25" x2="27" y2="25" stroke="url(#logoGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
-      {/* Top node — primary (largest) */}
-      <circle cx="16" cy="5"  r="4"   fill="url(#logoGrad)" />
-      {/* Bottom nodes */}
-      <circle cx="5"  cy="25" r="3"   fill="url(#logoGrad)" />
-      <circle cx="27" cy="25" r="3"   fill="url(#logoGrad)" />
+      {/* Solid filled triangle — one element, completely minimal */}
+      <path d="M3 1 L29 16 L3 31 Z" fill="url(#logoGrad)" />
     </svg>
   )
 }
