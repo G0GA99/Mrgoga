@@ -4,26 +4,27 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA logo mark — minimal G arc with terminal node
-function LogoMark() {
+// G0GA brand mark — bold G + center dot (represents the "0" in G0GA & AI core)
+function LogoMark({ size = 30 }) {
   return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="logoGrad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* G arc — large arc clockwise, opens at right, bar toward center */}
+      {/* Bold G arc — thick stroke reads as solid at any size */}
       <path
-        d="M20.5 6.5A10 10 0 1 1 24 14L15 14"
+        d="M22 8A11 11 0 1 1 26 15L18 15"
         stroke="url(#logoGrad)"
-        strokeWidth="2.8"
+        strokeWidth="5"
         strokeLinecap="round"
+        strokeLinejoin="round"
         fill="none"
       />
-      {/* Terminal node — AI dot */}
-      <circle cx="15" cy="14" r="2" fill="url(#logoGrad)" />
+      {/* Center dot — the "0" in G0GA, the AI core */}
+      <circle cx="15" cy="15" r="2.5" fill="url(#logoGrad)" />
     </svg>
   )
 }
