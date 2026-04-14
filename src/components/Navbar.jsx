@@ -4,21 +4,67 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA brand mark — solid filled play/go triangle
-// One shape, solid filled, gradient. Like Nike swoosh = one element, max impact.
-// Meaning: "GO" (G0GA), AI in action, automation running, forward motion.
-function LogoMark({ size = 30 }) {
+// G0GA wordmark — the "0" is the brand signature (circle-zero, not letter O)
+// Inspired by GROQ, ANTHROPIC, RUNWAY: no icon, pure typography confidence
+function Wordmark({ size = 'md' }) {
+  const sizes = {
+    sm: { main: '1.1rem', sub: '0.44rem', gap: '2px' },
+    md: { main: '1.25rem', sub: '0.5rem',  gap: '3px' },
+    lg: { main: '1.6rem',  sub: '0.55rem', gap: '4px' },
+  }
+  const s = sizes[size]
   return (
-    <svg width={size} height={size} viewBox="0 0 30 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="logoGrad" x1="0" y1="0" x2="30" y2="32" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#10b981" />
-          <stop offset="100%" stopColor="#34d399" />
-        </linearGradient>
-      </defs>
-      {/* Solid filled triangle — one element, completely minimal */}
-      <path d="M3 1 L29 16 L3 31 Z" fill="url(#logoGrad)" />
-    </svg>
+    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, gap: s.gap }}>
+      {/* Main wordmark: G·0·G·A — the zero gets a subtle circle treatment */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0px' }}>
+        <span style={{
+          fontFamily: "'Poppins', sans-serif",
+          fontWeight: 900,
+          fontSize: s.main,
+          letterSpacing: '-0.5px',
+          background: 'linear-gradient(135deg, #10b981, #34d399)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}>G</span>
+        {/* The "0" — brand signature: subtle teal ring sets it apart */}
+        <span style={{
+          fontFamily: "'Poppins', sans-serif",
+          fontWeight: 900,
+          fontSize: s.main,
+          letterSpacing: '-0.5px',
+          background: 'linear-gradient(135deg, #10b981, #34d399)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          display: 'inline-block',
+          border: '1.5px solid rgba(16,185,129,0.55)',
+          borderRadius: '50%',
+          lineHeight: 1.15,
+          padding: '0 2px',
+          margin: '0 1px',
+        }}>0</span>
+        <span style={{
+          fontFamily: "'Poppins', sans-serif",
+          fontWeight: 900,
+          fontSize: s.main,
+          letterSpacing: '-0.5px',
+          background: 'linear-gradient(135deg, #10b981, #34d399)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}>GA</span>
+      </div>
+      {/* Tagline */}
+      <span style={{
+        fontFamily: "'Poppins', sans-serif",
+        fontWeight: 600,
+        fontSize: s.sub,
+        letterSpacing: '0.22em',
+        color: '#6b7280',
+        textTransform: 'uppercase',
+      }}>AI AGENCY</span>
+    </div>
   )
 }
 
@@ -53,29 +99,16 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'py-3 border-b border-white/6'
-            : 'py-5'
+          scrolled ? 'py-3 border-b border-white/6' : 'py-5'
         }`}
         style={scrolled ? { background: 'rgba(0,0,0,.88)', backdropFilter: 'blur(24px)' } : {}}>
 
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-          {/* Logo */}
+          {/* Wordmark only — no icon */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2.5 group">
-            <div className="transition-transform duration-300 group-hover:scale-110">
-              <LogoMark />
-            </div>
-            <div className="flex flex-col leading-none gap-0.5">
-              <span className="font-poppins font-black text-xl text-grad"
-                style={{ letterSpacing: '-0.5px', lineHeight: 1 }}>
-                G0GA
-              </span>
-              <span className="font-poppins text-[8px] font-semibold tracking-[0.22em] text-gray-500 uppercase">
-                AI AGENCY
-              </span>
-            </div>
+            className="group hover:opacity-85 transition-opacity duration-300">
+            <Wordmark size="md" />
           </button>
 
           {/* Desktop nav */}
@@ -132,13 +165,9 @@ export default function Navbar() {
               <X size={24} />
             </button>
 
-            {/* Mobile logo */}
-            <div className="absolute top-5 left-6 flex items-center gap-2.5">
-              <LogoMark />
-              <div className="flex flex-col leading-none gap-0.5">
-                <span className="font-poppins font-black text-lg text-grad" style={{ letterSpacing: '-0.5px', lineHeight: 1 }}>G0GA</span>
-                <span className="font-poppins text-[7px] font-semibold tracking-[0.22em] text-gray-500 uppercase">AI AGENCY</span>
-              </div>
+            {/* Mobile wordmark */}
+            <div className="absolute top-4 left-6">
+              <Wordmark size="sm" />
             </div>
 
             {links.map((l, i) => (
