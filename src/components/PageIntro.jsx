@@ -25,32 +25,27 @@ export default function PageIntro() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-4"
+            className="flex flex-col items-center gap-5"
           >
-            {/* G logo mark */}
+            {/* Rounded square icon with G0GA inside — the whole brand mark */}
             <motion.svg
-              width="72" height="72" viewBox="0 0 40 40" fill="none"
+              width="120" height="120" viewBox="0 0 52 52" fill="none"
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.05, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}>
               <defs>
-                <linearGradient id="igMark" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <linearGradient id="igMark" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#34d399" />
+                  <stop offset="100%" stopColor="#059669" />
                 </linearGradient>
               </defs>
-              <path d="M28 6 A16 16 0 1 0 36 20 L29 20 A9 9 0 0 0 25 12 Z" fill="url(#igMark)" />
-              <rect x="19" y="17" width="12" height="6" rx="3" fill="url(#igMark)" />
+              <rect width="52" height="52" rx="14" fill="url(#igMark)" />
+              <text x="26" y="32" textAnchor="middle"
+                fontFamily="Arial Black, Arial, sans-serif"
+                fontWeight="900" fontSize="14" fill="white" letterSpacing="0.5">
+                G0GA
+              </text>
             </motion.svg>
-
-            {/* G0GA */}
-            <motion.span
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="font-poppins font-black text-white"
-              style={{ fontSize: 'clamp(3rem, 9vw, 5rem)', letterSpacing: '0.03em', lineHeight: 1 }}
-            >G0GA</motion.span>
 
             {/* Gradient line */}
             <motion.div
@@ -64,7 +59,7 @@ export default function PageIntro() {
               }}
             />
 
-            {/* AI AGENCY — user approved this */}
+            {/* AI AGENCY */}
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.45 }}

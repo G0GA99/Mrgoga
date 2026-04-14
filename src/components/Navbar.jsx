@@ -4,24 +4,24 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA brand mark — solid filled G letterform (like Google's G icon)
-// A proper filled shape: outer arc + inner arc + crossbar = clean G
-function LogoMark({ size = 32 }) {
+// G0GA rounded square logo with G0GA inside
+function LogoIcon({ size = 52 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
+    <svg width={size} height={size} viewBox="0 0 52 52" fill="none">
       <defs>
-        <linearGradient id="gMark" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <linearGradient id="iconGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
-          <stop offset="100%" stopColor="#34d399" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
-      {/* Filled G letterform — corrected sweep flags */}
-      <path
-        d="M28 6 A16 16 0 1 0 36 20 L29 20 A9 9 0 0 0 25 12 Z"
-        fill="url(#gMark)"
-      />
-      {/* Crossbar — extends inward from inner circle toward center */}
-      <rect x="19" y="17" width="12" height="6" rx="3" fill="url(#gMark)" />
+      {/* Rounded square — more square than pill */}
+      <rect width="52" height="52" rx="14" fill="url(#iconGrad)" />
+      {/* G0GA inside */}
+      <text x="26" y="32" textAnchor="middle"
+        fontFamily="Arial Black, Arial, sans-serif"
+        fontWeight="900" fontSize="14" fill="white" letterSpacing="0.5">
+        G0GA
+      </text>
     </svg>
   )
 }
@@ -63,23 +63,12 @@ export default function Navbar() {
 
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-          {/* Logo: G mark + G0GA text */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2.5 group hover:opacity-80 transition-opacity duration-300">
-            <motion.div
-              className="transition-transform duration-300 group-hover:scale-110"
-              whileHover={{ rotate: 5 }}>
-              <LogoMark size={30} />
-            </motion.div>
-            <span
-              className="font-poppins font-black text-white"
-              style={{ fontSize: '1.25rem', letterSpacing: '0.03em', lineHeight: 1 }}>
-              G0GA
-            </span>
+            className="group hover:opacity-80 transition-opacity duration-300">
+            <LogoIcon size={42} />
           </button>
 
-          {/* Desktop nav */}
           <ul className="hidden md:flex items-center gap-7">
             {links.map(l => (
               <li key={l}>
@@ -97,7 +86,6 @@ export default function Navbar() {
             ))}
           </ul>
 
-          {/* CTA buttons */}
           <div className="hidden md:flex items-center gap-2.5">
             <button onClick={() => go('Contact')}
               className="px-4 py-2 text-sm font-medium rounded-xl border border-white/12 text-gray-400 hover:text-white hover:border-white/25 transition-all duration-300">
@@ -131,9 +119,8 @@ export default function Navbar() {
               <X size={24} />
             </button>
 
-            <div className="absolute top-4 left-6 flex items-center gap-2.5">
-              <LogoMark size={26} />
-              <span className="font-poppins font-black text-white" style={{ fontSize: '1.1rem', letterSpacing: '0.03em' }}>G0GA</span>
+            <div className="absolute top-4 left-6">
+              <LogoIcon size={36} />
             </div>
 
             {links.map((l, i) => (
