@@ -4,22 +4,20 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA rounded square logo with G0GA inside
-function LogoIcon({ size = 52 }) {
+// G0GA pill logo — teal rounded, white bold text inside
+function LogoIcon({ w = 90, h = 38 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 52 52" fill="none">
+    <svg width={w} height={h} viewBox="0 0 90 38" fill="none">
       <defs>
-        <linearGradient id="iconGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+        <linearGradient id="iconGrad" x1="0" y1="0" x2="90" y2="38" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
           <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
-      {/* Rounded square — more square than pill */}
-      <rect width="52" height="52" rx="14" fill="url(#iconGrad)" />
-      {/* G0GA inside */}
-      <text x="26" y="32" textAnchor="middle"
+      <rect width="90" height="38" rx="19" fill="url(#iconGrad)" />
+      <text x="45" y="25" textAnchor="middle"
         fontFamily="Arial Black, Arial, sans-serif"
-        fontWeight="900" fontSize="14" fill="white" letterSpacing="0.5">
+        fontWeight="900" fontSize="17" fill="white" letterSpacing="1.5">
         G0GA
       </text>
     </svg>
@@ -66,7 +64,7 @@ export default function Navbar() {
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="group hover:opacity-80 transition-opacity duration-300">
-            <LogoIcon size={42} />
+            <LogoIcon w={90} h={38} />
           </button>
 
           <ul className="hidden md:flex items-center gap-7">
@@ -120,7 +118,7 @@ export default function Navbar() {
             </button>
 
             <div className="absolute top-4 left-6">
-              <LogoIcon size={36} />
+              <LogoIcon w={76} h={32} />
             </div>
 
             {links.map((l, i) => (
