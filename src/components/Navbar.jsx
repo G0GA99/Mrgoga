@@ -4,27 +4,27 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA brand mark — bold G + center dot (represents the "0" in G0GA & AI core)
-function LogoMark({ size = 30 }) {
+// G0GA brand mark — solid G letterform + center dot
+// Inspired by: Google G (solid arc), Fiverr f (letter + dot), OpenAI (circular geometry)
+function LogoMark({ size = 32 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="logoGrad" x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#10b981" />
           <stop offset="100%" stopColor="#34d399" />
         </linearGradient>
       </defs>
-      {/* Bold G arc — thick stroke reads as solid at any size */}
+      {/* Ultra-thick G — at strokeWidth 8.5 it reads as a solid filled letterform */}
       <path
-        d="M22 8A11 11 0 1 1 26 15L18 15"
+        d="M23 8A11 11 0 1 1 27 16L19 16"
         stroke="url(#logoGrad)"
-        strokeWidth="5"
+        strokeWidth="8.5"
         strokeLinecap="round"
-        strokeLinejoin="round"
         fill="none"
       />
-      {/* Center dot — the "0" in G0GA, the AI core */}
-      <circle cx="15" cy="15" r="2.5" fill="url(#logoGrad)" />
+      {/* Center dot — the "0" in G0GA and the AI neural core */}
+      <circle cx="16" cy="16" r="3" fill="url(#logoGrad)" />
     </svg>
   )
 }

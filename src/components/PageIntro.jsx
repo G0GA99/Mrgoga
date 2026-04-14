@@ -29,25 +29,24 @@ export default function PageIntro() {
           >
             {/* Logo mark */}
             <motion.svg
-              width="70" height="70" viewBox="0 0 30 30" fill="none"
+              width="80" height="80" viewBox="0 0 32 32" fill="none"
               initial={{ scale: 0.7, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.6, ease: [0.22,1,0.36,1] }}>
               <defs>
-                <linearGradient id="ig" x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                <linearGradient id="ig" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#10b981" />
                   <stop offset="100%" stopColor="#34d399" />
                 </linearGradient>
               </defs>
               <path
-                d="M22 8A11 11 0 1 1 26 15L18 15"
+                d="M23 8A11 11 0 1 1 27 16L19 16"
                 stroke="url(#ig)"
-                strokeWidth="5"
+                strokeWidth="8.5"
                 strokeLinecap="round"
-                strokeLinejoin="round"
                 fill="none"
               />
-              <circle cx="15" cy="15" r="2.5" fill="url(#ig)" />
+              <circle cx="16" cy="16" r="3" fill="url(#ig)" />
             </motion.svg>
 
             <span
