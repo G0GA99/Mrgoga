@@ -5,7 +5,7 @@ export default function PageIntro() {
   const [show, setShow] = useState(true)
 
   useEffect(() => {
-    const t = setTimeout(() => setShow(false), 2400)
+    const t = setTimeout(() => setShow(false), 2200)
     return () => clearTimeout(t)
   }, [])
 
@@ -16,50 +16,48 @@ export default function PageIntro() {
           key="intro"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: 'easeInOut' }}
+          transition={{ duration: 0.6 }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black"
           style={{ pointerEvents: 'none' }}
         >
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center" style={{ gap: 0 }}>
 
-            {/* G0GA text */}
             <motion.span
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7 }}
               style={{
                 fontFamily: 'Arial Black, Arial, sans-serif',
                 fontWeight: 900,
-                fontSize: '3.2rem',
+                fontSize: '3rem',
                 color: 'white',
-                letterSpacing: '6px',
+                letterSpacing: '8px',
                 lineHeight: 1,
+                marginBottom: 10,
               }}
             >G0GA</motion.span>
 
-            {/* Gradient line */}
             <motion.div
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
               style={{
-                width: 120,
-                height: 1.5,
+                width: 100,
+                height: 1,
                 background: 'linear-gradient(90deg, transparent, #10b981, #34d399, transparent)',
-                borderRadius: 99,
+                marginBottom: 8,
               }}
             />
 
-            {/* AI Agency */}
             <motion.span
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.45 }}
-              transition={{ delay: 0.55, duration: 0.5 }}
+              animate={{ opacity: 0.4 }}
+              transition={{ delay: 0.6, duration: 0.4 }}
               style={{
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Poppins, sans-serif',
                 fontWeight: 500,
-                fontSize: '0.6rem',
-                letterSpacing: '0.38em',
+                fontSize: '0.55rem',
+                letterSpacing: '0.4em',
                 color: '#9ca3af',
                 textTransform: 'uppercase',
               }}
