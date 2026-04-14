@@ -30,10 +30,13 @@ export default function PageIntro() {
                 fontFamily: 'Arial Black, Arial, sans-serif',
                 fontWeight: 900,
                 fontSize: '3rem',
-                color: 'white',
                 letterSpacing: '8px',
                 lineHeight: 1,
                 marginBottom: 10,
+                background: 'linear-gradient(135deg, #10b981, #34d399)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
               }}
             >G0GA</motion.span>
 
