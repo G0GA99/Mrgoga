@@ -27,62 +27,40 @@ export default function PageIntro() {
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center gap-4"
           >
-            {/* Wordmark — large, cinematic */}
-            <div className="flex items-center" style={{ gap: '0px' }}>
+            {/* Wordmark — large, cinematic, white bold */}
+            <motion.div
+              className="flex items-center gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+            >
+              {/* Teal dot accent */}
               <motion.span
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1, duration: 0.5, ease: [0.22,1,0.36,1] }}
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 900,
-                  fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-                  letterSpacing: '-3px',
-                  background: 'linear-gradient(135deg, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  lineHeight: 1,
-                }}>G</motion.span>
-
-              {/* The "0" — brand signature with circle */}
-              <motion.span
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.5, ease: [0.22,1,0.36,1] }}
                 style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 900,
-                  fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-                  letterSpacing: '-3px',
-                  background: 'linear-gradient(135deg, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  lineHeight: 1,
                   display: 'inline-block',
-                  border: '2.5px solid rgba(16,185,129,0.6)',
+                  width: 14, height: 14,
                   borderRadius: '50%',
-                  padding: '0 6px',
-                  margin: '0 2px',
-                }}>0</motion.span>
-
+                  background: 'linear-gradient(135deg, #10b981, #34d399)',
+                  boxShadow: '0 0 20px rgba(16,185,129,0.7)',
+                  flexShrink: 0,
+                }}
+              />
               <motion.span
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1, duration: 0.5, ease: [0.22,1,0.36,1] }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.55, ease: [0.22,1,0.36,1] }}
                 style={{
                   fontFamily: "'Poppins', sans-serif",
                   fontWeight: 900,
-                  fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-                  letterSpacing: '-3px',
-                  background: 'linear-gradient(135deg, #10b981, #34d399)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
+                  fontSize: 'clamp(3.5rem, 10vw, 5.5rem)',
+                  letterSpacing: '0.02em',
+                  color: '#ffffff',
                   lineHeight: 1,
-                }}>GA</motion.span>
-            </div>
+                }}>G0GA</motion.span>
+            </motion.div>
 
             {/* Gradient line */}
             <motion.div

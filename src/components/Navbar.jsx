@@ -4,66 +4,45 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA wordmark — the "0" is the brand signature (circle-zero, not letter O)
-// Inspired by GROQ, ANTHROPIC, RUNWAY: no icon, pure typography confidence
+// G0GA wordmark — white bold + single teal dot accent
+// Style: GROQ / ANTHROPIC / LINEAR — confident, minimal, no gradient text
 function Wordmark({ size = 'md' }) {
   const sizes = {
-    sm: { main: '1.1rem', sub: '0.44rem', gap: '2px' },
-    md: { main: '1.25rem', sub: '0.5rem',  gap: '3px' },
-    lg: { main: '1.6rem',  sub: '0.55rem', gap: '4px' },
+    sm: { dot: 6,  main: '1.1rem',  sub: '0.42rem', gap: 6 },
+    md: { dot: 7,  main: '1.22rem', sub: '0.48rem', gap: 7 },
+    lg: { dot: 9,  main: '1.55rem', sub: '0.52rem', gap: 8 },
   }
   const s = sizes[size]
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, gap: s.gap }}>
-      {/* Main wordmark: G·0·G·A — the zero gets a subtle circle treatment */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0px' }}>
-        <span style={{
-          fontFamily: "'Poppins', sans-serif",
-          fontWeight: 900,
-          fontSize: s.main,
-          letterSpacing: '-0.5px',
-          background: 'linear-gradient(135deg, #10b981, #34d399)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-        }}>G</span>
-        {/* The "0" — brand signature: subtle teal ring sets it apart */}
-        <span style={{
-          fontFamily: "'Poppins', sans-serif",
-          fontWeight: 900,
-          fontSize: s.main,
-          letterSpacing: '-0.5px',
-          background: 'linear-gradient(135deg, #10b981, #34d399)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          display: 'inline-block',
-          border: '1.5px solid rgba(16,185,129,0.55)',
-          borderRadius: '50%',
-          lineHeight: 1.15,
-          padding: '0 2px',
-          margin: '0 1px',
-        }}>0</span>
-        <span style={{
-          fontFamily: "'Poppins', sans-serif",
-          fontWeight: 900,
-          fontSize: s.main,
-          letterSpacing: '-0.5px',
-          background: 'linear-gradient(135deg, #10b981, #34d399)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-        }}>GA</span>
-      </div>
-      {/* Tagline */}
+    <div style={{ display: 'flex', alignItems: 'center', gap: s.gap }}>
+      {/* Teal dot — the only color, the brand accent */}
       <span style={{
-        fontFamily: "'Poppins', sans-serif",
-        fontWeight: 600,
-        fontSize: s.sub,
-        letterSpacing: '0.22em',
-        color: '#6b7280',
-        textTransform: 'uppercase',
-      }}>AI AGENCY</span>
+        display: 'inline-block',
+        width: s.dot,
+        height: s.dot,
+        borderRadius: '50%',
+        background: 'linear-gradient(135deg, #10b981, #34d399)',
+        flexShrink: 0,
+        boxShadow: '0 0 8px rgba(16,185,129,0.5)',
+      }} />
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, gap: '2px' }}>
+        <span style={{
+          fontFamily: "'Poppins', sans-serif",
+          fontWeight: 900,
+          fontSize: s.main,
+          letterSpacing: '0.02em',
+          color: '#ffffff',
+          lineHeight: 1,
+        }}>G0GA</span>
+        <span style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 500,
+          fontSize: s.sub,
+          letterSpacing: '0.18em',
+          color: '#4b5563',
+          textTransform: 'uppercase',
+        }}>AI Agency</span>
+      </div>
     </div>
   )
 }
