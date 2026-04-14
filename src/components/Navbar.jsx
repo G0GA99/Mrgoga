@@ -4,23 +4,19 @@ import { Menu, X } from 'lucide-react'
 
 const links = ['Services', 'Portfolio', 'Pricing', 'Team', 'Contact']
 
-// G0GA pill logo — teal rounded, white bold text inside
-function LogoIcon({ w = 90, h = 38 }) {
+// G0GA text wordmark logo
+function LogoIcon() {
   return (
-    <svg width={w} height={h} viewBox="0 0 90 38" fill="none">
-      <defs>
-        <linearGradient id="iconGrad" x1="0" y1="0" x2="90" y2="38" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#10b981" />
-          <stop offset="100%" stopColor="#059669" />
-        </linearGradient>
-      </defs>
-      <rect width="90" height="38" rx="19" fill="url(#iconGrad)" />
-      <text x="45" y="25" textAnchor="middle"
-        fontFamily="Arial Black, Arial, sans-serif"
-        fontWeight="900" fontSize="17" fill="white" letterSpacing="1.5">
-        G0GA
-      </text>
-    </svg>
+    <span style={{
+      fontFamily: 'Arial Black, Arial, sans-serif',
+      fontWeight: 900,
+      fontSize: '1.35rem',
+      letterSpacing: '4px',
+      background: 'linear-gradient(135deg, #10b981, #34d399)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text',
+    }}>G0GA</span>
   )
 }
 
@@ -64,7 +60,7 @@ export default function Navbar() {
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="group hover:opacity-80 transition-opacity duration-300">
-            <LogoIcon w={90} h={38} />
+            <LogoIcon />
           </button>
 
           <ul className="hidden md:flex items-center gap-7">
@@ -118,7 +114,7 @@ export default function Navbar() {
             </button>
 
             <div className="absolute top-4 left-6">
-              <LogoIcon w={76} h={32} />
+              <LogoIcon />
             </div>
 
             {links.map((l, i) => (
