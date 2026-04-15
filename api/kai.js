@@ -1,9 +1,30 @@
 import { supabaseAdmin } from '../lib/supabase.js'
 import { KAI } from '../lib/agents/index.js'
 
-const GROQ_KEY  = process.env.GROQ_API_KEY
+const GROQ_KEY   = process.env.GROQ_API_KEY
 const RESEND_KEY = process.env.RESEND_API_KEY
-const SITE_URL  = 'https://g0ga.vercel.app'
+const BRAVE_KEY  = process.env.BRAVE_SEARCH_KEY  // optional — add later
+
+// Web search via Brave (if key available) or fallback to Jina
+async function webSearch(query) {
+  if (BRAVE_KEY) {
+    const r = await fetch(`https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=5`, {
+      headers: { 'Accept': 'application/json', 'X-Subscription-Token': BRAVE_KEY }
+    })
+    const j = await r.json()
+    return (j.web?.results || []).map(x => `${x.title}: ${x.url}\n${x.description}`).join('\n\n')
+  }
+  return null
+}
+
+// Read any webpage content via Jina AI (free, no key)
+async function readPage(url) {
+  try {
+    const r = await fetch(`https://r.jina.ai/${url}`, { headers: { 'Accept': 'text/plain' }, signal: AbortSignal.timeout(8000) })
+    const text = await r.text()
+    return text.slice(0, 1500) // first 1500 chars
+  } catch { return null }
+}
 
 async function groq(prompt) {
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -12,7 +33,7 @@ async function groq(prompt) {
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 800,
+      max_tokens: 900,
       temperature: 0.4,
     })
   })
@@ -34,25 +55,43 @@ async function sendEmail(subject, text) {
 }
 
 export default async function handler(req, res) {
-  // Allow manual trigger (GET) and Vercel Cron (GET with header)
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
 
   try {
-    // 1 — Kai generates SEO report using Groq
-    const report = await groq(KAI.buildPrompt())
+    // 1 — Kai researches: reads G0GA site + checks competitor
+    const [siteData, competitorData, searchData] = await Promise.all([
+      readPage('https://g0ga.vercel.app'),
+      readPage('https://www.appinventiv.com/ai-development/'),  // competitor example
+      webSearch('hire AI chatbot developer agency USA UK 2025'),
+    ])
 
-    // 2 — Log to Supabase
+    // 2 — Build research context
+    const researchContext = `
+LIVE DATA KAI GATHERED THIS WEEK:
+
+G0GA WEBSITE (what Google sees right now):
+${siteData || 'Could not read — site may be slow'}
+
+COMPETITOR SNAPSHOT (Appinventiv AI page):
+${competitorData || 'Could not read'}
+
+SEARCH RESULTS FOR "hire AI chatbot developer agency":
+${searchData || 'Brave Search not connected yet — use knowledge-based analysis'}
+`.trim()
+
+    // 3 — Kai generates SEO report with real context
+    const report = await groq(KAI.buildPrompt(researchContext))
+
+    // 4 — Log to Supabase
     await supabaseAdmin.from('agent_logs').insert({
       agent: 'Kai',
       action: 'seo_report',
       details: report,
     })
 
-    // 3 — Email CEO
-    const subject = `📈 Kai's Weekly SEO Report — ${new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}`
-    const text = `Weekly SEO update.\n\n${report}\n\n— Kai`
-
-    await sendEmail(subject, text)
+    // 5 — Email CEO
+    const subject = `📈 Kai — SEO Report ${new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}`
+    await sendEmail(subject, `Weekly SEO update.\n\n${report}\n\n— Kai`)
 
     res.status(200).json({ ok: true, message: 'Kai SEO report sent' })
   } catch (err) {

@@ -79,10 +79,19 @@ export default async function handler(req, res) {
       // 6 — Update lead status
       await supabaseAdmin.from('leads').update({ status: 'contacted' }).eq('id', lead.id)
 
-      // 7 — Email CEO with brief + assignment
+      // 7 — Email client directly (warm welcome)
+      if (lead.email) {
+        await sendEmail(
+          lead.email,
+          `Hey ${lead.name} — G0GA received your inquiry`,
+          `Hi ${lead.name},\n\nThanks for reaching out to G0GA.\n\nWe have reviewed your inquiry about ${lead.service || 'your project'} and our team is already on it.\n\nMrGoga (our founder) will personally reach out within 24 hours to discuss your project and answer any questions.\n\nIn the meantime, you can explore our work at https://g0ga.vercel.app\n\nLooking forward to working with you.\n\n— Zara\nProject Manager, G0GA AI Agency`
+        )
+      }
+
+      // 8 — Email CEO with brief + assignment
       await sendEmail(
         'gogamr0.01@gmail.com',
-        `📋 Zara: New project brief ready — ${lead.name} (${lead.service || 'General'})`,
+        `📋 New lead — ${lead.name} (${lead.service || 'General'})`,
         `New lead — ${lead.name} (${lead.service || 'General'})\n` +
         `Email: ${lead.email} | Budget: ${lead.budget || '?'}\n` +
         `Assigned to: ${assignedTo}\n\n` +

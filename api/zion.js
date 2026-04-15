@@ -13,7 +13,23 @@ const TOPICS = [
   'How G0GA builds full web apps using AI — no shortcuts',
   'AI integration for e-commerce: what it costs and what you get',
   'Why 90% of AI chatbots fail — and how to build one that works',
+  'What makes a great AI agency: 5 things to check before hiring one',
+  'How small businesses in UK and Canada are using AI to beat bigger competitors',
+  'Custom AI chatbot vs off-the-shelf: the honest cost comparison',
+  'How to automate your sales follow-up using AI — a practical guide',
 ]
+
+// Read top-ranking pages for research via Jina AI (free, no key)
+async function readPage(url) {
+  try {
+    const r = await fetch(`https://r.jina.ai/${url}`, {
+      headers: { 'Accept': 'text/plain' },
+      signal: AbortSignal.timeout(8000)
+    })
+    const text = await r.text()
+    return text.slice(0, 1200)
+  } catch { return null }
+}
 
 async function groq(prompt) {
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -51,18 +67,29 @@ export default async function handler(req, res) {
     const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
     const topic = TOPICS[week % TOPICS.length]
 
-    // 1 — Generate blog post
-    const content = await groq(ZION.buildPrompt(topic))
+    // 1 — Zion researches: reads what's already ranking for this topic
+    const searchSlug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60)
+    const [competitor1, competitor2] = await Promise.all([
+      readPage(`https://www.forbes.com/search/?q=${encodeURIComponent(topic)}`),
+      readPage(`https://r.jina.ai/https://www.hubspot.com/blog/search?page=1&term=${encodeURIComponent(topic)}`),
+    ])
 
-    // 2 — Save to Supabase
+    const researchContext = (competitor1 || competitor2)
+      ? `RESEARCH — what's already written on this topic:\n${competitor1 || ''}\n${competitor2 || ''}`
+      : ''
+
+    // 2 — Generate blog post with research context
+    const content = await groq(ZION.buildPrompt(topic, researchContext))
+
+    // 3 — Save to Supabase
     await supabaseAdmin.from('agent_logs').insert({
       agent: 'Zion',
       action: 'content_created',
       details: JSON.stringify({ topic, content }),
     })
 
-    // 3 — Email CEO for approval
-    const subject = `✍️ Zion wrote a new blog post — approve to publish`
+    // 4 — Email CEO for approval
+    const subject = `✍️ Zion — New blog post: ${topic.slice(0, 50)}`
     const text = `New blog post ready.\n\nTopic: ${topic}\n\n${content}\n\nReply APPROVE to publish or EDIT: [changes]. — Zion`
 
     await sendEmail(subject, text)
