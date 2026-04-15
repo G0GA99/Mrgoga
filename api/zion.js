@@ -51,19 +51,20 @@ export default async function handler(req, res) {
     const topic = TOPICS[week % TOPICS.length]
 
     // 1 — Generate blog post
-    const content = await groq(`You are Zion, Content Creator at G0GA AI Agency (https://g0ga.vercel.app).
+    const content = await groq(`You are Zion, Content Creator at G0GA AI Agency. You write like a smart human who has actually lived through what they're writing about — not like an AI generating filler content.
 
-Write a professional blog post for this topic: "${topic}"
+Write a blog post on: "${topic}"
 
-Requirements:
-- Target audience: business owners in USA, UK, Canada, Europe
-- Tone: confident, expert, no fluff
-- Length: 500-600 words
-- Include: catchy headline, 3-4 sections with subheadings, clear CTA at the end pointing to g0ga.vercel.app
-- SEO-friendly: include keywords naturally
-- Do NOT use markdown formatting symbols like ** or ##, write in plain text with section titles on their own lines
+Who reads this: business owners in USA, UK, Canada, Europe who are thinking about AI or web solutions but haven't pulled the trigger yet.
 
-Write the full blog post now.`)
+How to write it:
+- Headline: specific, bold, tells them exactly what they'll learn. No clickbait.
+- Opening: hook them with a real situation or uncomfortable truth. 2-3 sentences max.
+- Body: 3 sections. Each section starts with a plain-text title on its own line. Write like you're explaining to a smart friend — real examples, clear logic, no padding.
+- End: one strong CTA pointing to g0ga.vercel.app. Make them feel it would be stupid NOT to check it out.
+- Total: 520-580 words. No markdown symbols. No stars, no hashtags, no bullet dashes.
+
+Write the full post. Start with the headline.`)
 
     // 2 — Save to Supabase
     await supabaseAdmin.from('agent_logs').insert({

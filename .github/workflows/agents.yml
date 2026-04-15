@@ -2,65 +2,62 @@ name: G0GA Agents — 24/7 Scheduler
 
 on:
   schedule:
-    # Nova — daily post at 9am PKT (4am UTC)
-    - cron: '0 4 * * *'
-    # Kai — every Monday SEO report at 8am PKT (3am UTC)
-    - cron: '0 3 * * 1'
-    # Zion — daily content at 10am PKT (5am UTC)
-    - cron: '0 5 * * *'
-    # Zara — every 6 hours (lead management)
-    - cron: '0 */6 * * *'
-  workflow_dispatch:  # Manual trigger from GitHub UI
+    - cron: '0 4 * * *'    # Nova — daily 9am PKT
+    - cron: '0 3 * * 1'    # Kai  — every Monday 8am PKT
+    - cron: '0 5 * * 3'    # Zion — every Wednesday 10am PKT
+    - cron: '0 */6 * * *'  # Zara — every 6 hours
+  workflow_dispatch:        # Manual trigger from GitHub UI anytime
 
 jobs:
+
   nova:
-    name: Nova — Social Media Post
+    name: "Nova — Daily Social Post"
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 4 * * *' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: Trigger Nova Agent
+      - name: Run Nova
         run: |
-          curl -X POST "${{ secrets.SITE_URL }}/api/nova" \
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/nova" \
             -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --fail --silent --show-error
-          echo "Nova agent triggered successfully"
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 30
+          echo "Nova done."
 
   kai:
-    name: Kai — SEO Report
+    name: "Kai — Weekly SEO Report"
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 3 * * 1' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: Trigger Kai Agent
+      - name: Run Kai
         run: |
-          curl -X POST "${{ secrets.SITE_URL }}/api/kai" \
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/kai" \
             -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --fail --silent --show-error
-          echo "Kai agent triggered successfully"
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 30
+          echo "Kai done."
 
   zion:
-    name: Zion — Content Creation
+    name: "Zion — Weekly Blog Post"
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 5 * * *' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: Trigger Zion Agent
+      - name: Run Zion
         run: |
-          curl -X POST "${{ secrets.SITE_URL }}/api/zion" \
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/zion" \
             -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --fail --silent --show-error
-          echo "Zion agent triggered successfully"
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 30
+          echo "Zion done."
 
   zara:
-    name: Zara — Lead Management
+    name: "Zara — Lead Processing"
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 */6 * * *' || github.event_name == 'workflow_dispatch'
     steps:
-      - name: Trigger Zara Agent
+      - name: Run Zara
         run: |
-          curl -X POST "${{ secrets.SITE_URL }}/api/zara" \
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/zara" \
             -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --fail --silent --show-error
-          echo "Zara agent triggered successfully"
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 30
+          echo "Zara done."

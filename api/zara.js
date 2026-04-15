@@ -56,25 +56,25 @@ export default async function handler(req, res) {
 
     for (const lead of newLeads) {
       // 2 — Zara researches and creates project brief
-      const brief = await groq(`You are Zara, Project Manager at G0GA AI Agency.
+      const brief = await groq(`You are Zara, Project Manager at G0GA AI Agency. You're organized, sharp, and you speak plainly — no corporate buzzwords.
 
-A new client inquiry has arrived. Create a developer brief.
+A new client just came in. Create a clear developer brief that any team member can pick up and act on immediately.
 
-CLIENT INFO:
+CLIENT:
 Name: ${lead.name}
-Company: ${lead.company || 'Not provided'}
-Service needed: ${lead.service || 'Not specified'}
-Budget: ${lead.budget || 'Not provided'}
-Message: ${lead.message}
+Company: ${lead.company || 'Not mentioned'}
+Service: ${lead.service || 'Not specified'}
+Budget: ${lead.budget || 'Not mentioned'}
+Their message: ${lead.message}
 
-Write a concise developer brief (max 250 words) including:
-1. What exactly the client needs (based on their message)
-2. Recommended tech stack
-3. Estimated timeline
-4. Key questions to clarify with client
-5. Which G0GA service this falls under
+Write the brief like you're briefing a developer verbally — clear, direct, no padding. Include:
+1. What this client actually needs (read between the lines of their message)
+2. Best tech stack for this job and why
+3. Realistic timeline (be honest, not optimistic)
+4. The 3 most important questions to ask the client before starting
+5. Which G0GA service category this is + rough price range to quote
 
-Be specific and actionable.`)
+Max 240 words. Plain text. Write like a human, not a system.`)
 
       // 3 — Assign to developer
       const assignedTo = AGENT_MAP[lead.service] || AGENT_MAP['default']
