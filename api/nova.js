@@ -96,7 +96,7 @@ export default async function handler(req, res) {
 
     await sendEmail(
       `📣 Nova's Daily Post — ${status}`,
-      `Hi HammadSharif,\n\nNova's daily content for today (${new Date().toLocaleDateString()}):\n\nTYPE: ${type.replace('_',' ').toUpperCase()}\nSTATUS: ${status}\n\n${'─'.repeat(60)}\n\n${post}\n\n${'─'.repeat(60)}\n\nNova — AI Marketing Manager @ G0GA\nRunning automatically every day at 10am.`
+      `${status}\n\n${post}\n\n— Nova`
     )
 
     res.status(200).json({ ok: true, type, linkedin: linkedinResult })

@@ -98,23 +98,8 @@ Write your complete technical plan now.`
     }
 
     // 5 — Email CEO with developer's plan
-    const subject = `⚙️ ${dev.name} — Technical Plan Ready: ${project?.title || dev.specializes[0]}`
-    const text = `Hi HammadSharif,
-
-${dev.name} (${dev.role}) has reviewed the project and created a technical plan.
-
-CLIENT: ${project?.client_name || 'Test'}
-SERVICE: ${project?.service || dev.specializes[0]}
-
-${'─'.repeat(60)}
-
-${plan}
-
-${'─'.repeat(60)}
-
-Reply "GO ${dev.name.toUpperCase()}" to approve and let ${dev.name} begin.
-
-${dev.name} — ${dev.role} @ G0GA`
+    const subject = `⚙️ ${dev.name} — Plan ready: ${project?.title || dev.specializes[0]}`
+    const text = `${project?.client_name || 'Client'} | ${project?.service || dev.specializes[0]}\n\n${plan}\n\nReply GO ${dev.name.toUpperCase()} to start. — ${dev.name}`
 
     await sendEmail(
       `${dev.name} — G0GA ${dev.role} <onboarding@resend.dev>`,

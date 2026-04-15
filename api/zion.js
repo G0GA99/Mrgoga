@@ -63,7 +63,7 @@ export default async function handler(req, res) {
 
     // 3 — Email CEO for approval
     const subject = `✍️ Zion wrote a new blog post — approve to publish`
-    const text = `Hi HammadSharif,\n\nZion has created a new blog post for G0GA:\n\nTOPIC: ${topic}\n\n${'─'.repeat(60)}\n\n${content}\n\n${'─'.repeat(60)}\n\nReply "APPROVE" to publish this on the G0GA website, or "EDIT: [your changes]" to revise.\n\nZion — AI Content Creator @ G0GA\nRunning automatically every Wednesday.`
+    const text = `New blog post ready.\n\nTopic: ${topic}\n\n${content}\n\nReply APPROVE to publish or EDIT: [changes]. — Zion`
 
     await sendEmail(subject, text)
 

@@ -83,15 +83,11 @@ export default async function handler(req, res) {
       await sendEmail(
         'gogamr0.01@gmail.com',
         `📋 Zara: New project brief ready — ${lead.name} (${lead.service || 'General'})`,
-        `Hi HammadSharif,\n\nZara has processed a new lead and created a project brief:\n\n` +
-        `CLIENT: ${lead.name} (${lead.company || 'No company'})\n` +
-        `EMAIL: ${lead.email}\n` +
-        `SERVICE: ${lead.service || 'Not specified'}\n` +
-        `BUDGET: ${lead.budget || 'Not provided'}\n` +
-        `ASSIGNED TO: ${assignedTo}\n\n` +
-        `${'─'.repeat(60)}\n\nDEVELOPER BRIEF:\n\n${brief}\n\n${'─'.repeat(60)}\n\n` +
-        `ACTION NEEDED: Reply "APPROVE" to start work, or "HOLD" to wait.\n\n` +
-        `Zara — AI Project Manager @ G0GA`
+        `New lead — ${lead.name} (${lead.service || 'General'})\n` +
+        `Email: ${lead.email} | Budget: ${lead.budget || '?'}\n` +
+        `Assigned to: ${assignedTo}\n\n` +
+        `${brief}\n\n` +
+        `Reply APPROVE to start or HOLD to wait. — Zara`
       )
 
       processed.push({ lead: lead.name, assignedTo })
