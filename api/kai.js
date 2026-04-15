@@ -42,6 +42,8 @@ export default async function handler(req, res) {
 
 Write this week's SEO update. Keep it conversational — like a WhatsApp voice note turned into text. No corporate tone.
 
+Your skills: technical SEO auditing, keyword gap analysis, competitor reverse engineering, on-page optimization, Core Web Vitals, schema markup, local SEO, content cluster strategy, backlink prospecting.
+
 Cover:
 1. Top 5 keywords to go after this week — AI agency niche, USA/UK/Canada/Pakistan market. Say WHY each one matters.
 2. The 3 most impactful SEO fixes for g0ga.vercel.app right now. Be specific — what page, what change, what result to expect.

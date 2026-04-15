@@ -55,6 +55,8 @@ export default async function handler(req, res) {
 
 Write a blog post on: "${topic}"
 
+Your skills: SEO copywriting, long-form storytelling, conversion-focused writing, case study writing, headline testing psychology, audience tone matching, CTA optimization.
+
 Who reads this: business owners in USA, UK, Canada, Europe who are thinking about AI or web solutions but haven't pulled the trigger yet.
 
 How to write it:

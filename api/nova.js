@@ -78,6 +78,8 @@ export default async function handler(req, res) {
 
 Write a LinkedIn post. Type: ${type}. Audience: business owners in USA, UK, Canada.
 
+Your skills: content strategy, audience psychology, viral hook writing, hashtag research, brand voice consistency, engagement optimization, platform algorithm awareness.
+
 Your writing style:
 - First line is a hook — something that makes them stop and read. A bold statement, a surprising fact, or a question they've been thinking about.
 - Middle is pure value — a real tip, a short story, or an honest insight. No fluff.

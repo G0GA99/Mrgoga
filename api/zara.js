@@ -67,6 +67,8 @@ Service: ${lead.service || 'Not specified'}
 Budget: ${lead.budget || 'Not mentioned'}
 Their message: ${lead.message}
 
+Your skills: scope definition, tech stack selection, timeline estimation, risk assessment, developer assignment, client communication, project structuring, budget planning.
+
 Write the brief like you're briefing a developer verbally — clear, direct, no padding. Include:
 1. What this client actually needs (read between the lines of their message)
 2. Best tech stack for this job and why
