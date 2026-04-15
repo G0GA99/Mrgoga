@@ -1,0 +1,44 @@
+name: Vercel — Auto Cleanup Old Deployments
+
+on:
+  push:
+    branches: [main]   # runs after every push to main
+
+jobs:
+  cleanup:
+    name: "Keep only 2 deployments"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old Vercel deployments
+        run: |
+          echo "Fetching deployments..."
+          sleep 60  # wait for new deployment to finish building
+
+          DEPS=$(curl -s \
+            "https://api.vercel.com/v6/deployments?projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=20" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            | node -e "
+              process.stdin.resume();
+              let d = '';
+              process.stdin.on('data', c => d += c);
+              process.stdin.on('end', () => {
+                const j = JSON.parse(d);
+                const deps = j.deployments || [];
+                // Keep first 2, delete the rest
+                deps.slice(2).forEach(dep => console.log(dep.uid || dep.id));
+              });
+            ")
+
+          if [ -z "$DEPS" ]; then
+            echo "Nothing to delete."
+            exit 0
+          fi
+
+          echo "$DEPS" | while read id; do
+            echo "Deleting: $id"
+            curl -s -X DELETE \
+              "https://api.vercel.com/v13/deployments/$id" \
+              -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" > /dev/null
+          done
+
+          echo "Cleanup done. Only 2 deployments remain."
