@@ -83,7 +83,7 @@ export default async function handler(req, res) {
       await sendEmail(
         'gogamr0.01@gmail.com',
         `📋 Zara: New project brief ready — ${lead.name} (${lead.service || 'General'})`,
-        `Hi Hammad,\n\nZara has processed a new lead and created a project brief:\n\n` +
+        `Hi HammadSharif,\n\nZara has processed a new lead and created a project brief:\n\n` +
         `CLIENT: ${lead.name} (${lead.company || 'No company'})\n` +
         `EMAIL: ${lead.email}\n` +
         `SERVICE: ${lead.service || 'Not specified'}\n` +

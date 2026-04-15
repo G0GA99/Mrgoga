@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 
     // 3 — Email CEO
     const subject = `📈 Kai's Weekly SEO Report — ${new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}`
-    const text = `Hi Hammad,\n\nHere's your weekly SEO report from Kai:\n\n${report}\n\n---\nKai — AI SEO Specialist @ G0GA\nRunning automatically every Monday.`
+    const text = `Hi HammadSharif,\n\nHere's your weekly SEO report from Kai:\n\n${report}\n\n---\nKai — AI SEO Specialist @ G0GA\nRunning automatically every Monday.`
 
     await sendEmail(subject, text)
 

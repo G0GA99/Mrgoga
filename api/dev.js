@@ -99,7 +99,7 @@ Write your complete technical plan now.`
 
     // 5 — Email CEO with developer's plan
     const subject = `⚙️ ${dev.name} — Technical Plan Ready: ${project?.title || dev.specializes[0]}`
-    const text = `Hi Hammad,
+    const text = `Hi HammadSharif,
 
 ${dev.name} (${dev.role}) has reviewed the project and created a technical plan.
 
