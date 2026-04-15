@@ -180,7 +180,7 @@ export const team = [
   // ── CEO ──
   {
     id: 0,
-    name: 'Hammad Sharif',
+    name: 'MrGoga',
     role: 'CEO & Founder',
     bio: 'Visionary leader behind G0GA. Drives strategy, client relationships, and the AI-powered agency model that operates 24/7 without limits.',
     icon: '👑',

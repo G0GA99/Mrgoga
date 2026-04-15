@@ -224,7 +224,7 @@ export default function Admin() {
             <span className="text-gray-600 text-xs">/ Admin Dashboard</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-gray-600 text-xs">Hammad Sharif · CEO</span>
+            <span className="text-gray-600 text-xs">MrGoga · CEO</span>
             <button onClick={fetchData} disabled={loading}
               className="p-2 rounded-lg hover:bg-white/6 text-gray-400 hover:text-white transition-all">
               <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />

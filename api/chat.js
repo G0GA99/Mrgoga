@@ -17,7 +17,7 @@ async function sendBookingEmail(bookData) {
       from: 'Alex — G0GA Sales <onboarding@resend.dev>',
       to: 'gogamr0.01@gmail.com',
       subject: `🔥 New Call Booked — ${name} (${company || 'No company'})`,
-      text: `Hi HammadSharif,
+      text: `Hi MrGoga,
 
 Alex just booked a strategy call for you.
 
