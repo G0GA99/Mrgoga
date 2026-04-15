@@ -1,0 +1,66 @@
+name: G0GA Agents — 24/7 Scheduler
+
+on:
+  schedule:
+    # Nova — daily post at 9am PKT (4am UTC)
+    - cron: '0 4 * * *'
+    # Kai — every Monday SEO report at 8am PKT (3am UTC)
+    - cron: '0 3 * * 1'
+    # Zion — daily content at 10am PKT (5am UTC)
+    - cron: '0 5 * * *'
+    # Zara — every 6 hours (lead management)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Manual trigger from GitHub UI
+
+jobs:
+  nova:
+    name: Nova — Social Media Post
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 4 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Trigger Nova Agent
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/nova" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --fail --silent --show-error
+          echo "Nova agent triggered successfully"
+
+  kai:
+    name: Kai — SEO Report
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 3 * * 1' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Trigger Kai Agent
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/kai" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --fail --silent --show-error
+          echo "Kai agent triggered successfully"
+
+  zion:
+    name: Zion — Content Creation
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 5 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Trigger Zion Agent
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/zion" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --fail --silent --show-error
+          echo "Zion agent triggered successfully"
+
+  zara:
+    name: Zara — Lead Management
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 */6 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Trigger Zara Agent
+        run: |
+          curl -X POST "${{ secrets.SITE_URL }}/api/zara" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --fail --silent --show-error
+          echo "Zara agent triggered successfully"
