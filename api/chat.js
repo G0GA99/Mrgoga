@@ -1,4 +1,4 @@
-import { ALEX } from './lib/agents/index.js'
+import { ALEX } from '../lib/agents/index.js'
 
 const SYSTEM_PROMPT = ALEX.systemPrompt
 

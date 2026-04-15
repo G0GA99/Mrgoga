@@ -1,5 +1,5 @@
-import { supabaseAdmin } from './lib/supabase.js'
-import { KAI } from './lib/agents/index.js'
+import { supabaseAdmin } from '../lib/supabase.js'
+import { KAI } from '../lib/agents/index.js'
 
 const GROQ_KEY  = process.env.GROQ_API_KEY
 const RESEND_KEY = process.env.RESEND_API_KEY

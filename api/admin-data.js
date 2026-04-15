@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './lib/supabase.js'
+import { supabaseAdmin } from '../lib/supabase.js'
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
 

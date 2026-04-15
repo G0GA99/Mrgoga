@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './lib/supabase.js'
+import { supabaseAdmin } from '../lib/supabase.js'
 
 const RESEND_KEY = process.env.RESEND_API_KEY
 

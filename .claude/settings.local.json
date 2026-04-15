@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(vercel env:*he)"
+      "tum khud handle akro supabase ko"
     ]
   }
 }
