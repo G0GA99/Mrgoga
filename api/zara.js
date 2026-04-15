@@ -1,17 +1,10 @@
 import { supabaseAdmin } from './lib/supabase.js'
+import { ZARA, assignDeveloper } from './lib/agents/index.js'
 
 const GROQ_KEY   = process.env.GROQ_API_KEY
 const RESEND_KEY = process.env.RESEND_API_KEY
 
-const AGENT_MAP = {
-  'AI Integration':        'Cypher',
-  'Web Experience':        'Orion',
-  'Data Visualization':    'Cypher',
-  'Automation Workflows':  'Cypher',
-  'Product Visualization': 'Blaze',
-  'Branding & Animation':  'Blaze',
-  'default':               'Orion',
-}
+
 
 async function groq(prompt) {
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -56,30 +49,10 @@ export default async function handler(req, res) {
 
     for (const lead of newLeads) {
       // 2 — Zara researches and creates project brief
-      const brief = await groq(`You are Zara, Project Manager at G0GA AI Agency. You're organized, sharp, and you speak plainly — no corporate buzzwords.
-
-A new client just came in. Create a clear developer brief that any team member can pick up and act on immediately.
-
-CLIENT:
-Name: ${lead.name}
-Company: ${lead.company || 'Not mentioned'}
-Service: ${lead.service || 'Not specified'}
-Budget: ${lead.budget || 'Not mentioned'}
-Their message: ${lead.message}
-
-Your skills: scope definition, tech stack selection, timeline estimation, risk assessment, developer assignment, client communication, project structuring, budget planning.
-
-Write the brief like you're briefing a developer verbally — clear, direct, no padding. Include:
-1. What this client actually needs (read between the lines of their message)
-2. Best tech stack for this job and why
-3. Realistic timeline (be honest, not optimistic)
-4. The 3 most important questions to ask the client before starting
-5. Which G0GA service category this is + rough price range to quote
-
-Max 240 words. Plain text. Write like a human, not a system.`)
+      const brief = await groq(ZARA.buildPrompt(lead))
 
       // 3 — Assign to developer
-      const assignedTo = AGENT_MAP[lead.service] || AGENT_MAP['default']
+      const assignedTo = assignDeveloper(lead.service).name
 
       // 4 — Create project in Supabase
       const { data: project } = await supabaseAdmin.from('projects').insert({

@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './lib/supabase.js'
+import { NOVA } from './lib/agents/index.js'
 
 const GROQ_KEY       = process.env.GROQ_API_KEY
 const RESEND_KEY     = process.env.RESEND_API_KEY
@@ -74,21 +75,7 @@ export default async function handler(req, res) {
     const type = POST_TYPES[day % POST_TYPES.length]
 
     // 1 — Generate social post
-    const post = await groq(`You are Nova, Marketing Manager at G0GA AI Agency. You write LinkedIn posts that feel written by a real person, not a brand.
-
-Write a LinkedIn post. Type: ${type}. Audience: business owners in USA, UK, Canada.
-
-Your skills: content strategy, audience psychology, viral hook writing, hashtag research, brand voice consistency, engagement optimization, platform algorithm awareness.
-
-Your writing style:
-- First line is a hook — something that makes them stop and read. A bold statement, a surprising fact, or a question they've been thinking about.
-- Middle is pure value — a real tip, a short story, or an honest insight. No fluff.
-- End with ONE clear CTA. Either visit g0ga.vercel.app, comment something specific, or DM for help.
-- Add 4-5 relevant hashtags on the last line.
-- Write like a confident human, not a marketing bot. Short paragraphs. Real sentences. Occasional imperfection is fine.
-- Max 200 words. No markdown symbols.
-
-Write only the post text. Nothing before or after it.`)
+    const post = await groq(NOVA.buildPrompt(type))
 
     // 2 — Try to post to LinkedIn (if configured)
     const linkedinResult = await postToLinkedIn(post)

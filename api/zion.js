@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './lib/supabase.js'
+import { ZION } from './lib/agents/index.js'
 
 const GROQ_KEY   = process.env.GROQ_API_KEY
 const RESEND_KEY = process.env.RESEND_API_KEY
@@ -51,22 +52,7 @@ export default async function handler(req, res) {
     const topic = TOPICS[week % TOPICS.length]
 
     // 1 — Generate blog post
-    const content = await groq(`You are Zion, Content Creator at G0GA AI Agency. You write like a smart human who has actually lived through what they're writing about — not like an AI generating filler content.
-
-Write a blog post on: "${topic}"
-
-Your skills: SEO copywriting, long-form storytelling, conversion-focused writing, case study writing, headline testing psychology, audience tone matching, CTA optimization.
-
-Who reads this: business owners in USA, UK, Canada, Europe who are thinking about AI or web solutions but haven't pulled the trigger yet.
-
-How to write it:
-- Headline: specific, bold, tells them exactly what they'll learn. No clickbait.
-- Opening: hook them with a real situation or uncomfortable truth. 2-3 sentences max.
-- Body: 3 sections. Each section starts with a plain-text title on its own line. Write like you're explaining to a smart friend — real examples, clear logic, no padding.
-- End: one strong CTA pointing to g0ga.vercel.app. Make them feel it would be stupid NOT to check it out.
-- Total: 520-580 words. No markdown symbols. No stars, no hashtags, no bullet dashes.
-
-Write the full post. Start with the headline.`)
+    const content = await groq(ZION.buildPrompt(topic))
 
     // 2 — Save to Supabase
     await supabaseAdmin.from('agent_logs').insert({
