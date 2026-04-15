@@ -3,15 +3,26 @@ import { createClient } from '@supabase/supabase-js'
 const url = process.env.SUPABASE_URL
 const key = process.env.SUPABASE_SERVICE_KEY
 
-// Safe client — returns no-op proxy if Supabase not configured yet
-const createSafeClient = () => {
-  if (!url || !key) {
-    const noop = () => ({ data: null, error: null, select: () => noop(), insert: () => noop(), update: () => noop(), eq: () => noop(), order: () => noop(), limit: () => noop(), single: () => noop() })
-    return { from: () => noop(), configured: false }
+// If Supabase not configured, return a no-op client so agents don't crash
+const makeNoop = () => {
+  const noop = {
+    data: null,
+    error: null,
+    then: (fn) => Promise.resolve(fn({ data: null, error: null })),
   }
-  const client = createClient(url, key)
-  client.configured = true
-  return client
+  const chain = {
+    select: () => chain,
+    insert: () => Promise.resolve({ data: null, error: null }),
+    update: () => chain,
+    eq: () => chain,
+    order: () => chain,
+    limit: () => chain,
+    single: () => Promise.resolve({ data: null, error: null }),
+    then: (fn) => Promise.resolve(fn({ data: [], error: null })),
+  }
+  return { from: () => chain, configured: false }
 }
 
-export const supabaseAdmin = createSafeClient()
+export const supabaseAdmin = (url && key)
+  ? (() => { const c = createClient(url, key); c.configured = true; return c })()
+  : makeNoop()
