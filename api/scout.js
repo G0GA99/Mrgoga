@@ -117,22 +117,31 @@ export default async function handler(req, res) {
   if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
 
   try {
-    // 1 — Search for local businesses using different queries daily
+    // 1 — Search globally for high-ticket prospects, rotating daily
     const queries = [
-      'local restaurant cafe USA no online ordering website contact email',
-      'law firm accounting firm UK small business website contact us',
-      'dental clinic healthcare Canada appointment booking website email',
-      'real estate agency USA small website contact email',
-      'gym fitness center UK website no chatbot contact',
-      'hotel bed breakfast Canada website contact email',
-      'salon spa USA small business website email',
-      'local retail store UK website contact us email',
+      // Middle East — high-budget markets
+      'real estate agency Dubai Abu Dhabi website AI chatbot contact email',
+      'private clinic hospital UAE Saudi Arabia website contact automation',
+      'law firm consulting firm Dubai Riyadh website no client portal email',
+      'luxury hotel resort UAE Qatar website contact no AI chatbot',
+      'investment firm wealth management Dubai website contact email',
+      // Europe — established businesses
+      'law firm accounting Germany UK Netherlands website contact email no automation',
+      'e-commerce brand Germany France website customer support no chatbot contact',
+      'real estate agency Spain Italy UK website no AI chatbot contact email',
+      'logistics company Europe website no dashboard contact email',
+      'manufacturing company Germany UK website no automation contact email',
+      // USA/Canada/Australia — high-ticket
+      'law firm consulting USA website no AI client portal contact email',
+      'car dealership group USA Australia website no AI assistant contact',
+      'marketing agency USA Canada white label AI services website email',
+      'healthcare clinic network USA website no booking automation contact email',
     ]
-    const dayIndex = new Date().getDay()
+    const dayIndex = new Date().getDay() + Math.floor(Date.now() / (24 * 60 * 60 * 1000)) % 7
     const query = queries[dayIndex % queries.length]
 
     const searchResults = await jinaSearch(query)
-      || `Find local businesses in USA, UK, Canada: restaurants, law firms, clinics, real estate agents, gyms, salons. These are small-medium local businesses that need web/AI help.`
+      || `Find established high-ticket businesses globally: law firms in UK/Germany, real estate agencies in Dubai, private clinics in UAE, e-commerce brands in Europe, consulting firms in USA. These are profitable businesses that need AI chatbots, automation, data dashboards, or modern websites.`
 
     // 2 — Scout identifies prospects
     const prospectRaw = await groq(SCOUT.buildProspectPrompt(searchResults), 1200)
@@ -154,6 +163,7 @@ export default async function handler(req, res) {
           website,
           industry: get('INDUSTRY'),
           location: get('LOCATION'),
+          budget: get('ESTIMATED BUDGET'),
           painPoint,
           hook: get('EMAIL HOOK'),
           score: get('PROSPECT SCORE'),
@@ -180,8 +190,8 @@ export default async function handler(req, res) {
       // Extract email from site
       const prospectEmail = extractEmail(siteData)
 
-      // Generate personalized cold email
-      const emailRaw = await groq(SCOUT.buildEmailPrompt(prospect, siteData), 350)
+      // Generate personalized cold email (pass budget context)
+      const emailRaw = await groq(SCOUT.buildEmailPrompt(prospect, siteData), 400)
       const lines = emailRaw.split('\n').filter(l => l.trim())
       const subject = lines[0]?.replace(/^subject:\s*/i, '').trim() || `Quick idea for ${prospect.company}`
       const body = lines.slice(lines[1] === '' ? 2 : 1).join('\n').trim()
