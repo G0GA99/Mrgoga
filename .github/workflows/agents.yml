@@ -2,10 +2,10 @@ name: G0GA Agents — 24/7 Scheduler
 
 on:
   schedule:
-    - cron: '0 4 * * *'    # Nova — daily 9am PKT
-    - cron: '0 3 * * 1'    # Kai  — every Monday 8am PKT
-    - cron: '0 5 * * 1'    # Zion — every Monday 10am PKT
-    - cron: '0 */6 * * *'  # Zara — every 6 hours
+    - cron: '0 19 * * *'    # Nova — daily 12am PKT (midnight)
+    - cron: '0 19 * * 0'    # Kai  — every Monday 12am PKT (Sun 7pm UTC)
+    - cron: '0 19 * * 0'    # Zion — every Monday 12am PKT (Sun 7pm UTC)
+    - cron: '0 */6 * * *'   # Zara — every 6 hours
   workflow_dispatch:        # Manual trigger from GitHub UI anytime
 
 jobs:

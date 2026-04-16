@@ -87,8 +87,8 @@ export default async function handler(req, res) {
       details: JSON.stringify({ type, post, linkedin: linkedinResult }),
     })
 
-    // 4 — Email CEO only on Monday (weekly summary, no daily spam)
-    const isMonday = new Date().getDay() === 1
+    // 4 — Email CEO only on Monday PKT (= Sunday 19:00 UTC, getDay()===0)
+    const isMonday = new Date().getDay() === 0
     if (isMonday) {
       const status = linkedinResult.posted
         ? '✅ Posted to LinkedIn Company Page'
