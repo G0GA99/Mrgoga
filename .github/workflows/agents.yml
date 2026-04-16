@@ -1,21 +1,59 @@
-name: G0GA Agents — 24/7 Scheduler
+name: G0GA Agents — 24/7 Global Operations
 
 on:
   schedule:
-    - cron: '0 19 * * *'    # Nova  — daily 12:00am PKT
-    - cron: '0 19 * * 0'    # Kai   — Monday 12:00am PKT
-    - cron: '0 19 * * 0'    # Zion  — Monday 12:00am PKT
-    - cron: '0 */6 * * *'   # Zara  — every 6 hours
-    - cron: '0 19 * * *'    # Scout — daily 12:00am PKT
-    - cron: '0 20 * * 0'    # Luna  — Monday 1:00am PKT (weekly check)
-    - cron: '0 21 * * 0'    # Vex   — Monday 2:00am PKT (weekly check)
-    - cron: '30 19 * * 0'   # Digest— Monday 12:30am PKT (after all agents)
+    # ─── SCOUT — 3x daily (covers Dubai, London, New York business hours) ───
+    - cron: '0 2 * * *'     # Scout run 1 — 7am PKT / 6am Dubai / 6am UAE
+    - cron: '0 10 * * *'    # Scout run 2 — 3pm PKT / 2pm Dubai / 10am London
+    - cron: '0 18 * * *'    # Scout run 3 — 11pm PKT / 10pm Dubai / 1pm New York
+
+    # ─── NOVA — 2x daily (morning + evening posts, global audience) ─────────
+    - cron: '0 3 * * *'     # Nova post 1 — 8am PKT / 7am Dubai / 7am London
+    - cron: '0 13 * * *'    # Nova post 2 — 6pm PKT / 5pm Dubai / 1pm London
+
+    # ─── ZARA — every 4 hours (faster lead response) ────────────────────────
+    - cron: '0 */4 * * *'   # Zara — every 4 hours, all day
+
+    # ─── KAI — daily SEO (more frequent keyword tracking) ───────────────────
+    - cron: '0 20 * * *'    # Kai — 1am PKT daily
+
+    # ─── ZION — 3x per week (Mon, Wed, Fri — more content, more SEO) ────────
+    - cron: '0 21 * * 0'    # Zion — Monday 2am PKT
+    - cron: '0 21 * * 2'    # Zion — Wednesday 2am PKT
+    - cron: '0 21 * * 4'    # Zion — Friday 2am PKT
+
+    # ─── LUNA — daily site health check ─────────────────────────────────────
+    - cron: '0 23 * * *'    # Luna — 4am PKT daily
+
+    # ─── VEX — 3x per week reputation monitoring ────────────────────────────
+    - cron: '0 22 * * 1'    # Vex — Tuesday 3am PKT
+    - cron: '0 22 * * 3'    # Vex — Thursday 3am PKT
+    - cron: '0 22 * * 5'    # Vex — Saturday 3am PKT
+
+    # ─── DIGEST — weekly Monday CEO report ───────────────────────────────────
+    - cron: '30 19 * * 0'   # Digest — Monday 12:30am PKT
+
   workflow_dispatch:        # Manual trigger from GitHub UI anytime
 
 jobs:
 
+  # ─── SCOUT — 3 runs/day, global outreach ─────────────────────────────────
+  scout:
+    name: "Scout — Global Outreach"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Scout
+        run: |
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/scout" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 90
+          echo "Scout done."
+
+  # ─── NOVA — 2 posts/day ──────────────────────────────────────────────────
   nova:
-    name: "Nova — Daily Social Post"
+    name: "Nova — Social Media Post"
     runs-on: ubuntu-latest
     steps:
       - name: Run Nova
@@ -27,32 +65,7 @@ jobs:
             --max-time 30
           echo "Nova done."
 
-  kai:
-    name: "Kai — Weekly SEO Report"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run Kai
-        run: |
-          curl -s -X POST "${{ secrets.SITE_URL }}/api/kai" \
-            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -w "\nHTTP Status: %{http_code}" \
-            --max-time 30
-          echo "Kai done."
-
-  zion:
-    name: "Zion — Weekly Blog Post"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run Zion
-        run: |
-          curl -s -X POST "${{ secrets.SITE_URL }}/api/zion" \
-            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -w "\nHTTP Status: %{http_code}" \
-            --max-time 30
-          echo "Zion done."
-
+  # ─── ZARA — every 4 hours ─────────────────────────────────────────────────
   zara:
     name: "Zara — Lead Processing"
     runs-on: ubuntu-latest
@@ -66,19 +79,35 @@ jobs:
             --max-time 30
           echo "Zara done."
 
-  scout:
-    name: "Scout — Daily Outreach"
+  # ─── KAI — daily SEO ──────────────────────────────────────────────────────
+  kai:
+    name: "Kai — Daily SEO"
     runs-on: ubuntu-latest
     steps:
-      - name: Run Scout
+      - name: Run Kai
         run: |
-          curl -s -X POST "${{ secrets.SITE_URL }}/api/scout" \
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/kai" \
             -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
             -H "Content-Type: application/json" \
             -w "\nHTTP Status: %{http_code}" \
-            --max-time 60
-          echo "Scout done."
+            --max-time 30
+          echo "Kai done."
 
+  # ─── ZION — 3x per week content ───────────────────────────────────────────
+  zion:
+    name: "Zion — Content Creation"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Zion
+        run: |
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/zion" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 30
+          echo "Zion done."
+
+  # ─── LUNA — daily health check ────────────────────────────────────────────
   luna:
     name: "Luna — Site Health Check"
     runs-on: ubuntu-latest
@@ -92,6 +121,7 @@ jobs:
             --max-time 30
           echo "Luna done."
 
+  # ─── VEX — 3x per week reputation ────────────────────────────────────────
   vex:
     name: "Vex — Reputation Monitor"
     runs-on: ubuntu-latest
@@ -105,6 +135,7 @@ jobs:
             --max-time 30
           echo "Vex done."
 
+  # ─── DIGEST — weekly CEO report ───────────────────────────────────────────
   digest:
     name: "Digest — Weekly CEO Email"
     runs-on: ubuntu-latest
