@@ -162,6 +162,78 @@ async function agentChat(body, res) {
   res.status(200).json({ ok: true, agent, reply })
 }
 
+// ─── Weekly Digest (POST action=digest) ─────────────────────────────────────
+
+async function runDigest(res) {
+  const RESEND_KEY = process.env.RESEND_API_KEY
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
+  const { data: logs } = await supabaseAdmin
+    .from('agent_logs').select('*')
+    .in('agent', ['Nova', 'Kai', 'Zion'])
+    .gte('created_at', sevenDaysAgo)
+    .order('created_at', { ascending: false })
+
+  if (!logs || logs.length === 0) {
+    return res.status(200).json({ ok: true, message: 'No reports this week' })
+  }
+
+  const agentReports = {}
+  for (const log of logs) {
+    if (!agentReports[log.agent]) agentReports[log.agent] = log
+  }
+
+  const [{ data: newLeads }, { data: scoutLogs }] = await Promise.all([
+    supabaseAdmin.from('leads').select('id, name, service, budget, status').gte('created_at', sevenDaysAgo),
+    supabaseAdmin.from('agent_logs').select('details').eq('agent', 'Scout').eq('action', 'prospect_emailed').gte('created_at', sevenDaysAgo),
+  ])
+
+  const date = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  let email = `G0GA — Weekly Update (${date})\n\n`
+
+  if (agentReports['Nova']) {
+    let d = {}; try { d = JSON.parse(agentReports['Nova'].details) } catch {}
+    email += `NOVA: ${d.linkedin?.posted ? 'Posted to LinkedIn ✅' : 'Content ready, LinkedIn pending 📝'}\n`
+  }
+  if (agentReports['Kai']) {
+    const r = typeof agentReports['Kai'].details === 'string' ? agentReports['Kai'].details.slice(0, 300) : ''
+    email += `\nKAI (SEO):\n${r}\n`
+  }
+  if (agentReports['Zion']) {
+    let d = {}; try { d = JSON.parse(agentReports['Zion'].details) } catch {}
+    email += `\nZION: ${d.typeLabel || 'Content'} written — "${d.topic || 'Weekly post'}"\n`
+    email += `Medium: ${d.medium?.published ? `Published ✅ ${d.medium.url}` : 'Pending 📝'}\n`
+  }
+
+  email += `\nLEADS THIS WEEK: ${newLeads?.length || 0}\n`
+  if (newLeads?.length > 0) {
+    newLeads.forEach((l, i) => { email += `  ${i+1}. ${l.name} — ${l.service || 'General'} — Budget: ${l.budget || '?'}\n` })
+  }
+
+  email += `\nSCOUT OUTREACH: ${scoutLogs?.length || 0} prospects contacted\n`
+  if (scoutLogs?.length > 0) {
+    scoutLogs.slice(0, 5).forEach((log, i) => {
+      try { const d = JSON.parse(log.details); email += `  ${i+1}. ${d.company} (${d.location}) — ${d.score}\n` } catch {}
+    })
+  }
+  email += `\nAdmin panel: https://g0ga.vercel.app/admin\n— G0GA Team`
+
+  if (RESEND_KEY) {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: 'G0GA Team <onboarding@resend.dev>', to: 'gogamr0.01@gmail.com', subject: `📊 G0GA Weekly Digest — ${date}`, text: email })
+    })
+  }
+
+  await supabaseAdmin.from('agent_logs').insert({
+    agent: 'Digest', action: 'weekly_digest_sent',
+    details: `Weekly digest sent. Agents: ${Object.keys(agentReports).join(', ')}. Leads: ${newLeads?.length || 0}. Scout: ${scoutLogs?.length || 0}`,
+  })
+
+  res.status(200).json({ ok: true, agentsIncluded: Object.keys(agentReports) })
+}
+
 // ─── Router ──────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
@@ -170,7 +242,10 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') return await getDashboardData(res)
-    if (req.method === 'POST') return await agentChat(req.body, res)
+    // POST: route by action field
+    const action = req.body?.action
+    if (action === 'digest') return await runDigest(res)
+    return await agentChat(req.body, res)  // default POST = agent chat
   } catch (err) {
     console.error('Admin data error:', err)
     res.status(500).json({ error: err.message })

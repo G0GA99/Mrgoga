@@ -111,9 +111,10 @@ jobs:
     steps:
       - name: Run Digest
         run: |
-          curl -s -X POST "${{ secrets.SITE_URL }}/api/digest" \
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/admin-data" \
             -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
             -H "Content-Type: application/json" \
+            -d '{"action":"digest"}' \
             -w "\nHTTP Status: %{http_code}" \
             --max-time 30
           echo "Digest done."
