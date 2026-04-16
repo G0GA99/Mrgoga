@@ -326,7 +326,8 @@ function AgentChat() {
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
                   placeholder={`Ask ${selectedAgent.name} anything...`}
                   disabled={sending}
-                  className="flex-1 bg-white/6 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-white/25 transition-colors"
+                  className="field flex-1"
+                  style={{ borderRadius: '12px', padding: '10px 16px', fontSize: '0.875rem' }}
                 />
                 <button onClick={send} disabled={!input.trim() || sending}
                   className="px-4 py-2.5 rounded-xl text-black font-bold text-sm hover:opacity-90 disabled:opacity-30 transition-all flex items-center gap-1.5"
