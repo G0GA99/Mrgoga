@@ -122,18 +122,7 @@ export default async function handler(req, res) {
       details: JSON.stringify({ topic, content, medium: mediumResult }),
     })
 
-    // 5 — Weekly email to CEO (Zion runs Wednesday — always send)
-    const mediumStatus = mediumResult.published
-      ? `✅ Published on Medium: ${mediumResult.url}`
-      : mediumResult.skipped
-        ? '📝 Medium not connected (add MEDIUM_TOKEN to Vercel to auto-publish)'
-        : `⚠️ Medium publish failed: ${mediumResult.error}`
-
-    const subject = `✍️ Zion — Weekly Blog: ${topic.slice(0, 50)}`
-    const text = `Weekly blog post created.\n\nTopic: ${topic}\n\n${mediumStatus}\n\n---\n\n${content}\n\n— Zion`
-
-    await sendEmail(subject, text)
-
+    // No individual CEO email — digest.js collects all reports at 12:30am Monday
     res.status(200).json({ ok: true, topic, medium: mediumResult })
   } catch (err) {
     console.error('Zion error:', err)

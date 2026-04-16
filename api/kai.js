@@ -89,11 +89,8 @@ ${searchData || 'Brave Search not connected yet — use knowledge-based analysis
       details: report,
     })
 
-    // 5 — Email CEO
-    const subject = `📈 Kai — SEO Report ${new Date().toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' })}`
-    await sendEmail(subject, `Weekly SEO update.\n\n${report}\n\n— Kai`)
-
-    res.status(200).json({ ok: true, message: 'Kai SEO report sent' })
+    // No individual CEO email — digest.js collects all reports at 12:30am Monday
+    res.status(200).json({ ok: true, message: 'Kai SEO report saved' })
   } catch (err) {
     console.error('Kai error:', err)
     res.status(500).json({ ok: false, error: err.message })

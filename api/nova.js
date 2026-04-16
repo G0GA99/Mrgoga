@@ -87,20 +87,7 @@ export default async function handler(req, res) {
       details: JSON.stringify({ type, post, linkedin: linkedinResult }),
     })
 
-    // 4 — Email CEO only on Monday PKT (= Sunday 19:00 UTC, getDay()===0)
-    const isMonday = new Date().getDay() === 0
-    if (isMonday) {
-      const status = linkedinResult.posted
-        ? '✅ Posted to LinkedIn Company Page'
-        : linkedinResult.skipped
-          ? '📝 Content ready (LinkedIn not connected yet)'
-          : '⚠️ LinkedIn post failed — content saved'
-      await sendEmail(
-        `📣 Nova — Weekly Update`,
-        `Nova ran daily this week. Monday summary:\n\n${status}\n\n${post}\n\nAll posts are logged in your admin panel.\n\n— Nova`
-      )
-    }
-
+    // No individual CEO email — digest.js collects all reports at 12:30am Monday
     res.status(200).json({ ok: true, type, linkedin: linkedinResult })
   } catch (err) {
     console.error('Nova error:', err)
