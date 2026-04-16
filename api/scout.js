@@ -203,6 +203,25 @@ export default async function handler(req, res) {
         emailSent = await sendProspectEmail(prospectEmail, subject, body)
       }
 
+      // 🔥 INSTANT HOT LEAD ALERT — don't wait for summary
+      const isHot = prospect.score?.toLowerCase().includes('hot')
+      if (emailSent && isHot) {
+        await sendCEOReport(
+          `🔥 Scout — HOT LEAD contacted: ${prospect.company}`,
+          `Scout just emailed a HOT prospect.\n\n` +
+          `Company: ${prospect.company}\n` +
+          `Industry: ${prospect.industry}\n` +
+          `Location: ${prospect.location}\n` +
+          `Budget: ${prospect.budget || 'High-ticket'}\n` +
+          `Problem: ${prospect.painPoint}\n` +
+          `Email sent to: ${prospectEmail}\n` +
+          `Subject: "${subject}"\n\n` +
+          `Their reply will come to: gogamr0.01@gmail.com\n` +
+          `Check your inbox — if they reply in next 24-48 hours, that is a WARM lead.\n\n` +
+          `Email preview:\n${body.slice(0, 300)}\n\n— Scout`
+        )
+      }
+
       // Log to Supabase
       await supabaseAdmin.from('agent_logs').insert({
         agent: 'Scout',
@@ -213,6 +232,7 @@ export default async function handler(req, res) {
           industry: prospect.industry,
           location: prospect.location,
           score: prospect.score,
+          budget: prospect.budget,
           painPoint: prospect.painPoint,
           email: prospectEmail || 'not found',
           emailSent,
