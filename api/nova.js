@@ -87,17 +87,19 @@ export default async function handler(req, res) {
       details: JSON.stringify({ type, post, linkedin: linkedinResult }),
     })
 
-    // 4 — Email CEO with preview
-    const status = linkedinResult.posted
-      ? '✅ Posted to LinkedIn Company Page'
-      : linkedinResult.skipped
-        ? '📝 Content ready (LinkedIn not connected yet — add LINKEDIN_TOKEN to Vercel)'
-        : '⚠️ LinkedIn post failed — content saved'
-
-    await sendEmail(
-      `📣 Nova's Daily Post — ${status}`,
-      `${status}\n\n${post}\n\n— Nova`
-    )
+    // 4 — Email CEO only on Monday (weekly summary, no daily spam)
+    const isMonday = new Date().getDay() === 1
+    if (isMonday) {
+      const status = linkedinResult.posted
+        ? '✅ Posted to LinkedIn Company Page'
+        : linkedinResult.skipped
+          ? '📝 Content ready (LinkedIn not connected yet)'
+          : '⚠️ LinkedIn post failed — content saved'
+      await sendEmail(
+        `📣 Nova — Weekly Update`,
+        `Nova ran daily this week. Monday summary:\n\n${status}\n\n${post}\n\nAll posts are logged in your admin panel.\n\n— Nova`
+      )
+    }
 
     res.status(200).json({ ok: true, type, linkedin: linkedinResult })
   } catch (err) {

@@ -1,8 +1,9 @@
 import { supabaseAdmin } from '../lib/supabase.js'
 import { ZION } from '../lib/agents/index.js'
 
-const GROQ_KEY   = process.env.GROQ_API_KEY
-const RESEND_KEY = process.env.RESEND_API_KEY
+const GROQ_KEY      = process.env.GROQ_API_KEY
+const RESEND_KEY    = process.env.RESEND_API_KEY
+const MEDIUM_TOKEN  = process.env.MEDIUM_TOKEN  // Get from medium.com/me/settings → Integration tokens
 
 const TOPICS = [
   'How AI agents are replacing traditional software agencies in 2025',
@@ -81,20 +82,59 @@ export default async function handler(req, res) {
     // 2 — Generate blog post with research context
     const content = await groq(ZION.buildPrompt(topic, researchContext))
 
-    // 3 — Save to Supabase
+    // 3 — Publish to Medium (if token configured)
+    let mediumResult = { skipped: true }
+    if (MEDIUM_TOKEN) {
+      try {
+        // Get Medium user ID first
+        const meRes = await fetch('https://api.medium.com/v1/me', {
+          headers: { 'Authorization': `Bearer ${MEDIUM_TOKEN}`, 'Content-Type': 'application/json' }
+        })
+        const meData = await meRes.json()
+        const userId = meData.data?.id
+
+        if (userId) {
+          const pubRes = await fetch(`https://api.medium.com/v1/users/${userId}/posts`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${MEDIUM_TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: topic,
+              contentFormat: 'markdown',
+              content: content,
+              tags: ['AI', 'Technology', 'Business', 'Digital Agency'],
+              publishStatus: 'public',
+            })
+          })
+          const pubData = await pubRes.json()
+          mediumResult = pubRes.ok
+            ? { published: true, url: pubData.data?.url }
+            : { published: false, error: pubData.errors?.[0]?.message }
+        }
+      } catch (e) {
+        mediumResult = { published: false, error: e.message }
+      }
+    }
+
+    // 4 — Save to Supabase
     await supabaseAdmin.from('agent_logs').insert({
       agent: 'Zion',
       action: 'content_created',
-      details: JSON.stringify({ topic, content }),
+      details: JSON.stringify({ topic, content, medium: mediumResult }),
     })
 
-    // 4 — Email CEO for approval
-    const subject = `✍️ Zion — New blog post: ${topic.slice(0, 50)}`
-    const text = `New blog post ready.\n\nTopic: ${topic}\n\n${content}\n\nReply APPROVE to publish or EDIT: [changes]. — Zion`
+    // 5 — Weekly email to CEO (Zion runs Wednesday — always send)
+    const mediumStatus = mediumResult.published
+      ? `✅ Published on Medium: ${mediumResult.url}`
+      : mediumResult.skipped
+        ? '📝 Medium not connected (add MEDIUM_TOKEN to Vercel to auto-publish)'
+        : `⚠️ Medium publish failed: ${mediumResult.error}`
+
+    const subject = `✍️ Zion — Weekly Blog: ${topic.slice(0, 50)}`
+    const text = `Weekly blog post created.\n\nTopic: ${topic}\n\n${mediumStatus}\n\n---\n\n${content}\n\n— Zion`
 
     await sendEmail(subject, text)
 
-    res.status(200).json({ ok: true, topic, message: 'Zion content email sent to CEO' })
+    res.status(200).json({ ok: true, topic, medium: mediumResult })
   } catch (err) {
     console.error('Zion error:', err)
     res.status(500).json({ ok: false, error: err.message })

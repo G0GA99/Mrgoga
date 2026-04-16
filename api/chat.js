@@ -7,7 +7,7 @@ async function sendBookingEmail(bookData) {
   const key = process.env.RESEND_API_KEY
   if (!key) return
 
-  const { name, company, email, budget, time } = bookData
+  const { name, company, email, budget, time, whatsapp } = bookData
 
   // Email to CEO
   await fetch('https://api.resend.com/emails', {
@@ -25,10 +25,11 @@ CLIENT DETAILS:
 Name: ${name}
 Company: ${company || 'Not provided'}
 Email: ${email}
+WhatsApp: ${whatsapp || 'Not provided'}
 Budget: ${budget}
 Preferred time: ${time}
 
-ACTION: WhatsApp them within 2 hours to confirm: https://wa.me/${email}
+ACTION: WhatsApp them within 2 hours to confirm:${whatsapp ? ` https://wa.me/${whatsapp.replace(/[^0-9]/g,'')}` : ' (no WhatsApp — use email)'}
 
 This lead came through the G0GA website chat widget.
 
@@ -75,7 +76,7 @@ async function saveLeadToSupabase(bookData) {
       company: bookData.company,
       email: bookData.email,
       budget: bookData.budget,
-      message: `Call booked via chat. Preferred time: ${bookData.time}`,
+      message: `Call booked via chat. Preferred time: ${bookData.time}. WhatsApp: ${bookData.whatsapp || 'not provided'}`,
       source: 'chat_widget',
       status: 'new',
     })
@@ -131,7 +132,7 @@ export default async function handler(req, res) {
     const raw = data.choices[0].message.content
 
     // Detect booking tag <<BOOK:NAME|COMPANY|EMAIL|BUDGET|TIME>>
-    const bookMatch = raw.match(/<<BOOK:([^|]+)\|([^|]*)\|([^|]+)\|([^|]*)\|([^>]*)>>/)
+    const bookMatch = raw.match(/<<BOOK:([^|]+)\|([^|]*)\|([^|]+)\|([^|]*)\|([^|]*)\|([^>]*)>>/)
     if (bookMatch) {
       const bookData = {
         name: bookMatch[1].trim(),
@@ -139,6 +140,7 @@ export default async function handler(req, res) {
         email: bookMatch[3].trim(),
         budget: bookMatch[4].trim(),
         time: bookMatch[5].trim(),
+        whatsapp: bookMatch[6].trim(),
       }
       // Fire emails + save lead (non-blocking)
       Promise.all([

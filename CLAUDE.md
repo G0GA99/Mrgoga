@@ -4,9 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## SESSION CONTINUITY RULE (MOST IMPORTANT)
+
+**Har session start mein SABSE PEHLE yeh karo:**
+1. `CURRENT_WORK.md` padho — wahan se kaam shuru karo jahan ruka tha
+2. Koi bhi step complete ho toh `CURRENT_WORK.md` update karo (checkbox tick karo)
+3. Nayi cheez pending ho toh `CURRENT_WORK.md` mein add karo
+
+**Kyun:** PC restart/shutdown ke baad bhi kaam continuity rahay. CEO ko dobara explain na karna pade.
+
+---
+
 ## Project Identity
 
-**G0GA 3D** is a premium AI agency website owned by **Mrgoga (CEO)**. It is a client-facing, revenue-generating product — not a demo or experiment. Every change must reflect a professional, high-end brand targeting businesses in USA, UK, Canada, Europe, and Middle East.
+**G0GA** is a premium AI agency website owned by **Mrgoga (CEO)**. It is a client-facing, revenue-generating product — not a demo or experiment. Every change must reflect a professional, high-end brand targeting businesses in USA, UK, Canada, Europe, and Middle East.
 
 **Business goal:** Convert website visitors into paying clients via the contact form, WhatsApp, and the AI chat widget.
 
