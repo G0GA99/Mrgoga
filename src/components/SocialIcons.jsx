@@ -36,8 +36,8 @@ export const SOCIALS_CONTACT = [
   { name:'TikTok',    href:'https://tiktok.com/@g0ga'          },
   { name:'Instagram', href:'https://instagram.com/g0ga.agency' },
   { name:'Facebook',  href:'https://facebook.com/g0gaagency'   },
-  { name:'LinkedIn',  href:'https://linkedin.com/company/g0ga' },
   { name:'X',         href:'https://x.com/g0gaagency'          },
+  { name:'LinkedIn',  href:'https://linkedin.com/company/g0ga' },
 ]
 
 export default function SocialIcon({ name, href, size = 38 }) {
