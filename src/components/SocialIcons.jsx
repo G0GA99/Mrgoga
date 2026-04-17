@@ -32,12 +32,12 @@ const ICONS = {
 }
 
 export const SOCIALS_CONTACT = [
-  { name:'YouTube',   href:'https://youtube.com/@g0ga'        },
-  { name:'TikTok',    href:'https://tiktok.com/@g0ga'          },
-  { name:'Instagram', href:'https://instagram.com/g0ga.agency' },
-  { name:'Facebook',  href:'https://facebook.com/g0gaagency'   },
-  { name:'X',         href:'https://x.com/g0gaaiagency'         },
-  { name:'LinkedIn',  href:'https://linkedin.com/company/g0ga' },
+  { name:'YouTube',   href:'https://youtube.com/@g0gaaiagency'          },
+  { name:'TikTok',    href:'https://tiktok.com/@g0gaaiagency'            },
+  { name:'Instagram', href:'https://instagram.com/g0gaaiagency'          },
+  { name:'Facebook',  href:'https://facebook.com/g0gaaiagency'           },
+  { name:'X',         href:'https://x.com/g0gaaiagency'                  },
+  { name:'LinkedIn',  href:'https://linkedin.com/company/g0gaaiagency'   },
 ]
 
 export default function SocialIcon({ name, href, size = 38 }) {
