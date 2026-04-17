@@ -2,7 +2,7 @@ import { supabaseAdmin } from '../lib/supabase.js'
 import { ZION } from '../lib/agents/index.js'
 
 const GROQ_KEY     = process.env.GROQ_API_KEY
-const MEDIUM_TOKEN = process.env.MEDIUM_TOKEN  // medium.com/me/settings → Integration tokens
+const DEVTO_KEY    = process.env.DEVTO_API_KEY  // dev.to → Settings → Extensions → API Keys
 
 // Content type rotation: 5 types, rotates weekly
 const CONTENT_ROTATION = ['blog_post', 'linkedin_article', 'case_study', 'newsletter', 'seo_page']
@@ -32,31 +32,25 @@ async function groq(prompt, maxTokens = 1400) {
   return j.choices?.[0]?.message?.content || ''
 }
 
-async function publishToMedium(title, content) {
-  if (!MEDIUM_TOKEN) return { skipped: true }
+async function publishToDevTo(title, content, tags = []) {
+  if (!DEVTO_KEY) return { skipped: true }
   try {
-    const meRes = await fetch('https://api.medium.com/v1/me', {
-      headers: { 'Authorization': `Bearer ${MEDIUM_TOKEN}`, 'Content-Type': 'application/json' }
-    })
-    const meData = await meRes.json()
-    const userId = meData.data?.id
-    if (!userId) return { published: false, error: 'No user ID' }
-
-    const pubRes = await fetch(`https://api.medium.com/v1/users/${userId}/posts`, {
+    const res = await fetch('https://dev.to/api/articles', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${MEDIUM_TOKEN}`, 'Content-Type': 'application/json' },
+      headers: { 'api-key': DEVTO_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        title,
-        contentFormat: 'markdown',
-        content,
-        tags: ['AI', 'Technology', 'Business', 'Digital Agency', 'Automation'],
-        publishStatus: 'public',
+        article: {
+          title,
+          body_markdown: content,
+          published: true,
+          tags: tags.slice(0, 4),  // dev.to max 4 tags
+        }
       })
     })
-    const pubData = await pubRes.json()
-    return pubRes.ok
-      ? { published: true, url: pubData.data?.url }
-      : { published: false, error: pubData.errors?.[0]?.message }
+    const data = await res.json()
+    return res.ok
+      ? { published: true, url: data.url }
+      : { published: false, error: data.error || JSON.stringify(data) }
   } catch (e) {
     return { published: false, error: e.message }
   }
@@ -112,10 +106,11 @@ export default async function handler(req, res) {
         break
     }
 
-    // Publish to Medium (blog posts and case studies work well there)
-    let medium = { skipped: true }
+    // Publish to Dev.to (blog posts and case studies)
+    let devto = { skipped: true }
     if (contentType === 'blog_post' || contentType === 'case_study') {
-      medium = await publishToMedium(topic, content)
+      const tags = ['ai', 'webdev', 'automation', 'business']
+      devto = await publishToDevTo(topic, content, tags)
     }
 
     // Save to Supabase — digest picks this up Monday
@@ -128,12 +123,12 @@ export default async function handler(req, res) {
         platform: typeInfo?.platform,
         topic,
         content,
-        medium,
+        devto,
       }),
     })
 
-    // No individual CEO email — digest.js handles Monday summary
-    res.status(200).json({ ok: true, contentType, typeLabel: typeInfo?.label, topic, medium })
+    // No individual CEO email — digest handles Monday summary
+    res.status(200).json({ ok: true, contentType, typeLabel: typeInfo?.label, topic, devto })
 
   } catch (err) {
     console.error('Zion error:', err)
