@@ -1,11 +1,11 @@
 import { supabaseAdmin } from '../lib/supabase.js'
-import { ZION } from '../lib/agents/index.js'
+import { AGENT as ZION } from '../lib/agents/zion.js'
 
-const GROQ_KEY     = process.env.GROQ_API_KEY
-const DEVTO_KEY    = process.env.DEVTO_API_KEY  // dev.to → Settings → Extensions → API Keys
+const GROQ_KEY  = process.env.GROQ_API_KEY
+const DEVTO_KEY = process.env.DEVTO_API_KEY  // dev.to → Settings → Extensions → API Keys
 
-// Content type rotation: 5 types, rotates weekly
-const CONTENT_ROTATION = ['blog_post', 'linkedin_article', 'case_study', 'newsletter', 'seo_page']
+// Weekly rotation for non-blog content (Monday only)
+const WEEKLY_ROTATION = ['linkedin_article', 'case_study', 'newsletter', 'seo_page']
 
 async function readPage(url) {
   try {
@@ -60,75 +60,96 @@ export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
 
   try {
-    // Pick content type and topic from weekly rotation
-    const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
-    const contentType = CONTENT_ROTATION[week % CONTENT_ROTATION.length]
-    const topics = ZION.topics[contentType]
-    const topic = topics[week % topics.length]
-    const typeInfo = ZION.contentTypes.find(t => t.type === contentType)
+    const now = new Date()
+    const dayIndex  = Math.floor(Date.now() / (24 * 60 * 60 * 1000))  // days since epoch
+    const weekIndex = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
+    const dayOfWeek = now.getDay()  // 0=Sun 1=Mon ... 6=Sat
+    const isMonday  = dayOfWeek === 1
 
-    // Research (only for blog posts — others are more opinion/story driven)
-    let researchContext = ''
-    if (contentType === 'blog_post') {
-      const [r1, r2] = await Promise.all([
-        readPage(`https://www.forbes.com/search/?q=${encodeURIComponent(topic)}`),
-        readPage(`https://www.hubspot.com/blog/search?page=1&term=${encodeURIComponent(topic)}`),
-      ])
-      if (r1 || r2) {
-        researchContext = `RESEARCH — what's already written:\n${r1 || ''}\n${r2 || ''}`
-      }
-    }
+    // ── DAILY: Blog Post ──────────────────────────────────────────────────────
+    const blogTopics = ZION.topics.blog_post
+    const blogTopic  = blogTopics[dayIndex % blogTopics.length]
 
-    // Generate content based on type
-    let content = ''
-    let prompt = ''
+    // Research for blog post
+    const [r1, r2] = await Promise.all([
+      readPage(`https://www.forbes.com/search/?q=${encodeURIComponent(blogTopic)}`),
+      readPage(`https://www.hubspot.com/blog/search?page=1&term=${encodeURIComponent(blogTopic)}`),
+    ])
+    const researchContext = (r1 || r2)
+      ? `RESEARCH — what's already written:\n${r1 || ''}\n${r2 || ''}`
+      : ''
 
-    switch (contentType) {
-      case 'blog_post':
-        prompt = ZION.buildBlogPrompt(topic, researchContext)
-        content = await groq(prompt, 1400)
-        break
-      case 'linkedin_article':
-        prompt = ZION.buildLinkedInPrompt(topic)
-        content = await groq(prompt, 1600)
-        break
-      case 'case_study':
-        prompt = ZION.buildCaseStudyPrompt(topic)
-        content = await groq(prompt, 1000)
-        break
-      case 'newsletter':
-        prompt = ZION.buildNewsletterPrompt(topic)
-        content = await groq(prompt, 800)
-        break
-      case 'seo_page':
-        prompt = ZION.buildSEOPagePrompt(topic)
-        content = await groq(prompt, 1000)
-        break
-    }
+    const blogContent = await groq(ZION.buildBlogPrompt(blogTopic, researchContext), 1400)
 
-    // Publish to Dev.to (blog posts and case studies)
-    let devto = { skipped: true }
-    if (contentType === 'blog_post' || contentType === 'case_study') {
-      const tags = ['ai', 'webdev', 'automation', 'business']
-      devto = await publishToDevTo(topic, content, tags)
-    }
+    // Publish blog post to Dev.to
+    const devto = await publishToDevTo(blogTopic, blogContent, ['ai', 'webdev', 'automation', 'business'])
 
-    // Save to Supabase — digest picks this up Monday
+    // Save blog post to Supabase
     await supabaseAdmin.from('agent_logs').insert({
       agent: 'Zion',
       action: 'content_created',
       details: JSON.stringify({
-        contentType,
-        typeLabel: typeInfo?.label,
-        platform: typeInfo?.platform,
-        topic,
-        content,
+        contentType: 'blog_post',
+        typeLabel: 'Blog Post',
+        platform: 'Dev.to',
+        topic: blogTopic,
+        content: blogContent,
         devto,
       }),
     })
 
-    // No individual CEO email — digest handles Monday summary
-    res.status(200).json({ ok: true, contentType, typeLabel: typeInfo?.label, topic, devto })
+    // ── WEEKLY (Monday only): Rotating content type ───────────────────────────
+    let weeklyResult = null
+
+    if (isMonday) {
+      const weeklyType   = WEEKLY_ROTATION[weekIndex % WEEKLY_ROTATION.length]
+      const weeklyTopics = ZION.topics[weeklyType]
+      const weeklyTopic  = weeklyTopics[weekIndex % weeklyTopics.length]
+      const typeInfo     = ZION.contentTypes.find(t => t.type === weeklyType)
+
+      let weeklyContent = ''
+      switch (weeklyType) {
+        case 'linkedin_article':
+          weeklyContent = await groq(ZION.buildLinkedInPrompt(weeklyTopic), 1600)
+          break
+        case 'case_study':
+          weeklyContent = await groq(ZION.buildCaseStudyPrompt(weeklyTopic), 1000)
+          break
+        case 'newsletter':
+          weeklyContent = await groq(ZION.buildNewsletterPrompt(weeklyTopic), 800)
+          break
+        case 'seo_page':
+          weeklyContent = await groq(ZION.buildSEOPagePrompt(weeklyTopic), 1000)
+          break
+      }
+
+      // Publish case study to Dev.to as well
+      let weeklyDevto = { skipped: true }
+      if (weeklyType === 'case_study') {
+        weeklyDevto = await publishToDevTo(weeklyTopic, weeklyContent, ['ai', 'casestudy', 'business', 'automation'])
+      }
+
+      await supabaseAdmin.from('agent_logs').insert({
+        agent: 'Zion',
+        action: 'content_created',
+        details: JSON.stringify({
+          contentType: weeklyType,
+          typeLabel: typeInfo?.label,
+          platform: typeInfo?.platform,
+          topic: weeklyTopic,
+          content: weeklyContent,
+          devto: weeklyDevto,
+        }),
+      })
+
+      weeklyResult = { contentType: weeklyType, typeLabel: typeInfo?.label, topic: weeklyTopic, devto: weeklyDevto }
+    }
+
+    res.status(200).json({
+      ok: true,
+      daily: { contentType: 'blog_post', topic: blogTopic, devto },
+      weekly: weeklyResult,
+    })
 
   } catch (err) {
     console.error('Zion error:', err)

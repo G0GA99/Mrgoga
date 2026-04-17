@@ -17,10 +17,8 @@ on:
     # ─── KAI — daily SEO (more frequent keyword tracking) ───────────────────
     - cron: '0 20 * * *'    # Kai — 1am PKT daily
 
-    # ─── ZION — 3x per week (Mon, Wed, Fri — more content, more SEO) ────────
-    - cron: '0 21 * * 0'    # Zion — Monday 2am PKT
-    - cron: '0 21 * * 2'    # Zion — Wednesday 2am PKT
-    - cron: '0 21 * * 4'    # Zion — Friday 2am PKT
+    # ─── ZION — daily blog post + weekly content on Monday ──────────────────
+    - cron: '0 21 * * *'    # Zion — 2am PKT daily (blog post every day, weekly content on Monday)
 
     # ─── LUNA — daily site health check ─────────────────────────────────────
     - cron: '0 23 * * *'    # Luna — 4am PKT daily
