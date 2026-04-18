@@ -1,0 +1,19 @@
+name: Zion — Daily Blog + Weekly Content
+
+on:
+  schedule:
+    - cron: '0 21 * * *'   # 2am PKT daily (blog every day, weekly content on Monday)
+  workflow_dispatch:
+
+jobs:
+  zion:
+    name: "Zion — Write & Publish Content"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Zion
+        run: |
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/zion" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 60
+          echo "Zion done."

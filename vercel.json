@@ -1,5 +1,19 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "functions": {
+    "api/scout.js":      { "maxDuration": 60 },
+    "api/nova.js":       { "maxDuration": 60 },
+    "api/kai.js":        { "maxDuration": 60 },
+    "api/zion.js":       { "maxDuration": 60 },
+    "api/zara.js":       { "maxDuration": 60 },
+    "api/monitor.js":    { "maxDuration": 60 },
+    "api/admin-data.js": { "maxDuration": 60 },
+    "api/chat.js":       { "maxDuration": 30 },
+    "api/contact.js":    { "maxDuration": 30 },
+    "api/book.js":       { "maxDuration": 30 },
+    "api/vault.js":      { "maxDuration": 30 },
+    "api/dev.js":        { "maxDuration": 30 }
+  }
 }

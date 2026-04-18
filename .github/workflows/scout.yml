@@ -1,0 +1,22 @@
+name: Scout — Global Outreach (3x daily)
+
+on:
+  schedule:
+    - cron: '0 2 * * *'    # 7am PKT / 6am Dubai
+    - cron: '0 10 * * *'   # 3pm PKT / 2pm Dubai / 10am London
+    - cron: '0 18 * * *'   # 11pm PKT / 10pm Dubai / 1pm New York
+  workflow_dispatch:
+
+jobs:
+  scout:
+    name: "Scout — Find & Email Prospects"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Scout
+        run: |
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/scout" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 90
+          echo "Scout done."

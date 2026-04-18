@@ -1,0 +1,20 @@
+name: Zara — Lead Manager (every 4h)
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Every 4 hours
+  workflow_dispatch:
+
+jobs:
+  zara:
+    name: "Zara — Process Leads & Projects"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Zara
+        run: |
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/zara" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 60
+          echo "Zara done."

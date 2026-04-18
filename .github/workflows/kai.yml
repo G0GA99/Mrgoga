@@ -1,0 +1,20 @@
+name: Kai — Daily SEO
+
+on:
+  schedule:
+    - cron: '0 20 * * *'   # 1am PKT daily
+  workflow_dispatch:
+
+jobs:
+  kai:
+    name: "Kai — SEO Keywords"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Kai
+        run: |
+          curl -s -X POST "${{ secrets.SITE_URL }}/api/kai" \
+            -H "x-admin-token: ${{ secrets.ADMIN_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -w "\nHTTP Status: %{http_code}" \
+            --max-time 60
+          echo "Kai done."
