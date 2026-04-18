@@ -361,18 +361,37 @@ export default function Admin() {
       const r = await fetch('/api/admin-data', { headers: { 'x-admin-token': ADMIN_SECRET } })
       if (!r.ok) throw new Error('Failed to load')
       setData(await r.json())
+      localStorage.setItem('g0ga_admin_last_refresh', Date.now().toString())
     } catch (e) { setError(e.message) }
     finally { setLoading(false) }
   }
 
-  useEffect(() => { if (authed) fetchData() }, [authed])
+  useEffect(() => {
+    if (!authed) return
+    // Auto-refresh on login
+    fetchData()
+    // Weekly auto-refresh: every 7 days if panel stays open
+    const WEEK_MS = 7 * 24 * 60 * 60 * 1000
+    const timer = setInterval(() => fetchData(), WEEK_MS)
+    return () => clearInterval(timer)
+  }, [authed])
 
   if (!authed) return <LoginScreen onLogin={login} />
 
+  const WEEK_MS      = 7 * 24 * 60 * 60 * 1000
+  const weekAgo      = new Date(Date.now() - WEEK_MS).toISOString()
   const newLeads     = data?.leads?.filter(l => l.status === 'new').length || 0
   const activeProj   = data?.projects?.filter(p => p.status === 'in_progress').length || 0
   const totalLeads   = data?.leads?.length || 0
   const totalLogs    = data?.logs?.length || 0
+  // This week only
+  const weekLeads    = data?.leads?.filter(l => l.created_at > weekAgo) || []
+  const weekLogs     = data?.logs?.filter(l => l.created_at > weekAgo) || []
+  const activeProjects = data?.projects?.filter(p => p.status === 'in_progress') || []
+  const lastRefresh  = localStorage.getItem('g0ga_admin_last_refresh')
+  const lastRefreshStr = lastRefresh
+    ? new Date(Number(lastRefresh)).toLocaleString('en-PK', { timeZone: 'Asia/Karachi', hour12: true, weekday: 'short', hour: '2-digit', minute: '2-digit' })
+    : 'Never'
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -432,20 +451,20 @@ export default function Admin() {
             {/* Leads + Agent Log */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div className="lg:col-span-2">
-                <LeadsTable leads={data?.leads || []} />
+                <LeadsTable leads={weekLeads} />
               </div>
-              <AgentLog logs={data?.logs || []} />
+              <AgentLog logs={weekLogs} />
             </div>
 
-            {/* Projects */}
-            <ProjectsTable projects={data?.projects || []} />
+            {/* Active Projects only */}
+            <ProjectsTable projects={activeProjects} />
           </>
         )}
 
         {tab === 'agents' && <AgentChat />}
 
         <p className="text-center text-gray-700 text-xs pb-4">
-          G0GA Admin · Data from Supabase · Auto-refreshes on load
+          G0GA Admin · Showing this week's data · Active projects only · Last refreshed: {lastRefreshStr}
         </p>
       </div>
     </div>
