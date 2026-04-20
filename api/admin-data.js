@@ -234,6 +234,63 @@ async function runDigest(res) {
   res.status(200).json({ ok: true, agentsIncluded: Object.keys(agentReports) })
 }
 
+// ─── Test Email ──────────────────────────────────────────────────────────────
+
+async function sendTestEmail(res) {
+  const RESEND_KEY = process.env.RESEND_API_KEY
+  if (!RESEND_KEY) return res.status(500).json({ ok: false, error: 'RESEND_API_KEY not set in Vercel dashboard' })
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'G0GA Admin <onboarding@resend.dev>',
+        to: 'gogamr0.01@gmail.com',
+        subject: '✅ G0GA Email Test — Working!',
+        text: `Your G0GA email system is working correctly.\n\nSent: ${new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' })} PKT\n\n— G0GA Admin Panel`,
+      })
+    })
+    const data = await r.json()
+    if (r.ok) return res.status(200).json({ ok: true, message: 'Test email sent to gogamr0.01@gmail.com — check your inbox!' })
+    return res.status(500).json({ ok: false, error: data.message || 'Resend rejected the email', raw: data })
+  } catch (e) {
+    return res.status(500).json({ ok: false, error: e.message })
+  }
+}
+
+// ─── Run Agent Now ────────────────────────────────────────────────────────────
+
+async function runAgentNow(body, res) {
+  const { agent } = body
+  const SITE_URL = process.env.SITE_URL || process.env.VERCEL_URL
+  if (!SITE_URL) return res.status(500).json({ ok: false, error: 'SITE_URL env var not set' })
+
+  const agentEndpoints = {
+    Scout: '/api/scout',
+    Nova:  '/api/nova',
+    Kai:   '/api/kai',
+    Zion:  '/api/zion',
+    Zara:  '/api/zara',
+    Luna:  '/api/monitor?agent=luna',
+    Vex:   '/api/monitor?agent=vex',
+  }
+
+  const endpoint = agentEndpoints[agent]
+  if (!endpoint) return res.status(400).json({ ok: false, error: `Unknown agent: ${agent}` })
+
+  const base = SITE_URL.startsWith('http') ? SITE_URL : `https://${SITE_URL}`
+  const token = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+
+  const r = await fetch(`${base}${endpoint}`, {
+    method: 'POST',
+    headers: { 'x-admin-token': token, 'Content-Type': 'application/json' },
+    signal: AbortSignal.timeout(90000),
+  })
+
+  const data = await r.json().catch(() => ({ status: r.status }))
+  res.status(r.ok ? 200 : r.status).json({ ok: r.ok, agent, result: data })
+}
+
 // ─── Router ──────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
@@ -242,10 +299,11 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') return await getDashboardData(res)
-    // POST: route by action field
     const action = req.body?.action
-    if (action === 'digest') return await runDigest(res)
-    return await agentChat(req.body, res)  // default POST = agent chat
+    if (action === 'digest')     return await runDigest(res)
+    if (action === 'test-email') return await sendTestEmail(res)
+    if (action === 'run-agent')  return await runAgentNow(req.body, res)
+    return await agentChat(req.body, res)
   } catch (err) {
     console.error('Admin data error:', err)
     res.status(500).json({ error: err.message })

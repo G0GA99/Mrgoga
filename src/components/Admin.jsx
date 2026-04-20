@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Lock, Users, Briefcase, Activity, TrendingUp, LogOut, RefreshCw, AlertCircle, MessageSquare, Send, ChevronRight } from 'lucide-react'
+import { Lock, Users, Briefcase, Activity, TrendingUp, LogOut, RefreshCw, AlertCircle, MessageSquare, Send, ChevronRight, Play, Mail, Zap, CheckCircle, XCircle, Clock } from 'lucide-react'
 
 const ADMIN_SECRET = 'g0ga-admin-2025'
 
@@ -185,6 +185,171 @@ function AgentLog({ logs }) {
   )
 }
 
+// ─── Agent Control ───────────────────────────────────────────────────────────
+
+const AGENT_DEFS = [
+  { name: 'Scout',  emoji: '🎯', color: '#10b981', desc: 'Find & email prospects globally' },
+  { name: 'Nova',   emoji: '📣', color: '#6366f1', desc: 'Post content to LinkedIn' },
+  { name: 'Kai',    emoji: '📈', color: '#34d399', desc: 'Run SEO audit on g0ga.vercel.app' },
+  { name: 'Zion',   emoji: '✍️', color: '#a78bfa', desc: 'Write & publish blog/article' },
+  { name: 'Zara',   emoji: '📋', color: '#f59e0b', desc: 'Check & update leads/projects' },
+  { name: 'Luna',   emoji: '🔍', color: '#60a5fa', desc: 'Site health check' },
+  { name: 'Vex',    emoji: '🛡️', color: '#f87171', desc: 'Reputation & competitor scan' },
+]
+
+function AgentControl({ logs }) {
+  const [running, setRunning]   = useState({})
+  const [results, setResults]   = useState({})
+  const [emailSt, setEmailSt]   = useState(null) // null | 'loading' | 'ok' | 'error'
+  const [emailMsg, setEmailMsg] = useState('')
+  const [digestSt, setDigestSt] = useState(null)
+
+  const lastRun = (agentName) => {
+    const log = logs?.find(l => l.agent === agentName)
+    if (!log) return 'Never'
+    const d = new Date(log.created_at)
+    const diff = Date.now() - d.getTime()
+    const h = Math.floor(diff / 3600000)
+    const m = Math.floor((diff % 3600000) / 60000)
+    if (h > 23) return `${Math.floor(h/24)}d ago`
+    if (h > 0)  return `${h}h ago`
+    return `${m}m ago`
+  }
+
+  const runAgent = async (agentName) => {
+    setRunning(p => ({ ...p, [agentName]: true }))
+    setResults(p => ({ ...p, [agentName]: null }))
+    try {
+      const r = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': ADMIN_SECRET },
+        body: JSON.stringify({ action: 'run-agent', agent: agentName }),
+        signal: AbortSignal.timeout(100000),
+      })
+      const data = await r.json()
+      setResults(p => ({ ...p, [agentName]: { ok: r.ok, data } }))
+    } catch (e) {
+      setResults(p => ({ ...p, [agentName]: { ok: false, data: { error: e.message } } }))
+    } finally {
+      setRunning(p => ({ ...p, [agentName]: false }))
+    }
+  }
+
+  const testEmail = async () => {
+    setEmailSt('loading')
+    try {
+      const r = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': ADMIN_SECRET },
+        body: JSON.stringify({ action: 'test-email' }),
+      })
+      const data = await r.json()
+      setEmailSt(data.ok ? 'ok' : 'error')
+      setEmailMsg(data.message || data.error || '')
+    } catch (e) {
+      setEmailSt('error'); setEmailMsg(e.message)
+    }
+  }
+
+  const sendDigest = async () => {
+    setDigestSt('loading')
+    try {
+      const r = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': ADMIN_SECRET },
+        body: JSON.stringify({ action: 'digest' }),
+      })
+      const data = await r.json()
+      setDigestSt(data.ok ? 'ok' : 'error')
+    } catch { setDigestSt('error') }
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Email Tools */}
+      <div className="glass-card rounded-2xl p-6">
+        <div className="flex items-center gap-2 mb-5">
+          <Mail size={16} className="text-teal" />
+          <span className="font-poppins font-bold text-sm">Email Controls</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Test Email */}
+          <div className="bg-white/4 rounded-xl p-4">
+            <div className="text-xs font-semibold text-gray-300 mb-1">Test Email System</div>
+            <div className="text-[10px] text-gray-600 mb-3">Verify Resend is working — sends test mail to gogamr0.01@gmail.com</div>
+            <button onClick={testEmail} disabled={emailSt === 'loading'}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-black disabled:opacity-40 transition-all"
+              style={{ background: 'linear-gradient(135deg,#10b981,#34d399)' }}>
+              {emailSt === 'loading' ? <RefreshCw size={12} className="animate-spin" /> : <Mail size={12} />}
+              {emailSt === 'loading' ? 'Sending...' : 'Send Test Email'}
+            </button>
+            {emailSt === 'ok'    && <p className="text-green-400 text-[10px] mt-2 flex items-center gap-1"><CheckCircle size={10}/> {emailMsg || 'Email sent! Check inbox.'}</p>}
+            {emailSt === 'error' && <p className="text-red-400   text-[10px] mt-2 flex items-center gap-1"><XCircle    size={10}/> {emailMsg || 'Failed — check RESEND_API_KEY'}</p>}
+          </div>
+          {/* Weekly Digest */}
+          <div className="bg-white/4 rounded-xl p-4">
+            <div className="text-xs font-semibold text-gray-300 mb-1">Send Weekly Digest Now</div>
+            <div className="text-[10px] text-gray-600 mb-3">Force-send the weekly CEO summary email immediately</div>
+            <button onClick={sendDigest} disabled={digestSt === 'loading'}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-black disabled:opacity-40 transition-all"
+              style={{ background: 'linear-gradient(135deg,#6366f1,#a78bfa)' }}>
+              {digestSt === 'loading' ? <RefreshCw size={12} className="animate-spin" /> : <Zap size={12} />}
+              {digestSt === 'loading' ? 'Sending...' : 'Send Digest'}
+            </button>
+            {digestSt === 'ok'    && <p className="text-green-400 text-[10px] mt-2 flex items-center gap-1"><CheckCircle size={10}/> Digest sent!</p>}
+            {digestSt === 'error' && <p className="text-red-400   text-[10px] mt-2 flex items-center gap-1"><XCircle    size={10}/> Failed — check Supabase + Resend</p>}
+          </div>
+        </div>
+      </div>
+
+      {/* Agent Cards */}
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-white/6 flex items-center gap-2">
+          <Play size={16} className="text-teal" />
+          <span className="font-poppins font-bold text-sm">Run Agents Manually</span>
+          <span className="ml-auto text-gray-600 text-xs">Takes 30–90 sec per agent</span>
+        </div>
+        <div className="divide-y divide-white/5">
+          {AGENT_DEFS.map(agent => {
+            const res = results[agent.name]
+            const busy = running[agent.name]
+            return (
+              <div key={agent.name} className="px-6 py-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-xl">{agent.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-sm font-bold" style={{ color: agent.color }}>{agent.name}</span>
+                      <span className="text-[10px] text-gray-600 flex items-center gap-0.5">
+                        <Clock size={9}/> {lastRun(agent.name)}
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-gray-500">{agent.desc}</div>
+                  </div>
+                  <button onClick={() => runAgent(agent.name)} disabled={busy}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold text-black disabled:opacity-40 transition-all flex-shrink-0"
+                    style={{ background: busy ? '#374151' : `linear-gradient(135deg,${agent.color},#34d399)`, color: busy ? '#6b7280' : 'black' }}>
+                    {busy ? <RefreshCw size={12} className="animate-spin text-gray-400" /> : <Play size={12} />}
+                    {busy ? 'Running...' : 'Run Now'}
+                  </button>
+                </div>
+                {res && (
+                  <div className={`mt-3 px-3 py-2 rounded-lg text-[11px] font-mono ${res.ok ? 'bg-green-500/8 text-green-300 border border-green-500/15' : 'bg-red-500/8 text-red-300 border border-red-500/15'}`}>
+                    {res.ok
+                      ? `✅ Done — ${JSON.stringify(res.data?.result || res.data).slice(0, 180)}`
+                      : `❌ Error — ${res.data?.error || JSON.stringify(res.data).slice(0, 120)}`
+                    }
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Agent Chat ──────────────────────────────────────────────────────────────
 
 const AGENTS = [
@@ -350,7 +515,7 @@ export default function Admin() {
   const [data, setData]       = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState(null)
-  const [tab, setTab]         = useState('dashboard') // 'dashboard' | 'agents'
+  const [tab, setTab]         = useState('dashboard') // 'dashboard' | 'agents' | 'control'
 
   const login = () => { sessionStorage.setItem('g0ga_admin','yes'); setAuthed(true) }
   const logout = () => { sessionStorage.removeItem('g0ga_admin'); setAuthed(false) }
@@ -368,11 +533,9 @@ export default function Admin() {
 
   useEffect(() => {
     if (!authed) return
-    // Auto-refresh on login
     fetchData()
-    // Weekly auto-refresh: every 7 days if panel stays open
-    const WEEK_MS = 7 * 24 * 60 * 60 * 1000
-    const timer = setInterval(() => fetchData(), WEEK_MS)
+    // Auto-refresh every 2 minutes
+    const timer = setInterval(() => fetchData(), 2 * 60 * 1000)
     return () => clearInterval(timer)
   }, [authed])
 
@@ -415,6 +578,11 @@ export default function Admin() {
                 className="px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1"
                 style={{ background: tab === 'agents' ? 'rgba(16,185,129,.2)' : undefined, color: tab === 'agents' ? '#10b981' : '#6b7280' }}>
                 <MessageSquare size={11} /> Agents
+              </button>
+              <button onClick={() => setTab('control')}
+                className="px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1"
+                style={{ background: tab === 'control' ? 'rgba(99,102,241,.2)' : undefined, color: tab === 'control' ? '#6366f1' : '#6b7280' }}>
+                <Play size={11} /> Control
               </button>
             </div>
             <span className="text-gray-600 text-xs">MrGoga · CEO</span>
@@ -461,7 +629,8 @@ export default function Admin() {
           </>
         )}
 
-        {tab === 'agents' && <AgentChat />}
+        {tab === 'agents'  && <AgentChat />}
+        {tab === 'control' && <AgentControl logs={data?.logs || []} />}
 
         <p className="text-center text-gray-700 text-xs pb-4">
           G0GA Admin · Showing this week's data · Active projects only · Last refreshed: {lastRefreshStr}
