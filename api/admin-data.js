@@ -291,18 +291,90 @@ async function runAgentNow(body, res) {
   res.status(r.ok ? 200 : r.status).json({ ok: r.ok, agent, result: data })
 }
 
+// ─── Portfolio ────────────────────────────────────────────────────────────────
+
+function dbToPortfolio(item) {
+  return {
+    id: item.id,
+    title: item.title,
+    client: item.client || '',
+    location: item.location || '',
+    type: item.type || 'AI Integration',
+    description: item.description || '',
+    result1: { val: item.result1_val || '', lbl: item.result1_lbl || '' },
+    result2: { val: item.result2_val || '', lbl: item.result2_lbl || '' },
+    result3: { val: item.result3_val || '', lbl: item.result3_lbl || '' },
+    tech: item.tech ? item.tech.split(',').map(t => t.trim()).filter(Boolean) : [],
+    accentColor: item.accent_color || '#10b981',
+  }
+}
+
+async function getPublicPortfolio(res) {
+  const { data, error } = await supabaseAdmin
+    .from('portfolio').select('*').eq('is_active', true).order('created_at', { ascending: true })
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json({ items: (data || []).map(dbToPortfolio) })
+}
+
+async function getAdminPortfolio(res) {
+  const { data, error } = await supabaseAdmin
+    .from('portfolio').select('*').order('created_at', { ascending: true })
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json({ items: data || [] })
+}
+
+async function addPortfolio(body, res) {
+  const { title, client, location, type, description, result1_val, result1_lbl, result2_val, result2_lbl, result3_val, result3_lbl, tech, accent_color } = body
+  if (!title) return res.status(400).json({ error: 'Title required' })
+  const { data, error } = await supabaseAdmin.from('portfolio').insert({
+    title, client: client || '', location: location || '', type: type || 'AI Integration',
+    description: description || '', result1_val: result1_val || '', result1_lbl: result1_lbl || '',
+    result2_val: result2_val || '', result2_lbl: result2_lbl || '',
+    result3_val: result3_val || '', result3_lbl: result3_lbl || '',
+    tech: tech || '', accent_color: accent_color || '#10b981', is_active: true,
+  }).select().single()
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json({ ok: true, item: data })
+}
+
+async function updatePortfolio(body, res) {
+  const { id, ...fields } = body
+  if (!id) return res.status(400).json({ error: 'ID required' })
+  const { error } = await supabaseAdmin.from('portfolio').update(fields).eq('id', id)
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json({ ok: true })
+}
+
+async function deletePortfolio(body, res) {
+  const { id } = body
+  if (!id) return res.status(400).json({ error: 'ID required' })
+  const { error } = await supabaseAdmin.from('portfolio').delete().eq('id', id)
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json({ ok: true })
+}
+
 // ─── Router ──────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
   if (!['GET', 'POST'].includes(req.method)) return res.status(405).end()
-  if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
 
   try {
-    if (req.method === 'GET') return await getDashboardData(res)
+    if (req.method === 'GET') {
+      const action = req.query?.action
+      if (action === 'portfolio') return await getPublicPortfolio(res)
+      if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
+      if (action === 'portfolio-admin') return await getAdminPortfolio(res)
+      return await getDashboardData(res)
+    }
+
+    if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
     const action = req.body?.action
-    if (action === 'digest')     return await runDigest(res)
-    if (action === 'test-email') return await sendTestEmail(res)
-    if (action === 'run-agent')  return await runAgentNow(req.body, res)
+    if (action === 'digest')           return await runDigest(res)
+    if (action === 'test-email')       return await sendTestEmail(res)
+    if (action === 'run-agent')        return await runAgentNow(req.body, res)
+    if (action === 'portfolio-add')    return await addPortfolio(req.body, res)
+    if (action === 'portfolio-update') return await updatePortfolio(req.body, res)
+    if (action === 'portfolio-delete') return await deletePortfolio(req.body, res)
     return await agentChat(req.body, res)
   } catch (err) {
     console.error('Admin data error:', err)

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Lock, Users, Briefcase, Activity, TrendingUp, LogOut, RefreshCw, AlertCircle, MessageSquare, Send, ChevronRight, Play, Mail, Zap, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { Lock, Users, Briefcase, Activity, TrendingUp, LogOut, RefreshCw, AlertCircle, MessageSquare, Send, ChevronRight, Play, Mail, Zap, CheckCircle, XCircle, Clock, Plus, Edit2, Trash2, Image } from 'lucide-react'
 
 const ADMIN_SECRET = 'g0ga-admin-2025'
 
@@ -508,6 +508,280 @@ function AgentChat() {
   )
 }
 
+// ─── Portfolio Manager ────────────────────────────────────────────────────────
+
+const PRESET_COLORS = ['#10b981','#34d399','#6366f1','#a78bfa','#f59e0b','#60a5fa','#f87171']
+const PORT_TYPES    = ['AI Integration','Web Experience','Design','Automation','Product Viz','AI Ecosystem','Branding']
+const PORT_LOCS     = ['USA','UK','Canada','Europe','UAE','Australia','Pakistan','Dubai','Germany','Global']
+
+const BLANK = {
+  title:'', client:'', location:'USA', type:'AI Integration', description:'',
+  result1_val:'', result1_lbl:'', result2_val:'', result2_lbl:'',
+  result3_val:'', result3_lbl:'', tech:'', accent_color:'#10b981',
+}
+
+function PortfolioManager() {
+  const [items,   setItems]   = useState([])
+  const [loading, setLoading] = useState(true)
+  const [form,    setForm]    = useState(null) // null | BLANK | item row
+  const [saving,  setSaving]  = useState(false)
+  const [deleting,setDeleting]= useState(null) // id being deleted
+  const [msg,     setMsg]     = useState(null) // { ok, text }
+
+  const flash = (ok, text) => { setMsg({ ok, text }); setTimeout(() => setMsg(null), 3500) }
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const r = await fetch('/api/admin-data?action=portfolio-admin', {
+        headers: { 'x-admin-token': ADMIN_SECRET }
+      })
+      const data = await r.json()
+      setItems(data.items || [])
+    } catch { flash(false, 'Failed to load portfolio') }
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [])
+
+  const save = async () => {
+    if (!form?.title?.trim()) return flash(false, 'Title is required')
+    setSaving(true)
+    try {
+      const isNew = !form.id
+      const r = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': ADMIN_SECRET },
+        body: JSON.stringify({ action: isNew ? 'portfolio-add' : 'portfolio-update', ...form }),
+      })
+      const data = await r.json()
+      if (!r.ok) return flash(false, data.error || 'Save failed')
+      flash(true, isNew ? 'Portfolio item added!' : 'Updated successfully!')
+      setForm(null)
+      load()
+    } catch (e) { flash(false, e.message) }
+    finally { setSaving(false) }
+  }
+
+  const del = async (id) => {
+    setDeleting(id)
+    try {
+      const r = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': ADMIN_SECRET },
+        body: JSON.stringify({ action: 'portfolio-delete', id }),
+      })
+      const data = await r.json()
+      if (!r.ok) return flash(false, data.error || 'Delete failed')
+      flash(true, 'Deleted!')
+      load()
+    } catch (e) { flash(false, e.message) }
+    finally { setDeleting(null) }
+  }
+
+  const field = (key, value, type = 'text', placeholder = '') => (
+    type === 'textarea'
+      ? <textarea
+          value={value} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
+          placeholder={placeholder} rows={3}
+          className="field w-full text-xs resize-none" style={{ borderRadius:'10px', padding:'10px 14px' }} />
+      : type === 'select'
+        ? null
+        : <input
+            type={type} value={value}
+            onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
+            placeholder={placeholder}
+            className="field w-full text-xs" style={{ borderRadius:'10px', padding:'10px 14px' }} />
+  )
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Image size={16} className="text-teal" />
+          <span className="font-poppins font-bold text-sm">Portfolio ({items.length} items)</span>
+        </div>
+        <button onClick={() => setForm({ ...BLANK })}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-black text-xs font-bold transition-all"
+          style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
+          <Plus size={13} /> Add New
+        </button>
+      </div>
+
+      {msg && (
+        <div className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-semibold ${msg.ok ? 'bg-green-500/10 border border-green-500/20 text-green-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+          {msg.ok ? <CheckCircle size={13}/> : <XCircle size={13}/>} {msg.text}
+        </div>
+      )}
+
+      {/* Form */}
+      {form && (
+        <div className="glass-card rounded-2xl p-6 space-y-5 border border-teal/20">
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-poppins font-bold text-sm text-teal">{form.id ? 'Edit Item' : 'Add New Item'}</span>
+            <button onClick={() => setForm(null)} className="text-gray-600 hover:text-white transition-colors"><XCircle size={16}/></button>
+          </div>
+
+          {/* Row 1: Title + Client */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-1.5 block">Project Title *</label>
+              {field('title', form.title, 'text', 'e.g. TechCorp AI Dashboard')}
+            </div>
+            <div>
+              <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-1.5 block">Client Name</label>
+              {field('client', form.client, 'text', 'e.g. Tech Startup')}
+            </div>
+          </div>
+
+          {/* Row 2: Location + Type */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-1.5 block">Location</label>
+              <select value={form.location} onChange={e => setForm(p => ({ ...p, location: e.target.value }))}
+                className="field w-full text-xs" style={{ borderRadius:'10px', padding:'10px 14px' }}>
+                {PORT_LOCS.map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-1.5 block">Type</label>
+              <select value={form.type} onChange={e => setForm(p => ({ ...p, type: e.target.value }))}
+                className="field w-full text-xs" style={{ borderRadius:'10px', padding:'10px 14px' }}>
+                {PORT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-1.5 block">Description</label>
+            {field('description', form.description, 'textarea', 'Describe the project, what you built, what problem it solved...')}
+          </div>
+
+          {/* Results 1–3 */}
+          <div>
+            <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-2 block">Results (3 stats shown on card)</label>
+            <div className="grid grid-cols-3 gap-3">
+              {[1,2,3].map(n => (
+                <div key={n} className="bg-white/4 rounded-xl p-3 space-y-2">
+                  <div className="text-[10px] text-gray-600 font-semibold">Result {n}</div>
+                  <input value={form[`result${n}_val`]}
+                    onChange={e => setForm(p => ({ ...p, [`result${n}_val`]: e.target.value }))}
+                    placeholder="40%" className="field w-full text-xs" style={{ borderRadius:'8px', padding:'7px 10px' }} />
+                  <input value={form[`result${n}_lbl`]}
+                    onChange={e => setForm(p => ({ ...p, [`result${n}_lbl`]: e.target.value }))}
+                    placeholder="Faster Ops" className="field w-full text-xs" style={{ borderRadius:'8px', padding:'7px 10px' }} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tech Tags */}
+          <div>
+            <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-1.5 block">Tech Tags <span className="text-gray-700 normal-case">(comma separated)</span></label>
+            {field('tech', form.tech, 'text', 'React, AI Agents, WebGL, Supabase')}
+          </div>
+
+          {/* Accent Color */}
+          <div>
+            <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-2 block">Card Accent Color</label>
+            <div className="flex gap-2 flex-wrap">
+              {PRESET_COLORS.map(c => (
+                <button key={c} onClick={() => setForm(p => ({ ...p, accent_color: c }))}
+                  className="w-8 h-8 rounded-lg transition-all"
+                  style={{ background: c, outline: form.accent_color === c ? `2px solid white` : '2px solid transparent', outlineOffset: '2px' }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Save / Cancel */}
+          <div className="flex gap-3 pt-1">
+            <button onClick={save} disabled={saving}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-black text-xs font-bold disabled:opacity-50 transition-all"
+              style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
+              {saving ? <RefreshCw size={12} className="animate-spin"/> : <CheckCircle size={12}/>}
+              {saving ? 'Saving...' : (form.id ? 'Save Changes' : 'Add to Portfolio')}
+            </button>
+            <button onClick={() => setForm(null)}
+              className="px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white border border-white/10 hover:border-white/20 transition-all">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Items list */}
+      <div className="glass-card rounded-2xl overflow-hidden">
+        {loading ? (
+          <div className="flex items-center justify-center py-12 gap-2 text-gray-600 text-sm">
+            <RefreshCw size={14} className="animate-spin"/> Loading...
+          </div>
+        ) : items.length === 0 ? (
+          <div className="text-center py-12 text-gray-700 text-sm">
+            <Image size={32} className="mx-auto mb-3 opacity-20"/>
+            No portfolio items yet. Add your first project!
+          </div>
+        ) : (
+          <div className="divide-y divide-white/5">
+            {items.map(item => (
+              <div key={item.id} className="px-6 py-4 flex items-center gap-4 hover:bg-white/2 transition-colors">
+                {/* Color dot */}
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: item.accent_color || '#10b981' }} />
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-white truncate">{item.title}</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold"
+                      style={{ background:`${item.accent_color || '#10b981'}15`, color: item.accent_color || '#10b981' }}>
+                      {item.type}
+                    </span>
+                    {item.location && <span>{item.location}</span>}
+                    {item.client && <span>· {item.client}</span>}
+                    {!item.is_active && <span className="text-red-400">· Hidden</span>}
+                  </div>
+                </div>
+                {/* Results preview */}
+                <div className="hidden sm:flex gap-3 text-center flex-shrink-0">
+                  {[1,2,3].map(n => item[`result${n}_val`] && (
+                    <div key={n} className="min-w-[40px]">
+                      <div className="text-xs font-black" style={{ color: item.accent_color || '#10b981' }}>{item[`result${n}_val`]}</div>
+                      <div className="text-[9px] text-gray-600">{item[`result${n}_lbl`]}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Actions */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => setForm({
+                      id: item.id, title: item.title, client: item.client || '',
+                      location: item.location || 'USA', type: item.type || 'AI Integration',
+                      description: item.description || '',
+                      result1_val: item.result1_val || '', result1_lbl: item.result1_lbl || '',
+                      result2_val: item.result2_val || '', result2_lbl: item.result2_lbl || '',
+                      result3_val: item.result3_val || '', result3_lbl: item.result3_lbl || '',
+                      tech: item.tech || '', accent_color: item.accent_color || '#10b981',
+                    })}
+                    className="p-2 rounded-lg text-gray-500 hover:text-teal hover:bg-teal/10 transition-all">
+                    <Edit2 size={13}/>
+                  </button>
+                  <button onClick={() => { if (confirm(`Delete "${item.title}"?`)) del(item.id) }}
+                    disabled={deleting === item.id}
+                    className="p-2 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-40">
+                    {deleting === item.id ? <RefreshCw size={13} className="animate-spin"/> : <Trash2 size={13}/>}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <p className="text-center text-gray-700 text-xs">Changes appear live on the website within seconds.</p>
+    </div>
+  )
+}
+
 // ─── Main Admin ───────────────────────────────────────────────────────────────
 
 export default function Admin() {
@@ -515,7 +789,7 @@ export default function Admin() {
   const [data, setData]       = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState(null)
-  const [tab, setTab]         = useState('dashboard') // 'dashboard' | 'agents' | 'control'
+  const [tab, setTab]         = useState('dashboard') // 'dashboard' | 'agents' | 'control' | 'portfolio'
 
   const login = () => { sessionStorage.setItem('g0ga_admin','yes'); setAuthed(true) }
   const logout = () => { sessionStorage.removeItem('g0ga_admin'); setAuthed(false) }
@@ -584,6 +858,11 @@ export default function Admin() {
                 style={{ background: tab === 'control' ? 'rgba(99,102,241,.2)' : undefined, color: tab === 'control' ? '#6366f1' : '#6b7280' }}>
                 <Play size={11} /> Control
               </button>
+              <button onClick={() => setTab('portfolio')}
+                className="px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1"
+                style={{ background: tab === 'portfolio' ? 'rgba(245,158,11,.2)' : undefined, color: tab === 'portfolio' ? '#f59e0b' : '#6b7280' }}>
+                <Image size={11} /> Portfolio
+              </button>
             </div>
             <span className="text-gray-600 text-xs">MrGoga · CEO</span>
             <button onClick={fetchData} disabled={loading}
@@ -629,8 +908,9 @@ export default function Admin() {
           </>
         )}
 
-        {tab === 'agents'  && <AgentChat />}
-        {tab === 'control' && <AgentControl logs={data?.logs || []} />}
+        {tab === 'agents'    && <AgentChat />}
+        {tab === 'control'   && <AgentControl logs={data?.logs || []} />}
+        {tab === 'portfolio' && <PortfolioManager />}
 
         <p className="text-center text-gray-700 text-xs pb-4">
           G0GA Admin · Showing this week's data · Active projects only · Last refreshed: {lastRefreshStr}

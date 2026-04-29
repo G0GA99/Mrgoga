@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ExternalLink } from 'lucide-react'
-import { portfolio } from '../data/content'
+import { portfolio as staticPortfolio } from '../data/content'
 
 function Preview({ color, type }) {
   return (
@@ -64,10 +64,18 @@ const FILTERS = ['All', 'Web', 'AI', 'Design', 'Automation']
 export default function Portfolio() {
   const [sel, setSel] = useState(null)
   const [filter, setFilter] = useState('All')
+  const [items, setItems] = useState(staticPortfolio)
+
+  useEffect(() => {
+    fetch('/api/admin-data?action=portfolio')
+      .then(r => r.json())
+      .then(data => { if (data.items?.length > 0) setItems(data.items) })
+      .catch(() => {})
+  }, [])
 
   const filtered = filter === 'All'
-    ? portfolio
-    : portfolio.filter(p => p.type?.toLowerCase().includes(filter.toLowerCase()))
+    ? items
+    : items.filter(p => p.type?.toLowerCase().includes(filter.toLowerCase()))
 
   return (
     <section id="portfolio" className="section bg-black">
