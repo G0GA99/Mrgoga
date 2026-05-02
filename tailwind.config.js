@@ -1,12 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         black:   '#000000',
-        card:    '#0f0f0f',
-        card2:   '#1a1a1a',
+        card:    '#0e0e1c',
+        card2:   '#13132a',
         teal:    '#10b981',
         teal2:   '#34d399',
         emerald: '#10b981',

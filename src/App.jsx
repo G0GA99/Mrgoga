@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar       from './components/Navbar'
 import Hero         from './components/Hero'
@@ -16,10 +17,19 @@ import Admin        from './components/Admin'
 import Payment      from './components/Payment'
 
 function MainSite() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('g0ga_theme') || 'dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('g0ga_theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
+
   return (
-    <div className="min-h-screen bg-black text-white font-inter">
+    <div className="min-h-screen font-inter" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <PageIntro />
-      <Navbar />
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
       <main>
         <Hero />
         <Services />
