@@ -6,22 +6,24 @@
    THEME VARIABLES
 ═══════════════════════════════════════════════ */
 :root {
-  --bg:        #06060f;
-  --bg2:       #0d0d1a;
-  --card-bg:   #0e0e1c;
-  --card-bg2:  #13132a;
-  --text:      #f1f5f9;
-  --text2:     #94a3b8;
-  --text3:     #64748b;
+  /* Dark theme — original colors preserved */
+  --bg:        #000000;
+  --bg2:       #080808;
+  --card-bg:   #0f0f0f;
+  --card-bg2:  #1a1a1a;
+  --text:      #ffffff;
+  --text2:     #9ca3af;
+  --text3:     #6b7280;
   --border:    rgba(255,255,255,0.07);
   --border2:   rgba(255,255,255,0.04);
-  --nav-bg:    rgba(6,6,15,0.90);
-  --glass-bg:  rgba(14,14,28,0.65);
-  --field-bg:  rgba(20,20,42,0.8);
-  --marquee-fade: #06060f;
-  --footer-bg: #03030a;
-  --scrollbar: #06060f;
-  --ambient:   rgba(16,185,129,0.05);
+  --nav-bg:    rgba(0,0,0,0.88);
+  --glass-bg:  rgba(15,15,15,0.55);
+  --glass-card-bg: rgba(10,10,10,0.60);
+  --field-bg:  #111111;
+  --marquee-fade: #000000;
+  --footer-bg: #000000;
+  --scrollbar: #000000;
+  --ambient:   rgba(16,185,129,0.04);
   --teal:      #10b981;
   --teal2:     #34d399;
   --ease:      cubic-bezier(0.22, 1, 0.36, 1);
@@ -29,24 +31,26 @@
 }
 
 [data-theme="light"] {
-  --bg:        #f0f4f8;
+  /* Light theme — proper inversion */
+  --bg:        #f5f5f0;
   --bg2:       #ffffff;
-  --card-bg:   #ffffff;
-  --card-bg2:  #f8f9fc;
+  --card-bg:   rgba(255,255,255,0.65);
+  --card-bg2:  rgba(248,248,245,0.75);
   --text:      #0f172a;
   --text2:     #475569;
   --text3:     #94a3b8;
-  --border:    rgba(0,0,0,0.08);
-  --border2:   rgba(0,0,0,0.04);
-  --nav-bg:    rgba(240,244,248,0.93);
-  --glass-bg:  rgba(255,255,255,0.82);
-  --field-bg:  rgba(255,255,255,0.95);
-  --marquee-fade: #f0f4f8;
-  --footer-bg: #e4e8f0;
-  --scrollbar: #f0f4f8;
-  --ambient:   rgba(5,150,105,0.04);
-  --teal:      #059669;
-  --teal2:     #10b981;
+  --border:    rgba(0,0,0,0.09);
+  --border2:   rgba(0,0,0,0.05);
+  --nav-bg:    rgba(245,245,240,0.93);
+  --glass-bg:  rgba(255,255,255,0.65);
+  --glass-card-bg: rgba(255,255,255,0.70);
+  --field-bg:  rgba(255,255,255,0.90);
+  --marquee-fade: #f5f5f0;
+  --footer-bg: #eaeae4;
+  --scrollbar: #f5f5f0;
+  --ambient:   rgba(16,185,129,0.06);
+  --teal:      #10b981;
+  --teal2:     #34d399;
 }
 
 /* ═══════════════════════════════════════════════
@@ -140,21 +144,23 @@ body::before {
    CARD
 ═══════════════════════════════════════════════ */
 .card {
-  background: var(--card-bg);
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   border-radius: 18px;
   transition: border-color .4s var(--ease), transform .4s var(--ease),
-              box-shadow .4s var(--ease), background-color .35s ease;
+              box-shadow .4s var(--ease), background .35s ease;
 }
 .card:hover {
-  border-color: rgba(16,185,129,.28);
-  box-shadow: 0 24px 60px rgba(0,0,0,.18), 0 0 40px rgba(16,185,129,.06);
+  border-color: rgba(16,185,129,.30);
+  box-shadow: 0 24px 60px rgba(0,0,0,.25), 0 0 40px rgba(16,185,129,.07);
 }
 [data-theme="light"] .card {
-  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+  box-shadow: 0 2px 20px rgba(0,0,0,.07);
 }
 [data-theme="light"] .card:hover {
-  box-shadow: 0 12px 40px rgba(0,0,0,.10), 0 0 30px rgba(5,150,105,.06);
+  box-shadow: 0 12px 40px rgba(0,0,0,.10), 0 0 30px rgba(16,185,129,.08);
 }
 
 /* Lift */
@@ -345,27 +351,31 @@ canvas { display: block; }
 ═══════════════════════════════════════════════ */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
   border: 1px solid var(--border);
   border-radius: 18px;
 }
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(16,185,129,.10);
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(16,185,129,.12);
   border-radius: 20px;
   transition: border-color .3s, box-shadow .3s, transform .3s, background .35s;
 }
 .glass-card:hover {
-  border-color: rgba(16,185,129,.28);
-  box-shadow: 0 24px 60px rgba(0,0,0,.15), 0 0 40px rgba(16,185,129,.06);
+  border-color: rgba(16,185,129,.30);
+  box-shadow: 0 24px 60px rgba(0,0,0,.18), 0 0 40px rgba(16,185,129,.07);
   transform: translateY(-4px);
 }
-[data-theme="light"] .glass,
+[data-theme="light"] .glass {
+  box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  border-color: rgba(0,0,0,.08);
+}
 [data-theme="light"] .glass-card {
   box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  border-color: rgba(16,185,129,.15);
 }
 
 /* ═══════════════════════════════════════════════
