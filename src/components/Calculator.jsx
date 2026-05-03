@@ -32,7 +32,7 @@ export default function Calculator() {
   const pct = Math.min(((est - 100) / 29900) * 100, 100)
 
   return (
-    <section id="calculator" className="py-20" style={{ background:'#000' }}>
+    <section id="calculator" className="py-20" style={{ background:'var(--bg)' }}>
       <div className="max-w-xl mx-auto px-6">
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }}

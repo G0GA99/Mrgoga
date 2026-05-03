@@ -17,13 +17,13 @@ function TestimonialCard({ t, i }) {
             transition={{ delay: j*.08 }} className="text-amber-400 text-sm">★</motion.span>
         ))}
       </div>
-      <p className="text-gray-300 text-sm leading-relaxed italic mb-6">"{t.quote}"</p>
-      <div className="flex items-center gap-3 pt-4 border-t border-white/6">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-black"
+      <p className="text-sm leading-relaxed italic mb-6" style={{ color:'var(--text)' }}>"{t.quote}"</p>
+      <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor:'var(--border)' }}>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white"
           style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>{t.author[0]}</div>
         <div>
-          <div className="font-semibold text-sm">{t.author}</div>
-          <div className="text-gray-600 text-xs">{t.company} · {t.location}</div>
+          <div className="font-semibold text-sm" style={{ color:'var(--text)' }}>{t.author}</div>
+          <div className="text-xs" style={{ color:'var(--text3)' }}>{t.company} · {t.location}</div>
         </div>
       </div>
     </motion.div>
@@ -42,7 +42,7 @@ export default function Testimonials() {
   }, [])
 
   return (
-    <section id="testimonials" className="section" style={{ background:'linear-gradient(180deg,#050505 0%,#000 100%)' }}>
+    <section id="testimonials" className="section" style={{ background:'var(--bg)' }}>
       <div className="max-w-7xl mx-auto px-6">
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }} className="text-center mb-14">
@@ -66,13 +66,13 @@ export default function Testimonials() {
                 <div className="flex gap-0.5 mb-3">
                   {Array(testimonials[idx].rating).fill(0).map((_, j) => <span key={j} className="text-amber-400 text-sm">★</span>)}
                 </div>
-                <p className="text-gray-300 text-sm leading-relaxed italic mb-5">"{testimonials[idx].quote}"</p>
+                <p className="text-sm leading-relaxed italic mb-5" style={{ color:'var(--text)' }}>"{testimonials[idx].quote}"</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-black"
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white"
                     style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>{testimonials[idx].author[0]}</div>
                   <div>
-                    <div className="font-semibold text-sm">{testimonials[idx].author}</div>
-                    <div className="text-gray-600 text-xs">{testimonials[idx].company} · {testimonials[idx].location}</div>
+                    <div className="font-semibold text-sm" style={{ color:'var(--text)' }}>{testimonials[idx].author}</div>
+                    <div className="text-xs" style={{ color:'var(--text3)' }}>{testimonials[idx].company} · {testimonials[idx].location}</div>
                   </div>
                 </div>
               </motion.div>
@@ -92,11 +92,11 @@ export default function Testimonials() {
 
         {/* Trust row */}
         <motion.div initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }}
-          className="flex flex-wrap justify-center gap-10 pt-12 border-t border-white/5">
+          className="flex flex-wrap justify-center gap-10 pt-12 border-t" style={{ borderColor:'var(--border)' }}>
           {[['50+','Projects'],['98%','Retention'],['4.9★','Rating'],['$2M+','Revenue']].map(([v,l], i) => (
             <div key={i} className="text-center">
               <div className="font-poppins text-xl font-black text-grad">{v}</div>
-              <div className="text-gray-600 text-xs mt-1">{l}</div>
+              <div className="text-xs mt-1" style={{ color:'var(--text3)' }}>{l}</div>
             </div>
           ))}
         </motion.div>

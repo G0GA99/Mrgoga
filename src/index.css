@@ -454,28 +454,56 @@ canvas { display: block; }
 [data-theme="light"] .stat-box:hover { background: rgba(5,150,105,.10); border-color: rgba(5,150,105,.28); }
 
 /* ═══════════════════════════════════════════════
-   LIGHT MODE — TAILWIND UTILITY OVERRIDES
+   LIGHT MODE — COMPREHENSIVE OVERRIDES
 ═══════════════════════════════════════════════ */
-[data-theme="light"] body   { background: var(--bg); color: var(--text); }
-[data-theme="light"] h1,
-[data-theme="light"] h2,
-[data-theme="light"] h3,
-[data-theme="light"] h4,
-[data-theme="light"] h5     { color: var(--text); }
+[data-theme="light"] body { background: var(--bg); color: var(--text); }
+[data-theme="light"] h1,[data-theme="light"] h2,
+[data-theme="light"] h3,[data-theme="light"] h4,
+[data-theme="light"] h5  { color: var(--text); }
 
-[data-theme="light"] .text-white           { color: var(--text)  !important; }
-[data-theme="light"] .text-gray-300        { color: var(--text2) !important; }
-[data-theme="light"] .text-gray-400        { color: var(--text2) !important; }
-[data-theme="light"] .text-gray-500        { color: var(--text2) !important; }
-[data-theme="light"] .text-gray-600        { color: var(--text3) !important; }
-[data-theme="light"] .text-gray-700        { color: var(--text3) !important; }
-[data-theme="light"] .bg-black             { background: var(--bg)       !important; }
+/* ── Text ── */
+[data-theme="light"] .text-white    { color: var(--text)  !important; }
+[data-theme="light"] .text-gray-300 { color: var(--text)  !important; }
+[data-theme="light"] .text-gray-400 { color: var(--text2) !important; }
+[data-theme="light"] .text-gray-500 { color: var(--text2) !important; }
+[data-theme="light"] .text-gray-600 { color: var(--text3) !important; }
+[data-theme="light"] .text-gray-700 { color: var(--text3) !important; }
+[data-theme="light"] .text-gray-800 { color: var(--text3) !important; }
 
-/* Smooth glow adapted for light */
-[data-theme="light"] .glow    { box-shadow: 0 0 28px rgba(5,150,105,.30); }
-[data-theme="light"] .glow-sm { box-shadow: 0 0 16px rgba(5,150,105,.20); }
-[data-theme="light"] .text-glow { text-shadow: 0 0 22px rgba(5,150,105,.35); }
+/* ── Backgrounds ── */
+[data-theme="light"] .bg-black      { background: var(--bg)           !important; }
+[data-theme="light"] .bg-white\/4   { background: rgba(0,0,0,.03)     !important; }
+[data-theme="light"] .bg-white\/6   { background: rgba(0,0,0,.04)     !important; }
+[data-theme="light"] .bg-white\/8   { background: rgba(0,0,0,.05)     !important; }
+[data-theme="light"] .bg-black\/80  { background: rgba(240,244,248,.90) !important; }
 
+/* ── Borders ── */
+[data-theme="light"] .border-white\/4  { border-color: rgba(0,0,0,.05) !important; }
+[data-theme="light"] .border-white\/5  { border-color: rgba(0,0,0,.06) !important; }
+[data-theme="light"] .border-white\/6  { border-color: rgba(0,0,0,.07) !important; }
+[data-theme="light"] .border-white\/8  { border-color: rgba(0,0,0,.09) !important; }
+[data-theme="light"] .border-white\/12 { border-color: rgba(0,0,0,.10) !important; }
+[data-theme="light"] .border-white\/15 { border-color: rgba(0,0,0,.12) !important; }
+[data-theme="light"] .border-white\/25 { border-color: rgba(0,0,0,.14) !important; }
+
+/* ── Glows ── */
+[data-theme="light"] .glow    { box-shadow: 0 0 28px rgba(16,185,129,.28); }
+[data-theme="light"] .glow-sm { box-shadow: 0 0 16px rgba(16,185,129,.20); }
+[data-theme="light"] .text-glow { text-shadow: 0 0 22px rgba(16,185,129,.32); }
+
+/* ── Components ── */
 [data-theme="light"] .service-glow::after {
-  background: linear-gradient(135deg, rgba(5,150,105,.5), transparent, rgba(16,185,129,.5));
+  background: linear-gradient(135deg, rgba(16,185,129,.45), transparent, rgba(52,211,153,.45));
 }
+[data-theme="light"] .stat-box       { background: rgba(16,185,129,.05); border-color: rgba(16,185,129,.14); }
+[data-theme="light"] .stat-box:hover { background: rgba(16,185,129,.10); border-color: rgba(16,185,129,.28); }
+
+/* ── CEO / dark glass cards in light mode ── */
+[data-theme="light"] .ceo-glass {
+  background: rgba(255,255,255,.80) !important;
+  border-color: rgba(16,185,129,.22) !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,.08) !important;
+}
+
+/* ── Pulse dot border ── */
+[data-theme="light"] .pulse-dot-wrap { border-color: var(--bg) !important; }

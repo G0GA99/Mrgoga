@@ -37,14 +37,14 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="section bg-black">
+    <section id="contact" className="section" style={{ background:'var(--bg)' }}>
       <div className="max-w-7xl mx-auto px-6">
 
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }} className="text-center mb-14">
           <span className="badge mb-5 inline-flex"><span className="badge-dot" />Build Together</span>
           <h2 className="sec-title">Start Your <span className="text-grad">AI Journey</span></h2>
-          <p className="text-gray-500 text-base max-w-lg mx-auto">
+          <p className="text-base max-w-lg mx-auto" style={{ color:'var(--text2)' }}>
             Free 30-min strategy call. Zero obligation. Map your project today.
           </p>
         </motion.div>
@@ -68,8 +68,8 @@ export default function Contact() {
                 <div>
                   <h5 className="font-semibold text-sm mb-0.5">{item.t}</h5>
                   {item.href
-                    ? <a href={item.href} className="text-teal text-sm hover:underline">{item.b}</a>
-                    : <p className="text-gray-500 text-sm">{item.b}</p>
+                    ? <a href={item.href} className="text-sm hover:underline" style={{ color:'var(--teal)' }}>{item.b}</a>
+                    : <p className="text-sm" style={{ color:'var(--text2)' }}>{item.b}</p>
                   }
                 </div>
               </div>
@@ -94,7 +94,7 @@ export default function Contact() {
                 style={{ borderColor:'rgba(74,222,128,.2)', background:'rgba(74,222,128,.02)' }}>
                 <CheckCircle size={44} className="text-emerald-400 mx-auto mb-4" />
                 <h3 className="font-poppins text-xl font-bold mb-2">Message Received!</h3>
-                <p className="text-gray-500 text-sm">Our AI agents are on it. You will hear back within 2 hours.</p>
+                <p className="text-sm" style={{ color:'var(--text2)' }}>Our AI agents are on it. You will hear back within 2 hours.</p>
                 <p className="text-gray-600 text-xs mt-3">Ready to start? View our <button onClick={() => { document.getElementById('payment')?.scrollIntoView({behavior:'smooth'}) }} className="text-teal hover:underline">payment options →</button></p>
                 <button
                   onClick={() => { setDone(false); setForm({ name:'',email:'',company:'',service:'',budget:'',message:'' }) }}
@@ -106,28 +106,28 @@ export default function Contact() {
               <form onSubmit={submit} className="card p-8 rounded-2xl space-y-4" aria-busy={sending}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Name *</label>
+                    <label className="text-[11px] uppercase tracking-wider mb-1.5 block" style={{ color:'var(--text3)' }}>Name *</label>
                     <input required value={form.name} onChange={upd('name')} placeholder="John Smith" className="field" />
                   </div>
                   <div>
-                    <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Email *</label>
+                    <label className="text-[11px] uppercase tracking-wider mb-1.5 block" style={{ color:'var(--text3)' }}>Email *</label>
                     <input required type="email" value={form.email} onChange={upd('email')} placeholder="you@co.com" className="field" />
                   </div>
                 </div>
                 <div>
-                  <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Company</label>
+                  <label className="text-[11px] uppercase tracking-wider mb-1.5 block" style={{ color:'var(--text3)' }}>Company</label>
                   <input value={form.company} onChange={upd('company')} placeholder="Acme Corp" className="field" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Service *</label>
+                    <label className="text-[11px] uppercase tracking-wider mb-1.5 block" style={{ color:'var(--text3)' }}>Service *</label>
                     <select required value={form.service} onChange={upd('service')} className="field cursor-pointer">
                       <option value="">Select…</option>
                       {SERVICES.map(s => <option key={s}>{s}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Budget</label>
+                    <label className="text-[11px] uppercase tracking-wider mb-1.5 block" style={{ color:'var(--text3)' }}>Budget</label>
                     <select value={form.budget} onChange={upd('budget')} className="field cursor-pointer">
                       <option value="">Select…</option>
                       {BUDGETS.map(b => <option key={b}>{b}</option>)}
@@ -135,7 +135,7 @@ export default function Contact() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[11px] text-gray-600 uppercase tracking-wider mb-1.5 block">Project Details *</label>
+                  <label className="text-[11px] uppercase tracking-wider mb-1.5 block" style={{ color:'var(--text3)' }}>Project Details *</label>
                   <textarea required value={form.message} onChange={upd('message')} rows={4}
                     placeholder="Describe your goals and what you need…" className="field resize-none" />
                 </div>

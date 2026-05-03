@@ -40,10 +40,10 @@ function LiveFeed() {
       style={{ background: 'rgba(16,185,129,.06)', border: '1px solid rgba(16,185,129,.15)' }}>
       <span className="text-lg">{item.icon}</span>
       <div className="text-sm">
-        <span className="text-teal font-bold">{item.agent}</span>
-        <span className="text-gray-400"> — {item.msg}</span>
+        <span className="font-bold" style={{ color:'var(--teal)' }}>{item.agent}</span>
+        <span style={{ color:'var(--text2)' }}> — {item.msg}</span>
       </div>
-      <span className="ml-auto text-[10px] text-gray-600 whitespace-nowrap">just now</span>
+      <span className="ml-auto text-[10px] whitespace-nowrap" style={{ color:'var(--text3)' }}>just now</span>
     </motion.div>
   )
 }
@@ -70,13 +70,13 @@ function AgentCard({ m, i }) {
           {m.icon}
         </div>
         {/* Online pulse dot */}
-        <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-black pulse-dot"
-          style={{ background: m.color }} />
+        <div className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 pulse-dot"
+          style={{ background: m.color, borderColor:'var(--bg)' }} />
       </div>
 
       <h4 className="font-poppins font-black text-sm mb-0.5">{m.name}</h4>
       <p className="text-xs font-semibold mb-3" style={{ color: m.color }}>{m.role}</p>
-      <p className="text-gray-600 text-[11px] leading-relaxed mb-3">{m.bio}</p>
+      <p className="text-[11px] leading-relaxed mb-3" style={{ color:'var(--text3)' }}>{m.bio}</p>
 
       {/* Live tag */}
       <div className="text-[10px] font-medium mb-3 px-2 py-1 rounded-full inline-block"
@@ -87,7 +87,8 @@ function AgentCard({ m, i }) {
       {/* Skills */}
       <div className="flex gap-1 justify-center flex-wrap">
         {m.skills.map(s => (
-          <span key={s} className="text-[10px] px-2 py-0.5 rounded bg-white/4 text-gray-500 border border-white/8">{s}</span>
+          <span key={s} className="text-[10px] px-2 py-0.5 rounded border"
+            style={{ background:'rgba(16,185,129,.06)', borderColor:'var(--border)', color:'var(--text2)' }}>{s}</span>
         ))}
       </div>
     </motion.div>
@@ -96,7 +97,7 @@ function AgentCard({ m, i }) {
 
 export default function Team() {
   return (
-    <section id="team" className="section" style={{ background: 'linear-gradient(180deg,#000 0%,#050505 100%)' }}>
+    <section id="team" className="section" style={{ background: 'var(--bg)' }}>
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Header */}
@@ -104,7 +105,7 @@ export default function Team() {
           viewport={{ once: true }} transition={{ duration: .6 }} className="text-center mb-14">
           <span className="badge mb-5 inline-flex"><span className="badge-dot" />Meet the Team</span>
           <h2 className="sec-title">10 AI Agents + <span className="text-grad">1 Human CEO</span></h2>
-          <p className="text-gray-500 text-base max-w-lg mx-auto">
+          <p className="text-base max-w-lg mx-auto" style={{ color:'var(--text2)' }}>
             A fully automated agency. Agents work 24/7 — CEO approves, receives payments, grows the business.
           </p>
         </motion.div>
@@ -123,12 +124,12 @@ export default function Team() {
         <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: .6 }}
           className="max-w-sm mx-auto mb-12">
-          <div className="relative p-8 text-center rounded-2xl"
+          <div className="ceo-glass relative p-8 text-center rounded-2xl"
             style={{
-              background: 'rgba(10,10,10,.85)',
+              background: 'var(--glass-card-bg)',
               backdropFilter: 'blur(24px)',
               WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(16,185,129,.3)',
+              border: '1px solid rgba(16,185,129,.28)',
               boxShadow: '0 0 60px rgba(16,185,129,.08)'
             }}>
             <span className="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full"
@@ -143,12 +144,13 @@ export default function Team() {
                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,.2) 0%, transparent 70%)', border: '1px solid rgba(16,185,129,.4)' }}>
                 {ceo.icon}
               </div>
-              <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-black pulse-dot"
+              <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 pulse-dot"
+                style={{ borderColor:'var(--bg)' }}
                 style={{ background: '#10b981' }} />
             </div>
             <h4 className="font-poppins font-black text-xl mb-1">{ceo.name}</h4>
             <p className="text-teal text-xs font-semibold mb-3">{ceo.role}</p>
-            <p className="text-gray-500 text-xs leading-relaxed mb-5">{ceo.bio}</p>
+            <p className="text-xs leading-relaxed mb-5" style={{ color:'var(--text2)' }}>{ceo.bio}</p>
             <div className="flex gap-1.5 justify-center flex-wrap">
               {ceo.skills.map(s => (
                 <span key={s} className="text-[10px] px-2.5 py-1 rounded-full border font-medium"
@@ -166,7 +168,7 @@ export default function Team() {
           className="mb-4">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(16,185,129,.2))' }} />
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Management Agents</span>
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color:'var(--text3)' }}>Management Agents</span>
             <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(16,185,129,.2), transparent)' }} />
           </div>
         </motion.div>
@@ -180,7 +182,7 @@ export default function Team() {
           className="mb-4">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(16,185,129,.2))' }} />
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Developer Agents</span>
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color:'var(--text3)' }}>Developer Agents</span>
             <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(16,185,129,.2), transparent)' }} />
           </div>
         </motion.div>
@@ -191,7 +193,7 @@ export default function Team() {
         {/* Bottom note */}
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
           viewport={{ once: true }} transition={{ delay: .4 }}
-          className="text-center text-gray-700 text-xs mt-10">
+          className="text-center text-xs mt-10" style={{ color:'var(--text3)' }}>
           ✦ All agents powered by Claude AI + Groq · Online 24/7 · No breaks · No errors
         </motion.p>
       </div>

@@ -5,13 +5,13 @@ import { pricing } from '../data/content'
 export default function Pricing() {
   const go = () => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })
   return (
-    <section id="pricing" className="section" style={{ background:'linear-gradient(180deg,#050505 0%,#000 100%)' }}>
+    <section id="pricing" className="section" style={{ background:'var(--bg)' }}>
       <div className="max-w-7xl mx-auto px-6">
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }} className="text-center mb-14">
           <span className="badge mb-5 inline-flex"><span className="badge-dot"/>Pricing</span>
           <h2 className="sec-title">Simple, <span className="text-grad">Transparent</span> Pricing</h2>
-          <p className="text-gray-500 text-base max-w-lg mx-auto">Starting from $100. 50% upfront, 50% on delivery. No hidden fees.</p>
+          <p className="text-base max-w-lg mx-auto" style={{ color:'var(--text2)' }}>Starting from $100. 50% upfront, 50% on delivery. No hidden fees.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -39,18 +39,18 @@ export default function Pricing() {
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded w-fit mb-3"
                 style={{ background:`${t.color}12`, color:t.color }}>{t.subtitle}</span>
               <h3 className="font-poppins text-lg font-black mb-1">{t.name}</h3>
-              <p className="text-gray-600 text-[11px] mb-4">{t.bestFor}</p>
+              <p className="text-[11px] mb-4" style={{ color:'var(--text3)' }}>{t.bestFor}</p>
 
               <div className="flex items-baseline gap-1 mb-5">
                 <span className="font-poppins text-2xl font-black" style={{ color:t.color }}>
                   ${t.priceFrom.toLocaleString()}
                 </span>
-                <span className="text-gray-500 text-xs">– ${t.priceTo.toLocaleString()}</span>
+                <span className="text-xs" style={{ color:'var(--text2)' }}>– ${t.priceTo.toLocaleString()}</span>
               </div>
 
               <ul className="space-y-2.5 flex-1 mb-6">
                 {t.features.map((f, j) => (
-                  <li key={j} className="flex items-start gap-2 text-[.8rem] text-gray-400">
+                  <li key={j} className="flex items-start gap-2 text-[.8rem]" style={{ color:'var(--text2)' }}>
                     <CheckCircle size={12} style={{ color:t.color, flexShrink:0, marginTop:3 }} />{f}
                   </li>
                 ))}
@@ -66,7 +66,7 @@ export default function Pricing() {
             </motion.div>
           ))}
         </div>
-        <p className="text-center text-gray-700 text-xs mt-10">All prices USD · Bank transfer or crypto · 100% satisfaction guarantee</p>
+        <p className="text-center text-xs mt-10" style={{ color:'var(--text3)' }}>All prices USD · Bank transfer or crypto · 100% satisfaction guarantee</p>
       </div>
     </section>
   )
