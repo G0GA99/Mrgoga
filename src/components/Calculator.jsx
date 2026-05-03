@@ -45,37 +45,42 @@ export default function Calculator() {
             </div>
             <div>
               <h3 className="font-poppins font-bold text-lg">Price Calculator</h3>
-              <p className="text-gray-600 text-xs">Instant project estimate</p>
+              <p className="text-xs" style={{ color:'var(--text3)' }}>Instant project estimate</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
-              <label className="text-xs text-gray-500 font-medium mb-2 block uppercase tracking-wider">Service</label>
+              <label className="text-xs font-medium mb-2 block uppercase tracking-wider" style={{ color:'var(--text3)' }}>Service</label>
               <select value={svcI} onChange={e => setSvcI(+e.target.value)} className="field cursor-pointer">
                 {svcs.map((s, i) => <option key={i} value={i}>{s.label}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-xs text-gray-500 font-medium mb-2 block uppercase tracking-wider">Add-on</label>
+              <label className="text-xs font-medium mb-2 block uppercase tracking-wider" style={{ color:'var(--text3)' }}>Add-on</label>
               <select value={addI} onChange={e => setAddI(+e.target.value)} className="field cursor-pointer">
                 {addons.map((a, i) => <option key={i} value={i}>{a.label}{a.val ? ` (+$${a.val.toLocaleString()})` : ''}</option>)}
               </select>
             </div>
             <div>
               <div className="flex justify-between mb-2">
-                <label className="text-xs text-gray-500 font-medium uppercase tracking-wider">Complexity</label>
-                <span className="text-xs font-bold text-teal">{lvls[cplx]}</span>
+                <label className="text-xs font-medium uppercase tracking-wider" style={{ color:'var(--text3)' }}>Complexity</label>
+                <span className="text-xs font-bold" style={{ color:'var(--teal)' }}>{lvls[cplx]}</span>
               </div>
               <input type="range" min={0} max={4} value={cplx} onChange={e => setCplx(+e.target.value)} className="w-full" />
               <div className="flex justify-between mt-1.5">
-                {lvls.map((l, i) => <span key={i} className={`text-[10px] ${i===cplx?'text-teal font-semibold':'text-gray-700'}`}>{l}</span>)}
+                {lvls.map((l, i) => (
+                  <span key={i} className="text-[10px]"
+                    style={{ color: i===cplx ? 'var(--teal)' : 'var(--text3)', fontWeight: i===cplx ? 600 : 400 }}>
+                    {l}
+                  </span>
+                ))}
               </div>
             </div>
 
             {/* Bar */}
             <div>
-              <div className="flex justify-between text-[10px] text-gray-700 mb-1.5">
+              <div className="flex justify-between text-[10px] mb-1.5" style={{ color:'var(--text3)' }}>
                 <span>$100</span><span>$30,000+</span>
               </div>
               <div className="w-full h-2.5 bg-card2 rounded-full overflow-hidden">
@@ -87,10 +92,10 @@ export default function Calculator() {
             {/* Result */}
             <motion.div key={est} initial={{ scale:.97 }} animate={{ scale:1 }}
               className="rounded-xl p-6 text-center"
-              style={{ background:'radial-gradient(ellipse at center,rgba(16,185,129,.1) 0%,#050505 70%)', border:'1px solid rgba(16,185,129,.2)' }}>
-              <p className="text-gray-600 text-[11px] uppercase tracking-widest mb-2">Estimated Investment</p>
+              style={{ background:'radial-gradient(ellipse at center,rgba(16,185,129,.12) 0%,var(--card-bg) 70%)', border:'1px solid rgba(16,185,129,.2)' }}>
+              <p className="text-[11px] uppercase tracking-widest mb-2" style={{ color:'var(--text3)' }}>Estimated Investment</p>
               <div className="font-poppins text-5xl font-black text-grad text-glow">${est.toLocaleString()}</div>
-              <p className="text-gray-700 text-xs mt-2">Exact quote after free 30-min consultation</p>
+              <p className="text-xs mt-2" style={{ color:'var(--text2)' }}>Exact quote after free 30-min consultation</p>
             </motion.div>
 
             <button onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior:'smooth' })}

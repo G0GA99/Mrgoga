@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Copy, CheckCircle, Bitcoin, Wallet } from 'lucide-react'
+import { Copy, CheckCircle } from 'lucide-react'
 
 const WALLETS = [
   {
@@ -34,8 +34,8 @@ function CopyBtn({ text }) {
     <button onClick={copy}
       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex-shrink-0"
       style={copied
-        ? { background:'rgba(16,185,129,.15)', color:'#10b981' }
-        : { background:'rgba(255,255,255,.06)', color:'#9ca3af' }}>
+        ? { background:'rgba(16,185,129,.15)', color:'var(--teal)' }
+        : { background:'rgba(16,185,129,.07)', color:'var(--text2)', border:'1px solid var(--border)' }}>
       {copied ? <CheckCircle size={12} /> : <Copy size={12} />}
       {copied ? 'Copied!' : 'Copy'}
     </button>
@@ -44,14 +44,14 @@ function CopyBtn({ text }) {
 
 export default function Payment() {
   return (
-    <section id="payment" className="section" style={{ background:'linear-gradient(180deg,#000 0%,#050505 100%)' }}>
+    <section id="payment" className="section" style={{ background:'var(--bg)' }}>
       <div className="max-w-4xl mx-auto px-6">
 
         <motion.div initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.6 }} className="text-center mb-12">
           <span className="badge mb-5 inline-flex"><span className="badge-dot" />Payments</span>
           <h2 className="sec-title">Secure <span className="text-grad">Payment</span> Options</h2>
-          <p className="text-gray-500 text-base max-w-lg mx-auto">
+          <p className="text-base max-w-lg mx-auto" style={{ color:'var(--text2)' }}>
             We accept crypto payments globally. Fast, borderless, zero chargebacks.
           </p>
         </motion.div>
@@ -60,18 +60,18 @@ export default function Payment() {
         <motion.div initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }}
           viewport={{ once:true }} transition={{ duration:.5 }}
           className="glass-card p-6 rounded-2xl mb-8">
-          <h4 className="font-poppins font-bold text-sm mb-4 text-center">Payment Structure</h4>
+          <h4 className="font-poppins font-bold text-sm mb-4 text-center" style={{ color:'var(--text)' }}>Payment Structure</h4>
           <div className="grid grid-cols-3 gap-4">
             {[
-              { pct:'50%', label:'Upfront', desc:'To start the project', color:'#10b981' },
-              { pct:'30%', label:'Midpoint', desc:'At 80% completion', color:'#3b82f6' },
-              { pct:'20%', label:'Delivery', desc:'On final delivery', color:'#a78bfa' },
+              { pct:'50%', label:'Upfront',  desc:'To start the project', color:'#10b981' },
+              { pct:'30%', label:'Midpoint', desc:'At 80% completion',    color:'#3b82f6' },
+              { pct:'20%', label:'Delivery', desc:'On final delivery',    color:'#a78bfa' },
             ].map(p => (
               <div key={p.pct} className="text-center p-4 rounded-xl"
                 style={{ background:`${p.color}08`, border:`1px solid ${p.color}20` }}>
                 <div className="font-poppins text-2xl font-black mb-1" style={{ color:p.color }}>{p.pct}</div>
-                <div className="font-semibold text-xs mb-0.5">{p.label}</div>
-                <div className="text-gray-600 text-[10px]">{p.desc}</div>
+                <div className="font-semibold text-xs mb-0.5" style={{ color:'var(--text)' }}>{p.label}</div>
+                <div className="text-[10px]" style={{ color:'var(--text3)' }}>{p.desc}</div>
               </div>
             ))}
           </div>
@@ -89,17 +89,17 @@ export default function Payment() {
                   {w.icon}
                 </div>
                 <div>
-                  <div className="font-poppins font-bold">{w.name}</div>
+                  <div className="font-poppins font-bold" style={{ color:'var(--text)' }}>{w.name}</div>
                   <div className="text-xs font-semibold px-2 py-0.5 rounded-full inline-block mt-0.5"
                     style={{ background:`${w.color}12`, color:w.color }}>
                     {w.network}
                   </div>
                 </div>
-                <div className="ml-auto text-gray-600 text-[11px] text-right hidden sm:block">{w.note}</div>
+                <div className="ml-auto text-[11px] text-right hidden sm:block" style={{ color:'var(--text3)' }}>{w.note}</div>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl"
-                style={{ background:'rgba(255,255,255,.03)', border:'1px solid rgba(255,255,255,.06)' }}>
-                <code className="text-xs text-gray-300 flex-1 break-all leading-relaxed">{w.address}</code>
+              <div className="payment-addr-box flex items-center gap-3 p-3 rounded-xl"
+                style={{ background:'rgba(16,185,129,.04)', border:'1px solid var(--border)' }}>
+                <code className="text-xs flex-1 break-all leading-relaxed" style={{ color:'var(--text2)' }}>{w.address}</code>
                 <CopyBtn text={w.address} />
               </div>
             </motion.div>
@@ -111,10 +111,10 @@ export default function Payment() {
           viewport={{ once:true }} transition={{ delay:.3 }}
           className="mt-6 p-4 rounded-xl text-center"
           style={{ background:'rgba(16,185,129,.04)', border:'1px solid rgba(16,185,129,.12)' }}>
-          <p className="text-gray-500 text-xs leading-relaxed">
+          <p className="text-xs leading-relaxed" style={{ color:'var(--text2)' }}>
             ⚠️ Always verify the wallet address before sending. Send a small test payment first for large amounts.
             After payment, WhatsApp us the transaction hash for instant confirmation.
-            <a href="https://wa.me/923091989556" className="text-teal hover:underline ml-1">
+            <a href="https://wa.me/923091989556" className="hover:underline ml-1" style={{ color:'var(--teal)' }}>
               +92 309 1989556
             </a>
           </p>

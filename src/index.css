@@ -507,3 +507,12 @@ canvas { display: block; }
 
 /* ── Pulse dot border ── */
 [data-theme="light"] .pulse-dot-wrap { border-color: var(--bg) !important; }
+
+/* ── Calculator bar track ── */
+[data-theme="light"] .bg-card2 { background: #dde3ec !important; }
+
+/* ── Payment address box ── */
+[data-theme="light"] .payment-addr-box {
+  background: rgba(0,0,0,.04) !important;
+  border-color: rgba(0,0,0,.09) !important;
+}
