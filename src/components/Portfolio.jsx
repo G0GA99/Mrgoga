@@ -3,7 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ExternalLink } from 'lucide-react'
 import { portfolio as staticPortfolio } from '../data/content'
 
-function Preview({ color, type }) {
+function Preview({ color, type, coverImage }) {
+  if (coverImage) {
+    return (
+      <div className="relative h-44 rounded-xl overflow-hidden">
+        <img src={coverImage} alt={type}
+          className="w-full h-full object-cover"
+          onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }} />
+        <div className="absolute inset-0 hidden items-center justify-center"
+          style={{ background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
+          <span className="text-[11px] font-semibold" style={{ color }}>{type}</span>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5"
+          style={{ background:'linear-gradient(0deg, rgba(0,0,0,.55), transparent)' }}>
+          <span className="text-[10px] font-semibold text-white/80">{type}</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative h-44 rounded-xl overflow-hidden flex items-center justify-center"
       style={{ background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
@@ -40,7 +58,7 @@ function Modal({ p, onClose }) {
           </div>
           <button onClick={onClose} className="transition-colors" style={{ color:'var(--text3)' }} onMouseEnter={e=>e.currentTarget.style.color='var(--text)'} onMouseLeave={e=>e.currentTarget.style.color='var(--text3)'}><X size={20} /></button>
         </div>
-        <Preview color={p.accentColor} type={p.type} />
+        <Preview color={p.accentColor} type={p.type} coverImage={p.coverImage} />
         <p className="text-sm leading-relaxed mt-5 mb-5" style={{ color:'var(--text2)' }}>{p.description}</p>
         <div className="grid grid-cols-3 gap-3 mb-5">
           {[p.result1, p.result2, p.result3].map((r, i) => (
@@ -114,7 +132,7 @@ export default function Portfolio() {
                 onClick={() => setSel(p)}
                 className="glass-card p-6 text-left group relative overflow-hidden"
                 style={{ borderColor:`${p.accentColor}20` }}>
-                <Preview color={p.accentColor} type={p.type} />
+                <Preview color={p.accentColor} type={p.type} coverImage={p.coverImage} />
                 {/* hover overlay */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{ background:`radial-gradient(ellipse at 50% 0%, ${p.accentColor}08, transparent 65%)` }} />

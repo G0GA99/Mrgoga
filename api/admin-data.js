@@ -308,6 +308,7 @@ function dbToPortfolio(item) {
     result3: { val: item.result3_val || '', lbl: item.result3_lbl || '' },
     tech: item.tech ? item.tech.split(',').map(t => t.trim()).filter(Boolean) : [],
     accentColor: item.accent_color || '#10b981',
+    coverImage: item.cover_image_url || null,
   }
 }
 
