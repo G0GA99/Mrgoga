@@ -4,26 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { ExternalLink } from 'lucide-react'
 import { portfolio as staticPortfolio } from '../data/content'
 
-function Preview({ color, type, coverImage }) {
-  if (coverImage) {
-    const isVideo = /\.(mp4|webm|ogg)$/i.test(coverImage)
-    return (
-      <div className="relative w-full rounded-xl overflow-hidden" style={{ aspectRatio: '9/16' }}>
-        {isVideo ? (
-          <video src={coverImage} autoPlay muted loop playsInline
-            className="absolute inset-0 w-full h-full object-cover" />
-        ) : (
-          <img src={coverImage} alt={type}
-            className="absolute inset-0 w-full h-full object-cover" />
-        )}
-        <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5"
-          style={{ background:'linear-gradient(0deg, rgba(0,0,0,.6), transparent)' }}>
-          <span className="text-[10px] font-semibold text-white/80">{type}</span>
-        </div>
-      </div>
-    )
-  }
-
+function Preview({ color, type }) {
   return (
     <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center"
       style={{ aspectRatio: '9/16', background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
@@ -136,7 +117,7 @@ export default function Portfolio() {
                 onClick={() => openProject(p)}
                 className="glass-card p-6 text-left group relative overflow-hidden"
                 style={{ borderColor:`${p.accentColor}20` }}>
-                <Preview color={p.accentColor} type={p.type} coverImage={p.coverImage} />
+                <Preview color={p.accentColor} type={p.type} />
                 {/* hover overlay */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{ background:`radial-gradient(ellipse at 50% 0%, ${p.accentColor}08, transparent 65%)` }} />

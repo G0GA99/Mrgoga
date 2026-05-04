@@ -399,6 +399,13 @@ CREATE TABLE IF NOT EXISTS testimonials (
 
 // ─── Portfolio ────────────────────────────────────────────────────────────────
 
+async function getTestimonials(res) {
+  const { data, error } = await supabaseAdmin
+    .from('testimonials').select('*').eq('is_active', true).order('display_order').order('created_at')
+  if (error) return res.status(500).json({ error: error.message })
+  res.status(200).json({ items: data || [] })
+}
+
 async function getPublicPortfolio(res) {
   const { data, error } = await supabaseAdmin
     .from('portfolio').select('*').eq('is_active', true).order('created_at', { ascending: true })
@@ -452,7 +459,8 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const action = req.query?.action
-      if (action === 'portfolio') return await getPublicPortfolio(res)
+      if (action === 'portfolio')    return await getPublicPortfolio(res)
+      if (action === 'testimonials') return await getTestimonials(res)
       if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
       if (action === 'portfolio-admin') return await getAdminPortfolio(res)
       if (action === 'upload-url') return await getUploadUrl(req, res)
