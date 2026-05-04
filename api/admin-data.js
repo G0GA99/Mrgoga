@@ -429,7 +429,7 @@ async function addPortfolio(body, res) {
 }
 
 async function updatePortfolio(body, res) {
-  const { id, ...fields } = body
+  const { id, action, ...fields } = body
   if (!id) return res.status(400).json({ error: 'ID required' })
   const { error } = await supabaseAdmin.from('portfolio').update(fields).eq('id', id)
   if (error) return res.status(500).json({ error: error.message })
