@@ -8,11 +8,13 @@ function Preview({ color, type, coverImage }) {
   if (coverImage) {
     const isVideo = /\.(mp4|webm|ogg)$/i.test(coverImage)
     return (
-      <div className="relative h-44 rounded-xl overflow-hidden">
+      <div className="relative w-full rounded-xl overflow-hidden" style={{ aspectRatio: '9/16' }}>
         {isVideo ? (
-          <video src={coverImage} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+          <video src={coverImage} autoPlay muted loop playsInline
+            className="absolute inset-0 w-full h-full object-cover" />
         ) : (
-          <img src={coverImage} alt={type} className="w-full h-full object-cover" />
+          <img src={coverImage} alt={type}
+            className="absolute inset-0 w-full h-full object-cover" />
         )}
         <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5"
           style={{ background:'linear-gradient(0deg, rgba(0,0,0,.6), transparent)' }}>
@@ -23,8 +25,8 @@ function Preview({ color, type, coverImage }) {
   }
 
   return (
-    <div className="relative h-44 rounded-xl overflow-hidden flex items-center justify-center"
-      style={{ background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
+    <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center"
+      style={{ aspectRatio: '9/16', background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
       <div className="absolute inset-0 opacity-15"
         style={{ backgroundImage:`linear-gradient(${color}22 1px,transparent 1px),linear-gradient(90deg,${color}22 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
       <div className="relative z-10 flex flex-col items-center gap-2">

@@ -4,18 +4,20 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, MapPin, Tag, ExternalLink, MessageSquare } from 'lucide-react'
 import { useTheme } from '../hooks/useTheme'
 
-function MediaBlock({ src, type, title }) {
+function MediaBlock({ src, title }) {
   const isVideo = src && /\.(mp4|webm|ogg)$/i.test(src)
   if (!src) return null
 
-  return isVideo ? (
-    <video src={src} autoPlay muted loop playsInline
-      className="w-full h-full object-cover"
-      style={{ maxHeight: '500px' }} />
-  ) : (
-    <img src={src} alt={title}
-      className="w-full object-cover"
-      style={{ maxHeight: '500px' }} />
+  return (
+    <div className="relative w-full" style={{ aspectRatio: '9/16' }}>
+      {isVideo ? (
+        <video src={src} autoPlay muted loop playsInline controls
+          className="absolute inset-0 w-full h-full object-cover" />
+      ) : (
+        <img src={src} alt={title}
+          className="absolute inset-0 w-full h-full object-cover" />
+      )}
+    </div>
   )
 }
 
@@ -101,7 +103,7 @@ export default function PortfolioDetail() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className="rounded-2xl overflow-hidden mb-10 shadow-2xl"
             style={{ border: `1px solid ${color}25` }}>
-            <MediaBlock src={project.coverImage} title={project.title} />
+            <MediaBlock src={project.coverImage} title={project.title} type={project.type} />
           </motion.div>
         )}
 
