@@ -4,8 +4,10 @@
 
 import { supabaseAdmin } from '../lib/supabase.js'
 
-const GROQ_KEY    = process.env.GROQ_API_KEY
-const ADMIN_TOKEN = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+const GROQ_KEY     = process.env.GROQ_API_KEY
+const ADMIN_TOKEN  = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+const SUPABASE_URL = process.env.SUPABASE_URL
+const BUCKET       = 'portfolio-media'
 
 function isAuthorized(req) {
   const token = req.headers['x-admin-token']
@@ -309,6 +311,68 @@ function dbToPortfolio(item) {
   }
 }
 
+// ─── Upload URL (GET action=upload-url) ─────────────────────────────────────
+
+async function getUploadUrl(req, res) {
+  if (!supabaseAdmin.configured) return res.status(500).json({ error: 'Supabase not configured' })
+  const { filename } = req.query
+  if (!filename) return res.status(400).json({ error: 'filename required' })
+  const ext = filename.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '')
+  const key = `portfolio/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+  try {
+    const { data, error } = await supabaseAdmin.storage.from(BUCKET).createSignedUploadUrl(key)
+    if (error) return res.status(500).json({ error: error.message })
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${key}`
+    res.status(200).json({ uploadUrl: data.signedUrl, token: data.token, key, publicUrl })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+}
+
+// ─── One-time DB Migration (POST action=migrate) ─────────────────────────────
+
+async function runMigration(res) {
+  if (!supabaseAdmin.configured) return res.status(500).json({ error: 'Supabase not configured' })
+  const results = []
+  const step = async (label, fn) => {
+    try { await fn(); results.push({ label, ok: true }) }
+    catch (e) { results.push({ label, ok: false, error: e.message }) }
+  }
+
+  await step('cover_image_url column', () =>
+    supabaseAdmin.sql`ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS cover_image_url TEXT`)
+
+  await step('portfolio_media table', () =>
+    supabaseAdmin.sql`CREATE TABLE IF NOT EXISTS portfolio_media (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(), created_at TIMESTAMPTZ DEFAULT now(),
+      portfolio_id UUID REFERENCES portfolio(id) ON DELETE CASCADE,
+      url TEXT NOT NULL, type TEXT DEFAULT 'image' CHECK (type IN ('image','video','file')),
+      caption TEXT, is_cover BOOLEAN DEFAULT false, display_order INT DEFAULT 0)`)
+
+  await step('testimonials table', () =>
+    supabaseAdmin.sql`CREATE TABLE IF NOT EXISTS testimonials (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(), created_at TIMESTAMPTZ DEFAULT now(),
+      client_name TEXT NOT NULL, client_title TEXT, client_company TEXT, client_photo_url TEXT,
+      message TEXT NOT NULL, rating INT DEFAULT 5 CHECK (rating BETWEEN 1 AND 5),
+      service TEXT, portfolio_id UUID REFERENCES portfolio(id),
+      is_active BOOLEAN DEFAULT true, display_order INT DEFAULT 0)`)
+
+  await step('RLS', () => supabaseAdmin.sql`
+    ALTER TABLE portfolio_media ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY`)
+
+  await step('storage bucket', () =>
+    supabaseAdmin.sql`INSERT INTO storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
+      VALUES ('portfolio-media','portfolio-media',true,52428800,
+        ARRAY['image/jpeg','image/jpg','image/png','image/webp','image/gif','video/mp4','video/webm','application/pdf'])
+      ON CONFLICT (id) DO NOTHING`)
+
+  const allOk = results.every(r => r.ok)
+  res.status(allOk ? 200 : 207).json({ allOk, results })
+}
+
+// ─── Portfolio ────────────────────────────────────────────────────────────────
+
 async function getPublicPortfolio(res) {
   const { data, error } = await supabaseAdmin
     .from('portfolio').select('*').eq('is_active', true).order('created_at', { ascending: true })
@@ -324,7 +388,7 @@ async function getAdminPortfolio(res) {
 }
 
 async function addPortfolio(body, res) {
-  const { title, client, location, type, description, result1_val, result1_lbl, result2_val, result2_lbl, result3_val, result3_lbl, tech, accent_color } = body
+  const { title, client, location, type, description, result1_val, result1_lbl, result2_val, result2_lbl, result3_val, result3_lbl, tech, accent_color, cover_image_url } = body
   if (!title) return res.status(400).json({ error: 'Title required' })
   const { data, error } = await supabaseAdmin.from('portfolio').insert({
     title, client: client || '', location: location || '', type: type || 'AI Integration',
@@ -332,6 +396,7 @@ async function addPortfolio(body, res) {
     result2_val: result2_val || '', result2_lbl: result2_lbl || '',
     result3_val: result3_val || '', result3_lbl: result3_lbl || '',
     tech: tech || '', accent_color: accent_color || '#10b981', is_active: true,
+    cover_image_url: cover_image_url || null,
   }).select().single()
   if (error) return res.status(500).json({ error: error.message })
   res.status(200).json({ ok: true, item: data })
@@ -364,6 +429,7 @@ export default async function handler(req, res) {
       if (action === 'portfolio') return await getPublicPortfolio(res)
       if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
       if (action === 'portfolio-admin') return await getAdminPortfolio(res)
+      if (action === 'upload-url') return await getUploadUrl(req, res)
       return await getDashboardData(res)
     }
 
@@ -375,6 +441,7 @@ export default async function handler(req, res) {
     if (action === 'portfolio-add')    return await addPortfolio(req.body, res)
     if (action === 'portfolio-update') return await updatePortfolio(req.body, res)
     if (action === 'portfolio-delete') return await deletePortfolio(req.body, res)
+    if (action === 'migrate')          return await runMigration(res)
     return await agentChat(req.body, res)
   } catch (err) {
     console.error('Admin data error:', err)

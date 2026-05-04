@@ -540,7 +540,7 @@ function PortfolioManager() {
     setUploading(true)
     try {
       // 1 — get signed upload URL from server
-      const urlRes = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+      const urlRes = await fetch(`/api/admin-data?action=upload-url&filename=${encodeURIComponent(file.name)}`, {
         headers: { 'x-admin-token': ADMIN_SECRET }
       })
       const urlData = await urlRes.json()
