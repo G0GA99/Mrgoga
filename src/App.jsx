@@ -13,8 +13,9 @@ import Footer       from './components/Footer'
 import ChatWidget   from './components/ChatWidget'
 import CustomCursor from './components/CustomCursor'
 import PageIntro    from './components/PageIntro'
-import Admin        from './components/Admin'
-import Payment      from './components/Payment'
+import Admin           from './components/Admin'
+import Payment         from './components/Payment'
+import PortfolioDetail from './components/PortfolioDetail'
 
 function MainSite() {
   const [theme, setTheme] = useState(() => localStorage.getItem('g0ga_theme') || 'dark')
@@ -52,8 +53,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/"      element={<MainSite />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/"                  element={<MainSite />} />
+        <Route path="/admin"             element={<Admin />} />
+        <Route path="/portfolio/:id"     element={<PortfolioDetail />} />
       </Routes>
     </BrowserRouter>
   )

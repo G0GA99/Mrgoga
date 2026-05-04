@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ExternalLink } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ExternalLink } from 'lucide-react'
 import { portfolio as staticPortfolio } from '../data/content'
 
 function Preview({ color, type, coverImage }) {
   if (coverImage) {
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(coverImage)
     return (
       <div className="relative h-44 rounded-xl overflow-hidden">
-        <img src={coverImage} alt={type}
-          className="w-full h-full object-cover"
-          onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }} />
-        <div className="absolute inset-0 hidden items-center justify-center"
-          style={{ background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
-          <span className="text-[11px] font-semibold" style={{ color }}>{type}</span>
-        </div>
+        {isVideo ? (
+          <video src={coverImage} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+        ) : (
+          <img src={coverImage} alt={type} className="w-full h-full object-cover" />
+        )}
         <div className="absolute bottom-0 left-0 right-0 px-3 py-1.5"
-          style={{ background:'linear-gradient(0deg, rgba(0,0,0,.55), transparent)' }}>
+          style={{ background:'linear-gradient(0deg, rgba(0,0,0,.6), transparent)' }}>
           <span className="text-[10px] font-semibold text-white/80">{type}</span>
         </div>
       </div>
@@ -82,9 +82,9 @@ function Modal({ p, onClose }) {
 const FILTERS = ['All', 'Web', 'AI', 'Design', 'Automation']
 
 export default function Portfolio() {
-  const [sel, setSel] = useState(null)
   const [filter, setFilter] = useState('All')
-  const [items, setItems] = useState(staticPortfolio)
+  const [items, setItems]   = useState(staticPortfolio)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetch('/api/admin-data?action=portfolio')
@@ -96,6 +96,8 @@ export default function Portfolio() {
   const filtered = filter === 'All'
     ? items
     : items.filter(p => p.type?.toLowerCase().includes(filter.toLowerCase()))
+
+  const openProject = (p) => navigate(`/portfolio/${p.id}`, { state: { project: p } })
 
   return (
     <section id="portfolio" className="section" style={{ background:'var(--bg)' }}>
@@ -129,7 +131,7 @@ export default function Portfolio() {
             {filtered.map((p, i) => (
               <motion.button key={p.id} initial={{ opacity:0, y:36 }} animate={{ opacity:1, y:0 }}
                 transition={{ duration:.45, delay: i*.08 }}
-                onClick={() => setSel(p)}
+                onClick={() => openProject(p)}
                 className="glass-card p-6 text-left group relative overflow-hidden"
                 style={{ borderColor:`${p.accentColor}20` }}>
                 <Preview color={p.accentColor} type={p.type} coverImage={p.coverImage} />
@@ -152,14 +154,13 @@ export default function Portfolio() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 mt-3 text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity relative z-10" style={{ color:p.accentColor }}>
-                  <ExternalLink size={11} /> Click to expand
+                  <ExternalLink size={11} /> View full case study
                 </div>
               </motion.button>
             ))}
           </motion.div>
         </AnimatePresence>
       </div>
-      <AnimatePresence>{sel && <Modal p={sel} onClose={() => setSel(null)} />}</AnimatePresence>
     </section>
   )
 }
