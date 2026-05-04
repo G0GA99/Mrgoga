@@ -329,46 +329,71 @@ async function getUploadUrl(req, res) {
   }
 }
 
-// ─── One-time DB Migration (POST action=migrate) ─────────────────────────────
+// ─── One-time Storage Bucket Creation (POST action=migrate) ──────────────────
 
 async function runMigration(res) {
   if (!supabaseAdmin.configured) return res.status(500).json({ error: 'Supabase not configured' })
   const results = []
-  const step = async (label, fn) => {
-    try { await fn(); results.push({ label, ok: true }) }
-    catch (e) { results.push({ label, ok: false, error: e.message }) }
+
+  // Create storage bucket via Supabase Storage REST API (works with service key)
+  try {
+    const r = await fetch(`${SUPABASE_URL}/storage/v1/bucket`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+        'apikey': process.env.SUPABASE_SERVICE_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: 'portfolio-media',
+        name: 'portfolio-media',
+        public: true,
+        file_size_limit: 52428800,
+        allowed_mime_types: ['image/jpeg','image/jpg','image/png','image/webp','image/gif','video/mp4','video/webm','application/pdf'],
+      }),
+    })
+    const data = await r.json()
+    if (r.ok || data?.error === 'The resource already exists') {
+      results.push({ label: 'storage bucket portfolio-media', ok: true })
+    } else {
+      results.push({ label: 'storage bucket', ok: false, error: data?.error || JSON.stringify(data) })
+    }
+  } catch (e) {
+    results.push({ label: 'storage bucket', ok: false, error: e.message })
   }
 
-  await step('cover_image_url column', () =>
-    supabaseAdmin.sql`ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS cover_image_url TEXT`)
+  // SQL tables — must be run manually in Supabase SQL Editor
+  const sqlNeeded = `
+-- Run this in Supabase Dashboard → SQL Editor:
 
-  await step('portfolio_media table', () =>
-    supabaseAdmin.sql`CREATE TABLE IF NOT EXISTS portfolio_media (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(), created_at TIMESTAMPTZ DEFAULT now(),
-      portfolio_id UUID REFERENCES portfolio(id) ON DELETE CASCADE,
-      url TEXT NOT NULL, type TEXT DEFAULT 'image' CHECK (type IN ('image','video','file')),
-      caption TEXT, is_cover BOOLEAN DEFAULT false, display_order INT DEFAULT 0)`)
+ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS cover_image_url TEXT;
 
-  await step('testimonials table', () =>
-    supabaseAdmin.sql`CREATE TABLE IF NOT EXISTS testimonials (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(), created_at TIMESTAMPTZ DEFAULT now(),
-      client_name TEXT NOT NULL, client_title TEXT, client_company TEXT, client_photo_url TEXT,
-      message TEXT NOT NULL, rating INT DEFAULT 5 CHECK (rating BETWEEN 1 AND 5),
-      service TEXT, portfolio_id UUID REFERENCES portfolio(id),
-      is_active BOOLEAN DEFAULT true, display_order INT DEFAULT 0)`)
+CREATE TABLE IF NOT EXISTS portfolio_media (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  portfolio_id UUID REFERENCES portfolio(id) ON DELETE CASCADE,
+  url TEXT NOT NULL,
+  type TEXT DEFAULT 'image',
+  caption TEXT,
+  is_cover BOOLEAN DEFAULT false,
+  display_order INT DEFAULT 0
+);
 
-  await step('RLS', () => supabaseAdmin.sql`
-    ALTER TABLE portfolio_media ENABLE ROW LEVEL SECURITY;
-    ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY`)
+CREATE TABLE IF NOT EXISTS testimonials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  client_name TEXT NOT NULL,
+  client_company TEXT,
+  client_photo_url TEXT,
+  message TEXT NOT NULL,
+  rating INT DEFAULT 5,
+  service TEXT,
+  is_active BOOLEAN DEFAULT true,
+  display_order INT DEFAULT 0
+);
+`.trim()
 
-  await step('storage bucket', () =>
-    supabaseAdmin.sql`INSERT INTO storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
-      VALUES ('portfolio-media','portfolio-media',true,52428800,
-        ARRAY['image/jpeg','image/jpg','image/png','image/webp','image/gif','video/mp4','video/webm','application/pdf'])
-      ON CONFLICT (id) DO NOTHING`)
-
-  const allOk = results.every(r => r.ok)
-  res.status(allOk ? 200 : 207).json({ allOk, results })
+  res.status(200).json({ results, sqlNeeded, note: 'Storage bucket created. Run sqlNeeded in Supabase SQL Editor to create tables.' })
 }
 
 // ─── Portfolio ────────────────────────────────────────────────────────────────
