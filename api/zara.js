@@ -1,8 +1,14 @@
 import { supabaseAdmin } from '../lib/supabase.js'
 import { ZARA, assignDeveloper } from '../lib/agents/index.js'
 
-const GROQ_KEY   = process.env.GROQ_API_KEY
-const RESEND_KEY = process.env.RESEND_API_KEY
+const GROQ_KEY    = process.env.GROQ_API_KEY
+const RESEND_KEY  = process.env.RESEND_API_KEY
+const ADMIN_TOKEN = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+
+function isAuthorized(req) {
+  const token = req.headers['x-admin-token'] || req.query?.token
+  return token === ADMIN_TOKEN
+}
 
 
 
@@ -22,15 +28,20 @@ async function groq(prompt) {
 }
 
 async function sendEmail(to, subject, text) {
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'Zara — G0GA Project Manager <onboarding@resend.dev>', to, subject, text })
-  })
+  if (!RESEND_KEY) return
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: 'Zara — G0GA Project Manager <onboarding@resend.dev>', to, subject, text })
+    })
+  } catch (e) { console.error('[Zara] Email failed:', e.message) }
 }
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
+  if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!GROQ_KEY) return res.status(500).json({ ok: false, error: 'GROQ_API_KEY not configured' })
 
   try {
     // 1 — Get new leads that haven't been processed by Zara yet
@@ -69,12 +80,13 @@ export default async function handler(req, res) {
       }).select().single()
 
       // 5 — Log Zara's action
-      await supabaseAdmin.from('agent_logs').insert({
+      const { error: logErr } = await supabaseAdmin.from('agent_logs').insert({
         agent: 'Zara',
         action: 'project_created',
-        details: `Created project for ${lead.name}, assigned to ${assignedTo}`,
+        details: JSON.stringify({ leadName: lead.name, assignedTo, service: lead.service, budget: lead.budget }),
         project_id: project?.id,
       })
+      if (logErr) console.error('[Zara] Supabase log failed:', logErr.message)
 
       // 6 — Update lead status
       await supabaseAdmin.from('leads').update({ status: 'contacted' }).eq('id', lead.id)

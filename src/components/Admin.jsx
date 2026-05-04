@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Lock, Users, Briefcase, Activity, TrendingUp, LogOut, RefreshCw, AlertCircle, MessageSquare, Send, ChevronRight, Play, Mail, Zap, CheckCircle, XCircle, Clock, Plus, Edit2, Trash2, Image } from 'lucide-react'
+import { Lock, Users, Briefcase, Activity, TrendingUp, LogOut, RefreshCw, AlertCircle, MessageSquare, Send, ChevronRight, Play, Mail, Zap, CheckCircle, XCircle, Clock, Plus, Edit2, Trash2, Image, Upload, Link } from 'lucide-react'
 
 const ADMIN_SECRET = 'g0ga-admin-2025'
 
@@ -518,17 +518,51 @@ const BLANK = {
   title:'', client:'', location:'USA', type:'AI Integration', description:'',
   result1_val:'', result1_lbl:'', result2_val:'', result2_lbl:'',
   result3_val:'', result3_lbl:'', tech:'', accent_color:'#10b981',
+  cover_image_url:'',
 }
 
 function PortfolioManager() {
-  const [items,   setItems]   = useState([])
-  const [loading, setLoading] = useState(true)
-  const [form,    setForm]    = useState(null) // null | BLANK | item row
-  const [saving,  setSaving]  = useState(false)
-  const [deleting,setDeleting]= useState(null) // id being deleted
-  const [msg,     setMsg]     = useState(null) // { ok, text }
+  const [items,    setItems]    = useState([])
+  const [loading,  setLoading]  = useState(true)
+  const [form,     setForm]     = useState(null)
+  const [saving,   setSaving]   = useState(false)
+  const [deleting, setDeleting] = useState(null)
+  const [msg,      setMsg]      = useState(null)
+  const [uploading,setUploading]= useState(false)
+  const fileInputRef = useRef(null)
 
   const flash = (ok, text) => { setMsg({ ok, text }); setTimeout(() => setMsg(null), 3500) }
+
+  const uploadImage = async (file) => {
+    if (!file) return
+    const MAX = 10 * 1024 * 1024 // 10MB
+    if (file.size > MAX) return flash(false, 'File too large — max 10MB')
+    setUploading(true)
+    try {
+      // 1 — get signed upload URL from server
+      const urlRes = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+        headers: { 'x-admin-token': ADMIN_SECRET }
+      })
+      const urlData = await urlRes.json()
+      if (!urlRes.ok) return flash(false, urlData.error || 'Upload URL failed')
+
+      // 2 — PUT file directly to Supabase Storage
+      const putRes = await fetch(urlData.uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      })
+      if (!putRes.ok) return flash(false, 'Upload to storage failed')
+
+      // 3 — save public URL in form
+      setForm(p => ({ ...p, cover_image_url: urlData.publicUrl }))
+      flash(true, 'Image uploaded!')
+    } catch (e) {
+      flash(false, 'Upload error: ' + e.message)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const load = async () => {
     setLoading(true)
@@ -683,6 +717,43 @@ function PortfolioManager() {
             {field('tech', form.tech, 'text', 'React, AI Agents, WebGL, Supabase')}
           </div>
 
+          {/* Cover Image */}
+          <div>
+            <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-2 block">Cover Image</label>
+            <input type="file" ref={fileInputRef} accept="image/*,video/mp4,video/webm"
+              className="hidden" onChange={e => uploadImage(e.target.files[0])} />
+
+            {form.cover_image_url ? (
+              <div className="relative rounded-xl overflow-hidden border border-teal/20 mb-2">
+                <img src={form.cover_image_url} alt="Cover" className="w-full h-32 object-cover" />
+                <button onClick={() => setForm(p => ({ ...p, cover_image_url: '' }))}
+                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 flex items-center justify-center text-white hover:bg-red-500/80 transition-all">
+                  <XCircle size={12}/>
+                </button>
+              </div>
+            ) : (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-white/10 rounded-xl p-5 text-center cursor-pointer hover:border-teal/30 hover:bg-teal/3 transition-all"
+                onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#10b981' }}
+                onDragLeave={e => { e.currentTarget.style.borderColor = '' }}
+                onDrop={e => { e.preventDefault(); e.currentTarget.style.borderColor = ''; uploadImage(e.dataTransfer.files[0]) }}>
+                {uploading
+                  ? <div className="flex items-center justify-center gap-2 text-teal text-xs"><RefreshCw size={14} className="animate-spin"/>Uploading...</div>
+                  : <div className="text-gray-600 text-xs"><Upload size={20} className="mx-auto mb-2 opacity-40"/><span className="text-teal font-semibold">Click to upload</span> or drag & drop<br/>JPG, PNG, WebP, MP4 — max 10MB</div>
+                }
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mt-2">
+              <Link size={12} className="text-gray-600 flex-shrink-0"/>
+              <input type="url" value={form.cover_image_url}
+                onChange={e => setForm(p => ({ ...p, cover_image_url: e.target.value }))}
+                placeholder="Or paste image URL directly"
+                className="field w-full text-xs" style={{ borderRadius:'8px', padding:'7px 10px' }} />
+            </div>
+          </div>
+
           {/* Accent Color */}
           <div>
             <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-2 block">Card Accent Color</label>
@@ -761,6 +832,7 @@ function PortfolioManager() {
                       result2_val: item.result2_val || '', result2_lbl: item.result2_lbl || '',
                       result3_val: item.result3_val || '', result3_lbl: item.result3_lbl || '',
                       tech: item.tech || '', accent_color: item.accent_color || '#10b981',
+                      cover_image_url: item.cover_image_url || '',
                     })}
                     className="p-2 rounded-lg text-gray-500 hover:text-teal hover:bg-teal/10 transition-all">
                     <Edit2 size={13}/>

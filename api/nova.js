@@ -3,8 +3,14 @@ import { NOVA } from '../lib/agents/index.js'
 
 const GROQ_KEY       = process.env.GROQ_API_KEY
 const RESEND_KEY     = process.env.RESEND_API_KEY
-const LINKEDIN_TOKEN = process.env.LINKEDIN_TOKEN     // add later
-const LINKEDIN_ORG   = process.env.LINKEDIN_ORG_ID   // add later
+const ADMIN_TOKEN    = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+const LINKEDIN_TOKEN = process.env.LINKEDIN_TOKEN
+const LINKEDIN_ORG   = process.env.LINKEDIN_ORG_ID
+
+function isAuthorized(req) {
+  const token = req.headers['x-admin-token'] || req.query?.token
+  return token === ADMIN_TOKEN
+}
 
 const POST_TYPES = [
   'tip',        // "5 ways AI saves you time"
@@ -55,20 +61,24 @@ async function postToLinkedIn(text) {
 }
 
 async function sendEmail(subject, text) {
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: 'Nova — G0GA Marketing <onboarding@resend.dev>',
-      to: 'gogamr0.01@gmail.com',
-      subject,
-      text,
+  if (!RESEND_KEY) return
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Nova — G0GA Marketing <onboarding@resend.dev>',
+        to: 'gogamr0.01@gmail.com',
+        subject, text,
+      })
     })
-  })
+  } catch (e) { console.error('[Nova] Email failed:', e.message) }
 }
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
+  if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!GROQ_KEY) return res.status(500).json({ ok: false, error: 'GROQ_API_KEY not configured' })
 
   try {
     const day = new Date().getDay() // 0=Sun ... 6=Sat
@@ -81,11 +91,12 @@ export default async function handler(req, res) {
     const linkedinResult = await postToLinkedIn(post)
 
     // 3 — Log to Supabase
-    await supabaseAdmin.from('agent_logs').insert({
+    const { error: logErr } = await supabaseAdmin.from('agent_logs').insert({
       agent: 'Nova',
       action: linkedinResult.posted ? 'posted_linkedin' : 'content_ready',
       details: JSON.stringify({ type, post, linkedin: linkedinResult }),
     })
+    if (logErr) console.error('[Nova] Supabase log failed:', logErr.message)
 
     // No individual CEO email — digest.js collects all reports at 12:30am Monday
     res.status(200).json({ ok: true, type, linkedin: linkedinResult })

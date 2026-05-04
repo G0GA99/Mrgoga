@@ -1,9 +1,15 @@
 import { supabaseAdmin } from '../lib/supabase.js'
 import { KAI } from '../lib/agents/index.js'
 
-const GROQ_KEY   = process.env.GROQ_API_KEY
-const RESEND_KEY = process.env.RESEND_API_KEY
-const BRAVE_KEY  = process.env.BRAVE_SEARCH_KEY  // optional — add later
+const GROQ_KEY    = process.env.GROQ_API_KEY
+const RESEND_KEY  = process.env.RESEND_API_KEY
+const BRAVE_KEY   = process.env.BRAVE_SEARCH_KEY
+const ADMIN_TOKEN = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+
+function isAuthorized(req) {
+  const token = req.headers['x-admin-token'] || req.query?.token
+  return token === ADMIN_TOKEN
+}
 
 // Web search via Brave (if key available) or fallback to Jina
 async function webSearch(query) {
@@ -56,6 +62,8 @@ async function sendEmail(subject, text) {
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
+  if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!GROQ_KEY) return res.status(500).json({ ok: false, error: 'GROQ_API_KEY not configured' })
 
   try {
     // 1 — Kai researches: reads G0GA site + checks competitor
@@ -83,11 +91,12 @@ ${searchData || 'Brave Search not connected yet — use knowledge-based analysis
     const report = await groq(KAI.buildPrompt(researchContext))
 
     // 4 — Log to Supabase
-    await supabaseAdmin.from('agent_logs').insert({
+    const { error: logErr } = await supabaseAdmin.from('agent_logs').insert({
       agent: 'Kai',
       action: 'seo_report',
-      details: report,
+      details: JSON.stringify({ report, researchContext: researchContext.slice(0, 500) }),
     })
+    if (logErr) console.error('[Kai] Supabase log failed:', logErr.message)
 
     // No individual CEO email — digest.js collects all reports at 12:30am Monday
     res.status(200).json({ ok: true, message: 'Kai SEO report saved' })

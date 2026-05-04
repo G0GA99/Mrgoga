@@ -1,8 +1,14 @@
 import { supabaseAdmin } from '../lib/supabase.js'
 import { AGENT as ZION } from '../lib/agents/zion.js'
 
-const GROQ_KEY  = process.env.GROQ_API_KEY
-const DEVTO_KEY = process.env.DEVTO_API_KEY  // dev.to → Settings → Extensions → API Keys
+const GROQ_KEY    = process.env.GROQ_API_KEY
+const DEVTO_KEY   = process.env.DEVTO_API_KEY
+const ADMIN_TOKEN = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
+
+function isAuthorized(req) {
+  const token = req.headers['x-admin-token'] || req.query?.token
+  return token === ADMIN_TOKEN
+}
 
 // Weekly rotation for non-blog content (Monday only)
 const WEEKLY_ROTATION = ['linkedin_article', 'case_study', 'newsletter', 'seo_page']
@@ -58,6 +64,8 @@ async function publishToDevTo(title, content, tags = []) {
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
+  if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!GROQ_KEY) return res.status(500).json({ ok: false, error: 'GROQ_API_KEY not configured' })
 
   try {
     const now = new Date()

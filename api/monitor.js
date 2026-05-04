@@ -8,7 +8,7 @@ import { AGENT as VEX }  from '../lib/agents/vex.js'
 
 const GROQ_KEY    = process.env.GROQ_API_KEY
 const RESEND_KEY  = process.env.RESEND_API_KEY
-const ADMIN_TOKEN = process.env.ADMIN_SECRET
+const ADMIN_TOKEN = process.env.ADMIN_SECRET || 'g0ga-admin-2025'
 const SITE_URL    = process.env.SITE_URL || 'https://g0ga.vercel.app'
 
 function isAuthorized(req) {

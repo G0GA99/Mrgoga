@@ -153,6 +153,7 @@ async function alreadyContacted(company) {
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).end()
   if (!isAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' })
+  if (!GROQ_KEY) return res.status(500).json({ ok: false, error: 'GROQ_API_KEY not configured' })
 
   try {
     // 1 — Search for high-ticket prospects
