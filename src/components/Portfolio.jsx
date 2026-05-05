@@ -7,7 +7,7 @@ import { portfolio as staticPortfolio } from '../data/content'
 function Preview({ color, type }) {
   return (
     <div className="relative w-full rounded-xl overflow-hidden flex items-center justify-center"
-      style={{ aspectRatio: '9/16', background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
+      style={{ aspectRatio: '16/9', background:`radial-gradient(ellipse at 50% 40%, ${color}18 0%, var(--bg2) 65%)` }}>
       <div className="absolute inset-0 opacity-15"
         style={{ backgroundImage:`linear-gradient(${color}22 1px,transparent 1px),linear-gradient(90deg,${color}22 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
       <div className="relative z-10 flex flex-col items-center gap-2">

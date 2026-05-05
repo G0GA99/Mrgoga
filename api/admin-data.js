@@ -309,6 +309,7 @@ function dbToPortfolio(item) {
     tech: item.tech ? item.tech.split(',').map(t => t.trim()).filter(Boolean) : [],
     accentColor: item.accent_color || '#10b981',
     coverImage: item.cover_image_url || null,
+    videoUrl: item.video_url || null,
   }
 }
 
@@ -368,6 +369,7 @@ async function runMigration(res) {
 -- Run this in Supabase Dashboard → SQL Editor:
 
 ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS cover_image_url TEXT;
+ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS video_url TEXT;
 
 CREATE TABLE IF NOT EXISTS portfolio_media (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -421,7 +423,7 @@ async function getAdminPortfolio(res) {
 }
 
 async function addPortfolio(body, res) {
-  const { title, client, location, type, description, result1_val, result1_lbl, result2_val, result2_lbl, result3_val, result3_lbl, tech, accent_color, cover_image_url } = body
+  const { title, client, location, type, description, result1_val, result1_lbl, result2_val, result2_lbl, result3_val, result3_lbl, tech, accent_color, cover_image_url, video_url } = body
   if (!title) return res.status(400).json({ error: 'Title required' })
   const { data, error } = await supabaseAdmin.from('portfolio').insert({
     title, client: client || '', location: location || '', type: type || 'AI Integration',
@@ -429,7 +431,7 @@ async function addPortfolio(body, res) {
     result2_val: result2_val || '', result2_lbl: result2_lbl || '',
     result3_val: result3_val || '', result3_lbl: result3_lbl || '',
     tech: tech || '', accent_color: accent_color || '#10b981', is_active: true,
-    cover_image_url: cover_image_url || null,
+    cover_image_url: cover_image_url || null, video_url: video_url || null,
   }).select().single()
   if (error) return res.status(500).json({ error: error.message })
   res.status(200).json({ ok: true, item: data })

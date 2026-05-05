@@ -9,13 +9,42 @@ function MediaBlock({ src, title }) {
   if (!src) return null
 
   return (
-    <div className="relative w-full" style={{ aspectRatio: '9/16' }}>
+    <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
       {isVideo ? (
         <video src={src} autoPlay muted loop playsInline controls
-          className="absolute inset-0 w-full h-full object-cover" />
+          className="absolute inset-0 w-full h-full object-cover rounded-2xl" />
       ) : (
         <img src={src} alt={title}
+          className="absolute inset-0 w-full h-full object-cover rounded-2xl" />
+      )}
+    </div>
+  )
+}
+
+function getYouTubeId(url) {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  return m ? m[1] : null
+}
+
+function VideoBlock({ src, title, color }) {
+  if (!src) return null
+  const ytId = getYouTubeId(src)
+  const isDirectVideo = /\.(mp4|webm|ogg)$/i.test(src)
+
+  return (
+    <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl"
+      style={{ aspectRatio: '16/9', border: `1px solid ${color}25` }}>
+      {ytId ? (
+        <iframe
+          src={`https://www.youtube.com/embed/${ytId}?autoplay=0&rel=0`}
+          title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen className="absolute inset-0 w-full h-full" />
+      ) : isDirectVideo ? (
+        <video src={src} controls playsInline
           className="absolute inset-0 w-full h-full object-cover" />
+      ) : (
+        <iframe src={src} title={title} allowFullScreen
+          className="absolute inset-0 w-full h-full" />
       )}
     </div>
   )
@@ -98,12 +127,21 @@ export default function PortfolioDetail() {
 
       <div className="max-w-5xl mx-auto px-6 py-10">
 
-        {/* Hero media */}
+        {/* Testimonial video — top */}
+        {project.videoUrl && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+            <p className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color }}>Client Testimonial</p>
+            <VideoBlock src={project.videoUrl} title={project.title} color={color} />
+          </motion.div>
+        )}
+
+        {/* Cover image — below video */}
         {project.coverImage && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: project.videoUrl ? .1 : 0 }}
             className="rounded-2xl overflow-hidden mb-10 shadow-2xl"
             style={{ border: `1px solid ${color}25` }}>
-            <MediaBlock src={project.coverImage} title={project.title} type={project.type} />
+            <MediaBlock src={project.coverImage} title={project.title} />
           </motion.div>
         )}
 

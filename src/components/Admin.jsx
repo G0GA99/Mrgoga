@@ -518,7 +518,7 @@ const BLANK = {
   title:'', client:'', location:'USA', type:'AI Integration', description:'',
   result1_val:'', result1_lbl:'', result2_val:'', result2_lbl:'',
   result3_val:'', result3_lbl:'', tech:'', accent_color:'#10b981',
-  cover_image_url:'',
+  cover_image_url:'', video_url:'',
 }
 
 function PortfolioManager() {
@@ -754,6 +754,19 @@ function PortfolioManager() {
             </div>
           </div>
 
+          {/* Testimonial Video URL */}
+          <div>
+            <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-2 block">Testimonial Video URL (optional)</label>
+            <div className="flex items-center gap-2">
+              <Link size={12} className="text-gray-600 flex-shrink-0"/>
+              <input type="url" value={form.video_url}
+                onChange={e => setForm(p => ({ ...p, video_url: e.target.value }))}
+                placeholder="YouTube link or direct .mp4 URL"
+                className="field w-full text-xs" style={{ borderRadius:'8px', padding:'7px 10px' }} />
+            </div>
+            <p className="text-[10px] text-gray-600 mt-1">Shows above cover image on the project page</p>
+          </div>
+
           {/* Accent Color */}
           <div>
             <label className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide mb-2 block">Card Accent Color</label>
@@ -832,7 +845,7 @@ function PortfolioManager() {
                       result2_val: item.result2_val || '', result2_lbl: item.result2_lbl || '',
                       result3_val: item.result3_val || '', result3_lbl: item.result3_lbl || '',
                       tech: item.tech || '', accent_color: item.accent_color || '#10b981',
-                      cover_image_url: item.cover_image_url || '',
+                      cover_image_url: item.cover_image_url || '', video_url: item.video_url || '',
                     })}
                     className="p-2 rounded-lg text-gray-500 hover:text-teal hover:bg-teal/10 transition-all">
                     <Edit2 size={13}/>
